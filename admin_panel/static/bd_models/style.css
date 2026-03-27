@@ -1,0 +1,37 @@
+#preview-sidebar {
+    flex-basis: 33%;
+    order: 1;
+    background: var(--darkened-bg);
+    border-left: none;
+    margin: 0 0 0 30px;
+    position: sticky;
+    top: 10px;
+}
+
+#preview-sidebar h2 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 5px 15px;
+    margin-bottom: 12px;
+    border-bottom: none;
+}
+
+#preview-content {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    margin: 10px;
+}
+
+#changelist .changelist-form-container {
+    display: flex;
+    flex-wrap: unset;
+    align-items: flex-start;
+    width: 100%;
+}
+
+#changelist .changelist-form-container form {
+    flex-basis:66%;
+    min-width:0;
+}

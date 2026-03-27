@@ -4,5 +4,26 @@ version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.11"
 dependencies = [
+    "aiohttp>=3.13.3",
+    "cachetools>=7.0.5",
     "discord-py>=2.7.1",
+    "dj-database-url>=3.1.2",
+    "django>=5.2.12",
+    "django-admin-action-forms>=2.2.1",
+    "django-admin-autocomplete-filter>=0.7.1",
+    "django-admin-inline-paginator>=0.4.0",
+    "django-allow-cidr>=0.8.0",
+    "django-nonrelated-inlines>=0.2",
+    "pillow>=12.1.1",
+    "prometheus-client>=0.24.1",
+    "psycopg-binary>=3.3.3",
+    "psycopg[pool]>=3.3.3",
+    "python-dateutil>=2.9.0.post0",
+    "pyyaml>=6.0.3",
+    "rich>=14.3.3",
+    "sentry-sdk[django]>=2.56.0",
+    "social-auth-app-django>=5.7.0",
+    "uvicorn>=0.42.0",
+    "uvloop>=0.22.1",
+    "watchfiles>=1.1.1",
 ]

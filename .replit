@@ -1,4 +1,4 @@
-modules = ["nodejs-24", "python-3.11"]
+modules = ["nodejs-24", "python-3.12"]
 
 [[artifacts]]
 id = "artifacts/api-server"
@@ -30,12 +30,12 @@ args = "Discord Bot"
 name = "Discord Bot"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python bot.py"
-
 [workflows.workflow.metadata]
 outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python run.py"
 
 [agent]
 stack = "PNPM_WORKSPACE"
@@ -47,3 +47,4 @@ timeoutMs = 20000
 
 [nix]
 channel = "stable-25_05"
+packages = ["cargo", "freetype", "lcms2", "libiconv", "libimagequant", "libjpeg", "libtiff", "libuv", "libwebp", "libxcrypt", "libyaml", "openjpeg", "postgresql", "rustc", "tcl", "tk", "zlib"]
