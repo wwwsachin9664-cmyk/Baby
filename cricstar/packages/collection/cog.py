@@ -914,8 +914,11 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
             emoji = special_emojis.get(special["special__name"], "")
             desc += f"{emoji} {special['special__name']}: {special['count']:,}\n"
 
+        cricketer_emoji = ""
+        if cricketer:
+            cricketer_emoji = self.bot.get_emoji(cricketer.emoji_id) or ""
         embed = discord.Embed(
-            title=f"Collection of {cricketer.country}" if cricketer else "Total Collection",
+            title=f"Collection of {cricketer_emoji} {cricketer.country}" if cricketer else "Total Collection",
             description=desc,
             color=discord.Color.blurple(),
         )
