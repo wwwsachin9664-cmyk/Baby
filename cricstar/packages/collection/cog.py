@@ -914,19 +914,22 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
             emoji = special_emojis.get(special["special__name"], "")
             desc += f"{emoji} {special['special__name']}: {special['count']:,}\n"
 
-        cricketer_emoji = ""
-        if cricketer:
-            cricketer_emoji = self.bot.get_emoji(cricketer.emoji_id) or ""
         embed = discord.Embed(
-            title=f"Collection of {cricketer_emoji} {cricketer.country}" if cricketer else "Total Collection",
+            title=f"Collection of {cricketer.country}" if cricketer else "Total Collection",
             description=desc,
             color=discord.Color.blurple(),
         )
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
         if cricketer:
-            file_location = cricketer.wild_card.path
-            file = discord.File(file_location, filename="cricketer.png")
-            embed.set_thumbnail(url="attachment://cricketer.png")
-            await interaction.followup.send(embed=embed, file=file)
+            # Show the player emoji as the side thumbnail if available
+            if cricketer.emoji_id:
+                embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{cricketer.emoji_id}.png?size=128")
+            else:
+                file_location = cricketer.wild_card.path
+                file = discord.File(file_location, filename="cricketer.png")
+                embed.set_thumbnail(url="attachment://cricketer.png")
+                await interaction.followup.send(embed=embed, file=file)
+                return
+            await interaction.followup.send(embed=embed)
         else:
             await interaction.followup.send(embed=embed)
