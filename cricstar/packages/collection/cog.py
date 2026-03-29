@@ -718,15 +718,23 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
             )
             return
 
-        entries = [
-            discord.SelectOption(
-                label=item["name"],
-                emoji=self.bot.get_emoji(item["emoji"]) or item["emoji"],
-                description=f"Count: {item['count']}",
-                value=item["value_id"],
+        entries = []
+        async for item in query:
+            raw_emoji = item["emoji"]
+            if isinstance(raw_emoji, int) and raw_emoji != 0:
+                emoji_val = self.bot.get_emoji(raw_emoji)
+            elif isinstance(raw_emoji, str) and raw_emoji:
+                emoji_val = raw_emoji
+            else:
+                emoji_val = None
+            entries.append(
+                discord.SelectOption(
+                    label=item["name"],
+                    emoji=emoji_val,
+                    description=f"Count: {item['count']}",
+                    value=str(item["value_id"]),
+                )
             )
-            async for item in query
-        ]
 
         view = CricketersDuplicateSource(is_special)
         view.header.content = f"View your duplicate {type.value}."
