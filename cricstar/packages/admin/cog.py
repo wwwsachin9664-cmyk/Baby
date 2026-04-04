@@ -500,7 +500,15 @@ class Admin(commands.Cog):
                     specials_cache[special.id] = special
                     event_text = f" | Event: **{event}**"
                 except Special.DoesNotExist:
-                    event_text = f" | ⚠️ Event '{event}' not found in DB"
+                    # Roll back the ball creation and fail fast
+                    await ball.adelete()
+                    card_path.unlink(missing_ok=True)
+                    await ctx.send(
+                        f"❌ Special event **{event}** was not found in the database.\n"
+                        f"Run `setup_specials` or create it in the admin panel first.",
+                        ephemeral=True,
+                    )
+                    return
 
             balls_cache[ball.id] = ball
 

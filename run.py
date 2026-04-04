@@ -71,7 +71,17 @@ if result.returncode != 0:
     print("Settings initialization failed!")
     sys.exit(1)
 
-# Step 3: Start the bot
+# Step 3: Ensure required special events exist
+print("Setting up special events...")
+result = subprocess.run(
+    [sys.executable, MANAGE_PY, "setup_specials"],
+    env=env,
+    cwd=BASE_DIR,
+)
+if result.returncode != 0:
+    print("setup_specials failed (non-critical, continuing).")
+
+# Step 4: Start the bot
 print("=" * 50)
 print("Starting CricStar bot...")
 print("=" * 50)

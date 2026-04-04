@@ -342,11 +342,32 @@ def draw_premade_card(
         )
 
     # Stats area
-    stats_y = HEIGHT - 300
+    stats_y = HEIGHT - 310
+    icon_size = 68
 
-    # Bat score (left, pink/red)
+    # --- Cricket bat icon (left side, pink/red theme) ---
+    bat_ix, bat_iy = 38, stats_y - 10
+    # Bat blade: wide rounded rectangle
+    draw.rounded_rectangle(
+        [(bat_ix, bat_iy), (bat_ix + icon_size, bat_iy + icon_size - 18)],
+        radius=14,
+        fill=(200, 80, 60, 230),
+        outline=(237, 115, 101, 255),
+        width=3,
+    )
+    # Bat handle: thin vertical strip extending below blade
+    handle_x = bat_ix + icon_size // 2 - 6
+    draw.rounded_rectangle(
+        [(handle_x, bat_iy + icon_size - 20), (handle_x + 12, bat_iy + icon_size + 12)],
+        radius=4,
+        fill=(160, 60, 40, 230),
+        outline=(237, 115, 101, 200),
+        width=2,
+    )
+
+    # Bat score number
     draw.text(
-        (95, stats_y),
+        (bat_ix + icon_size + 14, stats_y),
         str(bat_score),
         font=nulshock_stats_font,
         fill=(237, 115, 101, 255),
@@ -354,15 +375,45 @@ def draw_premade_card(
         stroke_fill=(0, 0, 0, 255),
     )
     draw.text(
-        (42, stats_y + 135),
+        (bat_ix, stats_y + 140),
         "BAT",
         font=nulshock_codename_font,
         fill=(237, 115, 101, 200),
     )
 
-    # Ball score (right, gold)
+    # --- Cricket ball icon (right side, gold theme) ---
+    ball_ix = WIDTH - icon_size - 38
+    ball_iy = stats_y - 2
+    ball_cx = ball_ix + icon_size // 2
+    ball_cy = ball_iy + icon_size // 2
+    ball_r = icon_size // 2
+    # Ball body
+    draw.ellipse(
+        [(ball_ix, ball_iy), (ball_ix + icon_size, ball_iy + icon_size)],
+        fill=(180, 30, 30, 230),
+        outline=(252, 194, 76, 255),
+        width=3,
+    )
+    # Seam: vertical arc on left half
+    draw.arc(
+        [(ball_cx - ball_r + 6, ball_cy - ball_r + 4), (ball_cx + 8, ball_cy + ball_r - 4)],
+        start=200,
+        end=340,
+        fill=(255, 255, 255, 200),
+        width=3,
+    )
+    # Seam: vertical arc on right half (mirrored)
+    draw.arc(
+        [(ball_cx - 8, ball_cy - ball_r + 4), (ball_cx + ball_r - 6, ball_cy + ball_r - 4)],
+        start=20,
+        end=160,
+        fill=(255, 255, 255, 200),
+        width=3,
+    )
+
+    # Ball score number
     draw.text(
-        (WIDTH - 95, stats_y),
+        (ball_ix - 14, stats_y),
         str(ball_score),
         font=nulshock_stats_font,
         fill=(252, 194, 76, 255),
@@ -371,7 +422,7 @@ def draw_premade_card(
         anchor="ra",
     )
     draw.text(
-        (WIDTH - 42, stats_y + 135),
+        (WIDTH - 38, stats_y + 140),
         "BALL",
         font=nulshock_codename_font,
         fill=(252, 194, 76, 200),
