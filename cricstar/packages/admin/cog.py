@@ -458,7 +458,14 @@ class Admin(commands.Cog):
             if logo_url.strip():
                 logo_path = os.path.join(tmpdir, "logo.png")
                 try:
-                    urllib.request.urlretrieve(logo_url.strip(), logo_path)
+                    req = urllib.request.Request(
+                        logo_url.strip(),
+                        headers={"User-Agent": "CricStar-Bot/1.0"},
+                    )
+                    with urllib.request.urlopen(req, timeout=10) as resp:
+                        data = resp.read(2 * 1024 * 1024)  # max 2 MB
+                    with open(logo_path, "wb") as f:
+                        f.write(data)
                 except Exception:
                     logo_path = None
 
