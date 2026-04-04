@@ -182,7 +182,7 @@ class BallSpawnView(View):
         """
         Get a new instance with a random cricketer. Rarity values are taken into account.
         """
-        cricketers = list(filter(lambda m: m.enabled, balls.values()))
+        cricketers = list(filter(lambda m: m.enabled and getattr(m, "spawnable", True), balls.values()))
         if not cricketers:
             raise RuntimeError("No ball to spawn")
         rarities = [x.rarity for x in cricketers]

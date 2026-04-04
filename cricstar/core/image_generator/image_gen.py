@@ -287,39 +287,25 @@ def draw_premade_card(
 
     draw = ImageDraw.Draw(bg)
 
-    # ── 2. Top bar: dark semi-transparent strip ───────────────────────────────
-    top_strip = Image.new("RGBA", (WIDTH, TOP_BAR_H), (8, 8, 24, 200))
-    bg.paste(top_strip, (0, 0), mask=top_strip)
-    top_strip.close()
-    draw = ImageDraw.Draw(bg)
-
-    # Rarity badge — top-right, orange circle with number (Dembele style)
+    # ── 2. Name + rarity drawn directly on background (no dark overlay) ───────
     rarity_str = str(rarity)
-    badge_r = 72
-    badge_cx = WIDTH - MARGIN - badge_r
-    badge_cy = TOP_BAR_H // 2
-    draw.ellipse(
-        [(badge_cx - badge_r, badge_cy - badge_r),
-         (badge_cx + badge_r, badge_cy + badge_r)],
-        fill=(200, 100, 0, 230),
-        outline=(255, 190, 0, 255),
-        width=5,
-    )
+
+    # Rarity — plain gold text, right-aligned, with strong black outline so it
+    # is readable on any background without a strip behind it
     draw.text(
-        (badge_cx, badge_cy),
+        (WIDTH - MARGIN, TOP_BAR_H // 2),
         rarity_str,
-        font=nulshock_rarity_font,
-        fill=(255, 255, 255, 255),
-        anchor="mm",
-        stroke_width=1,
-        stroke_fill=(0, 0, 0, 200),
+        font=bar_font,
+        fill=(255, 210, 0, 255),
+        anchor="rm",
+        stroke_width=6,
+        stroke_fill=(0, 0, 0, 230),
     )
 
-    # Player name — left-aligned, white, Nulshock
-    # Dynamically shrink font if the name is too wide to fit beside the rarity
+    # Player name — left-aligned, white, dynamically shrunk to fit beside rarity
     name_text = player_name.upper()
-    # Badge occupies: badge_cx - badge_r to WIDTH; leave 20px gap
-    avail_name_w = (badge_cx - badge_r) - MARGIN - 20
+    rarity_w = int(bar_font.getlength(rarity_str)) + MARGIN + 24
+    avail_name_w = WIDTH - 2 * MARGIN - rarity_w
     if bar_font.getlength(name_text) <= avail_name_w:
         name_font = bar_font
     else:
@@ -335,8 +321,8 @@ def draw_premade_card(
         font=name_font,
         fill=(255, 255, 255, 255),
         anchor="lm",
-        stroke_width=3,
-        stroke_fill=(0, 0, 0, 200),
+        stroke_width=6,
+        stroke_fill=(0, 0, 0, 230),
     )
 
     # ── 3. Player image: landscape frame ─────────────────────────────────────

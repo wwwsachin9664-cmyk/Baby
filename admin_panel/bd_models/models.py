@@ -296,6 +296,10 @@ class Ball(models.Model):
         blank=True, null=True, help_text="Additional possible names for catching this ball, separated by semicolons"
     )
     tradeable = models.BooleanField(help_text="Whether this ball can be traded with others", default=True)
+    spawnable = models.BooleanField(
+        help_text="If False, this ball will never spawn randomly (even if enabled). Set via /cardmaker or /editcard.",
+        default=True,
+    )
     economy = models.ForeignKey(
         Economy, on_delete=models.SET_NULL, blank=True, null=True, help_text="Economical regime of this country"
     )

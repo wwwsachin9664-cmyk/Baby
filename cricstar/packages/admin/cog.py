@@ -399,6 +399,7 @@ class Admin(commands.Cog):
         logo_url="Optional team/event logo URL shown on the card",
         event="Assign card to a special event (always spawns with it)",
         tradeable="Whether this card can be traded (default True)",
+        spawnable="If False, card will never spawn randomly even if enabled (default True)",
     )
     @app_commands.choices(event=[
         app_commands.Choice(name="None", value="none"),
@@ -421,6 +422,7 @@ class Admin(commands.Cog):
         logo_url: str = "",
         event: str = "none",
         tradeable: bool = True,
+        spawnable: bool = True,
     ):
         """
         Generate a Dembele-style cricket card and add it to the database.
@@ -550,6 +552,7 @@ class Admin(commands.Cog):
                 capacity_logic={},
                 regime=regime,
                 tradeable=tradeable,
+                spawnable=spawnable,
             )
 
             event_text = ""
@@ -577,7 +580,7 @@ class Admin(commands.Cog):
             try:
                 await ctx.send(
                     f"✅ **{player_name}** card created!{event_text}\n"
-                    f"`{filename}` | Badge Rarity: `{rarity}` | Spawn Chance: `{spawn_chance}%` | Tradeable: `{tradeable}`\n"
+                    f"`{filename}` | Badge Rarity: `{rarity}` | Spawn Chance: `{spawn_chance}%` | Tradeable: `{tradeable}` | Spawnable: `{spawnable}`\n"
                     f"BAT: `{bat_score}` | BALL: `{ball_score}` | Artwork: {artwork_author}\n"
                     f"Foreground saved as preset `{slug}` for future reuse.",
                     file=preview_file,
@@ -604,6 +607,7 @@ class Admin(commands.Cog):
         artwork_author="New artwork author name (leave blank to keep existing)",
         logo_url="New team/event logo URL (leave blank to keep existing)",
         tradeable="Change tradeability (leave blank to keep existing)",
+        spawnable="Change spawnable (leave blank to keep existing)",
     )
     async def editcard(
         self,
@@ -620,6 +624,7 @@ class Admin(commands.Cog):
         artwork_author: str = "",
         logo_url: str = "",
         tradeable: bool | None = None,
+        spawnable: bool | None = None,
     ):
         """
         Edit an existing cricket card. Only supply the fields you want to change.
@@ -776,6 +781,9 @@ class Admin(commands.Cog):
         if tradeable is not None:
             ball.tradeable = tradeable
             changed_fields.append("tradeable")
+        if spawnable is not None:
+            ball.spawnable = spawnable
+            changed_fields.append("spawnable")
 
         if not changed_fields:
             await ctx.send(
@@ -804,6 +812,8 @@ class Admin(commands.Cog):
             summary_parts.append(f"Author → `{ball.credits}`")
         if tradeable is not None:
             summary_parts.append(f"Tradeable → `{ball.tradeable}`")
+        if spawnable is not None:
+            summary_parts.append(f"Spawnable → `{ball.spawnable}`")
 
         summary = " | ".join(summary_parts)
         card_path = media_dir / filename
