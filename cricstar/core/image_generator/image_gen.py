@@ -105,7 +105,10 @@ def draw_card(ball_instance: "BallInstance") -> tuple[Image.Image, dict[str, Any
     # BUT agar event active hai aur foreground_overlay hai toh overlay lagao.
     card_name_field = str(ball.collection_card.name) if ball.collection_card else ""
     if card_name_field.startswith("premade_"):
-        premade = Image.open(ball.collection_card).convert("RGBA")
+        # Open via direct filesystem path so we always read the latest file on
+        # disk (bypasses any Django storage caching that could return stale data).
+        premade_path = MEDIA_DIR / card_name_field
+        premade = Image.open(str(premade_path)).convert("RGBA")
         # Scale up to fill the full card size (1500×2000), cropping if needed
         card = ImageOps.fit(premade, (WIDTH, HEIGHT), Image.LANCZOS)
         premade.close()
@@ -356,12 +359,7 @@ def draw_premade_card(
         width=BORDER,
     )
 
-    # ── 4. Info panel (below frame) ───────────────────────────────────────────
-    # High opacity (252) so the background image does NOT bleed through the panel
-    panel_h = HEIGHT - INFO_Y
-    panel = Image.new("RGBA", (WIDTH, panel_h), (10, 8, 28, 252))
-    bg.paste(panel, (0, INFO_Y), mask=panel)
-    panel.close()
+    # ── 4. Info section (drawn directly on background — NO dark overlay) ────────
     draw = ImageDraw.Draw(bg)
 
     # Gold separator line between frame and info
@@ -393,8 +391,8 @@ def draw_premade_card(
         f"CODENAME: {codename.upper()}",
         font=nulshock_codename_font,
         fill=(255, 210, 0, 255),
-        stroke_width=1,
-        stroke_fill=(0, 0, 0, 200),
+        stroke_width=4,
+        stroke_fill=(0, 0, 0, 255),
     )
 
     # ── 4c. Description ───────────────────────────────────────────────────────
@@ -408,7 +406,9 @@ def draw_premade_card(
             (MARGIN, desc_y + 82 * i),
             line,
             font=capacity_description_font,
-            fill=(215, 215, 230, 255),
+            fill=(255, 255, 255, 255),
+            stroke_width=3,
+            stroke_fill=(0, 0, 0, 255),
         )
 
     # ── 5. Bottom stats + credits bar (Dembele style) ─────────────────────────
