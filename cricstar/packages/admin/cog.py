@@ -646,7 +646,8 @@ class Admin(commands.Cog):
         # --- Determine whether to regenerate the card image ---
         want_image = bool(background.strip() or foreground.strip())
         # Also regenerate if the card is already a premade card (keeps it up-to-date)
-        is_premade = (ball.wild_card or "").startswith("premade_")
+        wild_card_name = ball.wild_card.name if ball.wild_card else ""
+        is_premade = wild_card_name.startswith("premade_")
         regen = want_image or is_premade
 
         bg_source = background.strip() or "base_background"
@@ -819,6 +820,107 @@ class Admin(commands.Cog):
                 await ctx.send(f"✅ **{player_name}** updated!\n{summary}")
         else:
             await ctx.send(f"✅ **{player_name}** updated!\n{summary}")
+
+    async def _player_name_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        """Return up to 25 player names matching the current input."""
+        current_lower = current.lower()
+        matches = [
+            app_commands.Choice(name=ball.country, value=ball.country)
+            for ball in balls_cache.values()
+            if current_lower in ball.country.lower()
+        ]
+        return matches[:25]
+
+    @commands.hybrid_command(name="setspawnimg")
+    @checks.is_superuser()
+    @app_commands.describe(
+        player_name="Select the cricketer to update",
+        url="Direct image URL for the spawn image",
+    )
+    @app_commands.autocomplete(player_name=_player_name_autocomplete)
+    async def setspawnimg(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        player_name: str,
+        url: str,
+    ):
+        """
+        Set the spawn image for an existing cricketer.
+        Start typing the player name to see a dropdown of all players.
+        url: direct image link (jpg, png, webp, etc.)
+        """
+        await ctx.defer()
+
+        try:
+            ball = await Ball.objects.aget(country=player_name)
+        except Ball.DoesNotExist:
+            close = [
+                b.country for b in balls_cache.values()
+                if player_name.lower() in b.country.lower()
+            ][:5]
+            hint = f"\nDid you mean: {', '.join(close)}?" if close else ""
+            await ctx.send(
+                f"❌ No cricketer named **{player_name}** found.{hint}",
+                ephemeral=True,
+            )
+            return
+
+        url = url.strip()
+        if not url.startswith(("http://", "https://")):
+            await ctx.send("❌ Please provide a direct image URL (starting with http or https).", ephemeral=True)
+            return
+
+        slug = re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
+        media_dir = Path("admin_panel/media")
+
+        def _download_spawn(src_url: str, dest: str) -> bool:
+            try:
+                req = urllib.request.Request(src_url, headers={"User-Agent": "CricStar-Bot/1.0"})
+                with urllib.request.urlopen(req, timeout=15) as resp:
+                    data = resp.read(15 * 1024 * 1024)
+                with open(dest, "wb") as f:
+                    f.write(data)
+                return True
+            except Exception as exc:
+                log.error(f"setspawnimg: download failed: {exc}")
+                return False
+
+        # Detect extension from URL or default to .jpg
+        ext = ".jpg"
+        url_path = url.split("?")[0].lower()
+        for candidate in (".png", ".webp", ".gif", ".jpg", ".jpeg"):
+            if url_path.endswith(candidate):
+                ext = candidate
+                break
+
+        filename = f"spawn_{slug}{ext}"
+        dest_path = str(media_dir / filename)
+
+        with ThreadPoolExecutor() as pool:
+            ok = await self.bot.loop.run_in_executor(pool, _download_spawn, url, dest_path)
+
+        if not ok:
+            await ctx.send(
+                "❌ Could not download the image. Make sure it's a direct link to an image file.",
+                ephemeral=True,
+            )
+            return
+
+        ball.wild_card = filename
+        await ball.asave(update_fields=["wild_card"])
+        balls_cache[ball.id] = ball
+
+        preview_file = discord.File(dest_path, filename=filename)
+        try:
+            await ctx.send(
+                f"✅ Spawn image updated for **{player_name}**!\n`{filename}`",
+                file=preview_file,
+            )
+        except Exception as send_err:
+            log.error(f"setspawnimg: preview send failed: {send_err}")
+            await ctx.send(f"✅ Spawn image updated for **{player_name}**! Saved as `{filename}`.")
 
     @admin.command()
     @checks.is_superuser()

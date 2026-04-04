@@ -294,10 +294,12 @@ class BallSpawnView(View):
         bool
             Whether the name matches or not.
         """
+        import re as _re
+        base_name = _re.sub(r"\s*\(.*?\)\s*", "", self.name).strip().lower()
         if self.model.catch_names:
-            possible_names = (self.name.lower(), *self.model.catch_names.split(";"))
+            possible_names = {self.name.lower(), base_name, *self.model.catch_names.split(";")}
         else:
-            possible_names = (self.name.lower(),)
+            possible_names = {self.name.lower(), base_name}
         cname = text.lower().strip()
         # Remove fancy unicode characters like ’ to replace to '
         cname = cname.replace("\u2019", "'")

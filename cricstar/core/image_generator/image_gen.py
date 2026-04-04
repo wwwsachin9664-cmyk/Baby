@@ -256,9 +256,11 @@ def draw_premade_card(
     bg = Image.open(str(background_path)).convert("RGBA")
     bg = ImageOps.fit(bg, (WIDTH, HEIGHT), Image.LANCZOS)
 
-    # Foreground player image (top 61%, pasted over background)
+    # Foreground player image — fill the entire card canvas first,
+    # then the dark panel covers the bottom 39%.
+    # ImageOps.fit scales to fill and center-crops, preserving ratio.
     fg = Image.open(str(foreground_path)).convert("RGBA")
-    fg_fitted = ImageOps.fit(fg, (WIDTH, PANEL_Y), Image.LANCZOS)
+    fg_fitted = ImageOps.fit(fg, (WIDTH, HEIGHT), Image.LANCZOS)
     bg.paste(fg_fitted, (0, 0), mask=fg_fitted)
     fg.close()
     fg_fitted.close()
