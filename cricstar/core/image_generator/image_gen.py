@@ -67,7 +67,7 @@ try:
     nulshock_codename_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 76)
     nulshock_rarity_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 58)
     nulshock_stats_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 130)
-    nulshock_desc_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 65)
+    nulshock_desc_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 40)
 except Exception:
     nulshock_title_font = title_font
     nulshock_codename_font = capacity_name_font
@@ -402,15 +402,15 @@ def draw_premade_card(
     desc_y = codename_y + 170
     desc_lines: list[str] = []
     for raw_line in description.splitlines():
-        desc_lines.extend(textwrap.wrap(raw_line, width=34))
+        desc_lines.extend(textwrap.wrap(raw_line, width=50))
 
-    for i, line in enumerate(desc_lines[:6]):
+    for i, line in enumerate(desc_lines[:8]):
         draw.text(
-            (MARGIN, desc_y + 78 * i),
+            (MARGIN, desc_y + 52 * i),
             line,
             font=nulshock_desc_font,
             fill=(255, 255, 255, 255),
-            stroke_width=3,
+            stroke_width=2,
             stroke_fill=(0, 0, 0, 255),
         )
 
