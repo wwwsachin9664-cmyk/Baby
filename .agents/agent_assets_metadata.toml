@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "NSYtH5SFEyDQ787cztJpA"
+uri = "file://CRICSTAR_AI_CONTEXT.md"
+type = "text"
+title = "CricStar Bot — AI Context File"
