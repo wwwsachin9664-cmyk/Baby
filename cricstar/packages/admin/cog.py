@@ -391,10 +391,11 @@ class Admin(commands.Cog):
         description="Description text shown on the card",
         bat_score="Bat / health score shown on left (e.g. 342)",
         ball_score="Ball / attack score shown on right (e.g. 327)",
-        rarity="Auto-spawn rarity 0.0–1.0 (0=never, 1=always)",
+        rarity="Value shown on card badge (e.g. 50.0) — cosmetic only",
+        spawn_chance="Spawn probability as percentage 0–100 (e.g. 20 = 20%)",
         artwork_author="Name of the artwork creator",
         background="Preset name (e.g. base_background) or image URL",
-        foreground="Player image URL (transparent PNG recommended)",
+        foreground="Player image URL or preset name (saved by player name after first use)",
         logo_url="Optional team/event logo URL shown on the card",
         event="Assign card to a special event (always spawns with it)",
         tradeable="Whether this card can be traded (default True)",
@@ -412,7 +413,8 @@ class Admin(commands.Cog):
         description: str,
         bat_score: int,
         ball_score: int,
-        rarity: app_commands.Range[float, 0.0, 1.0],
+        rarity: float,
+        spawn_chance: app_commands.Range[int, 0, 100],
         artwork_author: str,
         background: str,
         foreground: str,
@@ -422,8 +424,9 @@ class Admin(commands.Cog):
     ):
         """
         Generate a Dembele-style cricket card and add it to the database.
-        background: preset name (e.g. base_background) or image URL.
-        foreground: image URL for the player art.
+        rarity: badge display value (any number, e.g. 50.0).
+        spawn_chance: 0-100 percent chance to spawn.
+        background: preset name or URL. foreground: URL or saved preset name.
         """
         await ctx.defer()
 
@@ -431,6 +434,8 @@ class Admin(commands.Cog):
         filename = f"premade_{slug}.png"
         media_dir = Path("admin_panel/media")
         backgrounds_dir = Path("admin_panel/media/backgrounds")
+        foregrounds_dir = Path("admin_panel/media/foregrounds")
+        foregrounds_dir.mkdir(parents=True, exist_ok=True)
 
         if await Ball.objects.filter(country=player_name).aexists():
             await ctx.send(
@@ -445,16 +450,17 @@ class Admin(commands.Cog):
             return
 
         def _fetch_image(name_or_url: str, dest: str, max_bytes: int = 10 * 1024 * 1024) -> bool:
-            """Copy preset or download URL to dest. Returns True on success."""
+            """Copy preset (backgrounds or foregrounds) or download URL to dest."""
+            import shutil
             name_or_url = name_or_url.strip()
             if not name_or_url.startswith(("http://", "https://")):
-                # Treat as preset background name
-                for ext in (".jpg", ".jpeg", ".png", ".webp"):
-                    candidate = backgrounds_dir / f"{name_or_url}{ext}"
-                    if candidate.exists():
-                        import shutil
-                        shutil.copy2(str(candidate), dest)
-                        return True
+                # Search backgrounds then foregrounds for a matching preset file
+                for search_dir in (backgrounds_dir, foregrounds_dir):
+                    for ext in (".jpg", ".jpeg", ".png", ".webp", ""):
+                        candidate = search_dir / f"{name_or_url}{ext}"
+                        if candidate.exists():
+                            shutil.copy2(str(candidate), dest)
+                            return True
                 return False
             try:
                 req = urllib.request.Request(
@@ -492,11 +498,16 @@ class Admin(commands.Cog):
                 return
             if not fg_ok:
                 await ctx.send(
-                    f"❌ Could not download foreground from the provided URL. "
+                    f"❌ Could not download foreground from the provided URL or preset name. "
                     f"Make sure it is a direct image link.",
                     ephemeral=True,
                 )
                 return
+
+            # Save foreground as a preset named after this player for future reuse
+            fg_preset = foregrounds_dir / slug
+            import shutil as _shutil
+            _shutil.copy2(fg_path, str(fg_preset))
 
             if logo_url.strip():
                 logo_path = os.path.join(tmpdir, "logo.png")
@@ -515,7 +526,7 @@ class Admin(commands.Cog):
             def _generate() -> tuple:
                 return draw_premade_card(
                     bg_path, fg_path, player_name, codename, description,
-                    float(rarity), bat_score, ball_score, artwork_author, logo_path,
+                    rarity, bat_score, ball_score, artwork_author, logo_path,
                 )
 
             with ThreadPoolExecutor() as pool:
@@ -529,7 +540,7 @@ class Admin(commands.Cog):
                 country=player_name,
                 health=bat_score,
                 attack=ball_score,
-                rarity=float(rarity),
+                rarity=spawn_chance / 100,
                 emoji_id=0,
                 wild_card=filename,
                 collection_card=filename,
@@ -566,8 +577,9 @@ class Admin(commands.Cog):
             try:
                 await ctx.send(
                     f"✅ **{player_name}** card created!{event_text}\n"
-                    f"`{filename}` | Rarity: `{rarity}` | Tradeable: `{tradeable}`\n"
-                    f"BAT: `{bat_score}` | BALL: `{ball_score}` | Artwork: {artwork_author}",
+                    f"`{filename}` | Badge Rarity: `{rarity}` | Spawn Chance: `{spawn_chance}%` | Tradeable: `{tradeable}`\n"
+                    f"BAT: `{bat_score}` | BALL: `{ball_score}` | Artwork: {artwork_author}\n"
+                    f"Foreground saved as preset `{slug}` for future reuse.",
                     file=preview_file,
                 )
             except Exception as send_err:
