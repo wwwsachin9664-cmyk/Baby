@@ -894,25 +894,50 @@ class Admin(commands.Cog):
     @checks.is_superuser()
     @app_commands.describe(
         player_name="Select the cricketer to update",
-        url_or_path="Direct image URL  OR  a path/preset name already in the media folder (e.g. Virat_spawn, dhoni_spawn)",
+        url="Direct image URL to download (http/https). Required if path_name file doesn't already exist.",
+        path_name="Preset name to save/load the image as (e.g. ViratKohlispawn, dhoni_spawn). No extension needed.",
     )
     @app_commands.autocomplete(player_name=_player_name_autocomplete)
     async def setspawnimg(
         self,
         ctx: commands.Context["CricStarBot"],
         player_name: str,
-        url_or_path: str,
+        url: str = "",
+        path_name: str = "",
     ):
         """
-        Set the spawn image for an existing cricketer.
-        Accepts a direct image URL (http/https) OR a preset filename already in admin_panel/media/.
-        Examples: Virat_spawn   dhoni_spawn   https://example.com/img.png
+        Set the spawn image for a cricketer.
+        - url only          → download and assign (saved as spawn_<slug>.<ext>)
+        - path_name only    → use an existing preset file from the media folder
+        - url + path_name   → download from URL and ALSO save under that path_name as a reusable preset
         """
         await ctx.defer()
 
+        url = url.strip()
+        path_name = path_name.strip()
+
+        if not url and not path_name:
+            await ctx.send(
+                "❌ Provide at least one of: `url` (image link) or `path_name` (existing preset name).",
+                ephemeral=True,
+            )
+            return
+
+        # Lookup the ball
+        ball: Ball | None = None
         try:
             ball = await Ball.objects.aget(country=player_name)
         except Ball.DoesNotExist:
+            pass
+
+        if ball is None:
+            slug_fallback = re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
+            try:
+                ball = await Ball.objects.aget(wild_card=f"premade_{slug_fallback}.png")
+            except Ball.DoesNotExist:
+                pass
+
+        if ball is None:
             close = [
                 b.country for b in balls_cache.values()
                 if player_name.lower() in b.country.lower()
@@ -924,40 +949,42 @@ class Admin(commands.Cog):
             )
             return
 
-        src = url_or_path.strip()
+        import shutil as _shutil
         media_dir = Path("admin_panel/media")
         slug = re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
 
-        dest_path: str | None = None
-        filename: str | None = None
+        def _download(src_url: str, dest: str) -> bool:
+            try:
+                req = urllib.request.Request(src_url, headers={"User-Agent": "CricStar-Bot/1.0"})
+                with urllib.request.urlopen(req, timeout=15) as resp:
+                    data = resp.read(15 * 1024 * 1024)
+                with open(dest, "wb") as f:
+                    f.write(data)
+                return True
+            except Exception as exc:
+                log.error(f"setspawnimg: download failed: {exc}")
+                return False
 
-        if src.startswith(("http://", "https://")):
-            # ── URL mode: download the image ────────────────────────────
-            def _download_spawn(src_url: str, dest: str) -> bool:
-                try:
-                    req = urllib.request.Request(src_url, headers={"User-Agent": "CricStar-Bot/1.0"})
-                    with urllib.request.urlopen(req, timeout=15) as resp:
-                        data = resp.read(15 * 1024 * 1024)
-                    with open(dest, "wb") as f:
-                        f.write(data)
-                    return True
-                except Exception as exc:
-                    log.error(f"setspawnimg: download failed: {exc}")
-                    return False
+        def _ext_from_url(u: str) -> str:
+            base = u.split("?")[0].lower()
+            for candidate in (".png", ".webp", ".gif", ".jpeg", ".jpg"):
+                if base.endswith(candidate):
+                    return candidate
+            return ".jpg"
 
-            # Detect extension from URL
-            ext = ".jpg"
-            url_path_lower = src.split("?")[0].lower()
-            for candidate in (".png", ".webp", ".gif", ".jpg", ".jpeg"):
-                if url_path_lower.endswith(candidate):
-                    ext = candidate
-                    break
+        dest_path: str
+        filename: str
+        saved_preset: str | None = None      # path_name preset saved to disk
+        source_label: str
 
-            filename = f"spawn_{slug}{ext}"
-            dest_path = str(media_dir / filename)
+        if url and path_name:
+            # ── URL + path_name: download AND save as named preset ────────
+            ext = _ext_from_url(url)
+            preset_filename = f"{path_name}{ext}"
+            preset_path = str(media_dir / preset_filename)
 
             with ThreadPoolExecutor() as pool:
-                ok = await self.bot.loop.run_in_executor(pool, _download_spawn, src, dest_path)
+                ok = await self.bot.loop.run_in_executor(pool, _download, url, preset_path)
 
             if not ok:
                 await ctx.send(
@@ -966,28 +993,49 @@ class Admin(commands.Cog):
                 )
                 return
 
-        else:
-            # ── Path/preset mode: find existing file in media folder ─────
-            import shutil as _shutil
+            # Also keep a spawn_<slug> copy as the wild_card entry
+            filename = f"spawn_{slug}{ext}"
+            dest_path = str(media_dir / filename)
+            _shutil.copy2(preset_path, dest_path)
 
+            saved_preset = preset_filename
+            source_label = f"URL → saved as preset `{preset_filename}`"
+
+        elif url:
+            # ── URL only: download and save as spawn_<slug> ───────────────
+            ext = _ext_from_url(url)
+            filename = f"spawn_{slug}{ext}"
+            dest_path = str(media_dir / filename)
+
+            with ThreadPoolExecutor() as pool:
+                ok = await self.bot.loop.run_in_executor(pool, _download, url, dest_path)
+
+            if not ok:
+                await ctx.send(
+                    "❌ Could not download the image. Make sure it's a direct link to an image file.",
+                    ephemeral=True,
+                )
+                return
+
+            source_label = "URL"
+
+        else:
+            # ── path_name only: look up existing preset in media folder ───
             found: Path | None = None
-            # Search with and without extension in admin_panel/media/
             for ext in (".png", ".jpg", ".jpeg", ".webp", ".gif", ""):
-                candidate = media_dir / f"{src}{ext}"
+                candidate = media_dir / f"{path_name}{ext}"
                 if candidate.exists():
                     found = candidate
                     break
 
             if found is None:
                 await ctx.send(
-                    f"❌ No file named **`{src}`** found in the media folder.\n"
-                    f"Make sure you've uploaded it first. Accepted names: `Virat_spawn`, `dhoni_spawn`, etc. "
-                    f"(with or without extension — .png, .jpg, .webp supported).",
+                    f"❌ No file named **`{path_name}`** found in the media folder.\n"
+                    f"Upload the file first, or provide a `url` along with the `path_name` to download it.",
                     ephemeral=True,
                 )
                 return
 
-            # Copy to a spawn_<slug> filename so the DB entry is consistent
             ext_found = found.suffix or ".jpg"
             filename = f"spawn_{slug}{ext_found}"
             dest_path = str(media_dir / filename)
@@ -995,20 +1043,25 @@ class Admin(commands.Cog):
             if str(found) != dest_path:
                 _shutil.copy2(str(found), dest_path)
 
+            source_label = f"preset `{path_name}`"
+
         ball.wild_card = filename
         await ball.asave(update_fields=["wild_card"])
         balls_cache[ball.id] = ball
 
-        source_label = f"URL" if src.startswith(("http://", "https://")) else f"path `{src}`"
+        extra = f"\n• Preset saved as `{saved_preset}` — reuse with `path_name:{path_name}`" if saved_preset else ""
         preview_file = discord.File(dest_path, filename=filename)
         try:
             await ctx.send(
-                f"✅ Spawn image updated for **{player_name}** (from {source_label})!\n`{filename}`",
+                f"✅ Spawn image updated for **{ball.country}** (from {source_label})!\n"
+                f"• Assigned file: `{filename}`{extra}",
                 file=preview_file,
             )
         except Exception as send_err:
             log.error(f"setspawnimg: preview send failed: {send_err}")
-            await ctx.send(f"✅ Spawn image updated for **{player_name}**! Saved as `{filename}`.")
+            await ctx.send(
+                f"✅ Spawn image updated for **{ball.country}**! Saved as `{filename}`."
+            )
 
     @commands.hybrid_command(name="createevent")
     @checks.is_superuser()
