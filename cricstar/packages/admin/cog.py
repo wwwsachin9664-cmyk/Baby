@@ -512,15 +512,20 @@ class Admin(commands.Cog):
 
             balls_cache[ball.id] = ball
 
-            with open(str(card_path), "rb") as f:
-                preview_file = discord.File(f, filename=filename)
-
-            await ctx.send(
-                f"✅ **{player_name}** card created!{event_text}\n"
-                f"`{filename}` | Rarity: `{rarity}` | Tradeable: `{tradeable}`\n"
-                f"BAT: `{bat_score}` | BALL: `{ball_score}` | Artwork: {artwork_author}",
-                file=preview_file,
-            )
+            preview_file = discord.File(str(card_path), filename=filename)
+            try:
+                await ctx.send(
+                    f"✅ **{player_name}** card created!{event_text}\n"
+                    f"`{filename}` | Rarity: `{rarity}` | Tradeable: `{tradeable}`\n"
+                    f"BAT: `{bat_score}` | BALL: `{ball_score}` | Artwork: {artwork_author}",
+                    file=preview_file,
+                )
+            except Exception as send_err:
+                log.error(f"cardmaker: preview send failed for {filename}: {send_err}")
+                await ctx.send(
+                    f"✅ **{player_name}** card created and saved as `{filename}`, "
+                    f"but preview upload failed: {send_err}"
+                )
 
     @admin.command()
     @checks.is_superuser()
