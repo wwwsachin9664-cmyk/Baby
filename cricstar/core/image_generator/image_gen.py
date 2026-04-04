@@ -248,128 +248,196 @@ def draw_premade_card(
     artwork_author: str,
     logo_path: "str | Path | None" = None,
 ) -> "tuple[Image.Image, dict[str, Any]]":
-    """Generate a Dembele-style cricket card with Nulshock Bold font."""
+    """
+    Generate a trading-card-style cricket card with Nulshock Bold font.
 
-    PANEL_Y = int(HEIGHT * 0.61)
+    Layout (1500 × 2000):
+    ┌────────────────────────────────────────┐
+    │  PLAYER NAME (left)    RARITY (right)  │  ← 115 px
+    │ ┌──────────────────────────────────┐   │
+    │ │  landscape player image frame    │   │  ← 760 px
+    │ └──────────────────────────────────┘   │
+    │  CODENAME: …                           │
+    │  description text                      │
+    │                                        │
+    │  200 BAT              209 BALL          │
+    │  Created by El Laggron • Artwork: …    │
+    └────────────────────────────────────────┘
+    """
 
-    # Background (full card)
+    # ── Layout constants ──────────────────────────────────────────────────────
+    MARGIN = 28                          # card edge → frame edge
+    TOP_BAR_H = 160                      # name + rarity strip (tall enough for 120px font)
+    FRAME_Y = TOP_BAR_H + 4             # frame top edge
+    FRAME_H = 720                        # landscape frame height
+    FRAME_W = WIDTH - 2 * MARGIN        # 1444 px
+    FRAME_BOTTOM = FRAME_Y + FRAME_H    # ≈ 884
+    INFO_Y = FRAME_BOTTOM + 16          # info panel starts here
+    STATS_Y = HEIGHT - 310              # stats row
+    CREDITS_Y = HEIGHT - 58
+
+    # Smaller Nulshock font for the top name/rarity bar
+    try:
+        bar_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 118)
+    except Exception:
+        bar_font = nulshock_title_font
+
+    # ── 1. Background (full card) ─────────────────────────────────────────────
     bg = Image.open(str(background_path)).convert("RGBA")
     bg = ImageOps.fit(bg, (WIDTH, HEIGHT), Image.LANCZOS)
 
-    # Foreground player image — fill the entire card canvas first,
-    # then the dark panel covers the bottom 39%.
-    # ImageOps.fit scales to fill and center-crops, preserving ratio.
+    draw = ImageDraw.Draw(bg)
+
+    # ── 2. Top bar: dark semi-transparent strip ───────────────────────────────
+    top_strip = Image.new("RGBA", (WIDTH, TOP_BAR_H), (8, 8, 24, 200))
+    bg.paste(top_strip, (0, 0), mask=top_strip)
+    top_strip.close()
+    draw = ImageDraw.Draw(bg)
+
+    # Rarity — right-aligned, gold, Nulshock (plain text, no badge circle)
+    rarity_str = str(rarity)
+    draw.text(
+        (WIDTH - MARGIN, 14),
+        rarity_str,
+        font=bar_font,
+        fill=(255, 210, 0, 255),
+        anchor="ra",
+        stroke_width=2,
+        stroke_fill=(0, 0, 0, 180),
+    )
+
+    # Player name — left-aligned, white, Nulshock
+    # Dynamically shrink font if the name is too wide to fit beside the rarity
+    name_text = player_name.upper()
+    rarity_w = int(bar_font.getlength(rarity_str)) + MARGIN + 30
+    avail_name_w = WIDTH - 2 * MARGIN - rarity_w
+    if bar_font.getlength(name_text) <= avail_name_w:
+        name_font = bar_font
+    else:
+        scale = avail_name_w / bar_font.getlength(name_text)
+        scaled_size = max(48, int(118 * scale))
+        try:
+            name_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), scaled_size)
+        except Exception:
+            name_font = bar_font
+    draw.text(
+        (MARGIN, TOP_BAR_H // 2),
+        name_text,
+        font=name_font,
+        fill=(255, 255, 255, 255),
+        anchor="lm",
+        stroke_width=3,
+        stroke_fill=(0, 0, 0, 200),
+    )
+
+    # ── 3. Player image: landscape frame ─────────────────────────────────────
+    # Frame border (rounded rectangle, gold outline)
+    BORDER = 5
+    draw.rounded_rectangle(
+        [(MARGIN - BORDER, FRAME_Y - BORDER),
+         (MARGIN + FRAME_W + BORDER, FRAME_BOTTOM + BORDER)],
+        radius=14,
+        outline=(255, 210, 0, 220),
+        width=BORDER,
+    )
+
+    # Paste foreground image inside the frame
     fg = Image.open(str(foreground_path)).convert("RGBA")
-    fg_fitted = ImageOps.fit(fg, (WIDTH, HEIGHT), Image.LANCZOS)
-    bg.paste(fg_fitted, (0, 0), mask=fg_fitted)
+    # Fit inside the landscape frame — minimal cropping for landscape images
+    fg_fitted = ImageOps.fit(fg, (FRAME_W, FRAME_H), Image.LANCZOS).convert("RGBA")
+    # Use alpha channel as mask so transparent PNGs composite correctly;
+    # for opaque JPEGs the alpha is all-255 so this works in both cases.
+    bg.paste(fg_fitted, (MARGIN, FRAME_Y), mask=fg_fitted.split()[3])
     fg.close()
     fg_fitted.close()
 
+    # Re-draw the border on top of the pasted image so it's always visible
+    draw = ImageDraw.Draw(bg)
+    draw.rounded_rectangle(
+        [(MARGIN - BORDER, FRAME_Y - BORDER),
+         (MARGIN + FRAME_W + BORDER, FRAME_BOTTOM + BORDER)],
+        radius=14,
+        outline=(255, 210, 0, 220),
+        width=BORDER,
+    )
+
+    # ── 4. Info panel (below frame) ───────────────────────────────────────────
+    panel_h = HEIGHT - INFO_Y
+    panel = Image.new("RGBA", (WIDTH, panel_h), (12, 10, 35, 230))
+    bg.paste(panel, (0, INFO_Y), mask=panel)
+    panel.close()
     draw = ImageDraw.Draw(bg)
 
-    # Player name (top-left, over the foreground)
-    draw.text(
-        (45, 18),
-        player_name.upper(),
-        font=nulshock_title_font,
-        fill=(255, 255, 255, 255),
-        stroke_width=4,
-        stroke_fill=(0, 0, 0, 220),
+    # Gold separator line between frame and info
+    draw.rectangle(
+        [(0, INFO_Y - 2), (WIDTH, INFO_Y + 4)],
+        fill=(200, 150, 0, 200),
     )
 
-    # Rarity badge (top-right, orange circle)
-    rarity_str = str(rarity)
-    badge_cx, badge_cy = WIDTH - 115, 112
-    badge_r = 96
-    draw.ellipse(
-        [(badge_cx - badge_r, badge_cy - badge_r), (badge_cx + badge_r, badge_cy + badge_r)],
-        fill=(200, 100, 0, 220),
-        outline=(255, 180, 0, 255),
-        width=6,
-    )
-    draw.text(
-        (badge_cx, badge_cy),
-        rarity_str,
-        font=nulshock_rarity_font,
-        fill=(255, 255, 255, 255),
-        anchor="mm",
-        stroke_width=1,
-        stroke_fill=(0, 0, 0, 255),
-    )
-
-    # Dark info panel (bottom 39%)
-    panel_overlay = Image.new("RGBA", (WIDTH, HEIGHT - PANEL_Y), (12, 12, 32, 225))
-    bg.paste(panel_overlay, (0, PANEL_Y), mask=panel_overlay)
-    panel_overlay.close()
-
-    # Gold separator line
-    draw = ImageDraw.Draw(bg)
-    draw.rectangle([(0, PANEL_Y), (WIDTH, PANEL_Y + 6)], fill=(200, 150, 0, 210))
-
-    # Logo (top-right of panel, optional)
+    # ── 4a. Logo (top-right of info panel, optional) ──────────────────────────
+    logo_x = WIDTH - MARGIN
     if logo_path and os.path.exists(str(logo_path)):
         try:
             logo = Image.open(str(logo_path)).convert("RGBA")
-            logo_size = 140
+            logo_size = 130
             logo_fitted = ImageOps.fit(logo, (logo_size, logo_size))
-            bg.paste(logo_fitted, (WIDTH - logo_size - 22, PANEL_Y + 22), mask=logo_fitted)
+            logo_fitted = logo_fitted.convert("RGBA")
+            bg.paste(logo_fitted, (WIDTH - logo_size - MARGIN, INFO_Y + 16), mask=logo_fitted)
+            logo_x = WIDTH - logo_size - MARGIN - 10
             logo.close()
             logo_fitted.close()
         except Exception:
             pass
+        draw = ImageDraw.Draw(bg)
 
-    # Codename header
-    codename_y = PANEL_Y + 28
+    # ── 4b. Codename ──────────────────────────────────────────────────────────
+    codename_y = INFO_Y + 22
     draw.text(
-        (42, codename_y),
+        (MARGIN, codename_y),
         f"CODENAME: {codename.upper()}",
         font=nulshock_codename_font,
-        fill=(255, 200, 50, 255),
+        fill=(255, 210, 0, 255),
         stroke_width=1,
-        stroke_fill=(0, 0, 0, 255),
+        stroke_fill=(0, 0, 0, 200),
     )
 
-    # Description text (wrapped)
-    desc_y = codename_y + 108
+    # ── 4c. Description ───────────────────────────────────────────────────────
+    desc_y = codename_y + 98
     desc_lines: list[str] = []
     for raw_line in description.splitlines():
-        desc_lines.extend(textwrap.wrap(raw_line, width=38))
+        desc_lines.extend(textwrap.wrap(raw_line, width=36))
 
-    for i, line in enumerate(desc_lines[:7]):
+    for i, line in enumerate(desc_lines[:6]):
         draw.text(
-            (42, desc_y + 72 * i),
+            (MARGIN, desc_y + 82 * i),
             line,
             font=capacity_description_font,
-            fill=(210, 210, 210, 255),
+            fill=(215, 215, 230, 255),
         )
 
-    # Stats area
-    stats_y = HEIGHT - 310
-    icon_size = 68
+    # ── 5. Stats row ──────────────────────────────────────────────────────────
+    icon_size = 64
 
-    # --- Cricket bat icon (left side, pink/red theme) ---
-    bat_ix, bat_iy = 38, stats_y - 10
-    # Bat blade: wide rounded rectangle
+    # BAT side (left)
+    bat_ix = MARGIN
+    bat_iy = STATS_Y - 8
     draw.rounded_rectangle(
-        [(bat_ix, bat_iy), (bat_ix + icon_size, bat_iy + icon_size - 18)],
-        radius=14,
+        [(bat_ix, bat_iy), (bat_ix + icon_size, bat_iy + icon_size - 16)],
+        radius=12,
         fill=(200, 80, 60, 230),
         outline=(237, 115, 101, 255),
         width=3,
     )
-    # Bat handle: thin vertical strip extending below blade
-    handle_x = bat_ix + icon_size // 2 - 6
+    hx = bat_ix + icon_size // 2 - 5
     draw.rounded_rectangle(
-        [(handle_x, bat_iy + icon_size - 20), (handle_x + 12, bat_iy + icon_size + 12)],
+        [(hx, bat_iy + icon_size - 18), (hx + 10, bat_iy + icon_size + 10)],
         radius=4,
         fill=(160, 60, 40, 230),
         outline=(237, 115, 101, 200),
         width=2,
     )
-
-    # Bat score number
     draw.text(
-        (bat_ix + icon_size + 14, stats_y),
+        (bat_ix + icon_size + 12, STATS_Y),
         str(bat_score),
         font=nulshock_stats_font,
         fill=(237, 115, 101, 255),
@@ -377,45 +445,34 @@ def draw_premade_card(
         stroke_fill=(0, 0, 0, 255),
     )
     draw.text(
-        (bat_ix, stats_y + 140),
+        (bat_ix, STATS_Y + 132),
         "BAT",
         font=nulshock_codename_font,
         fill=(237, 115, 101, 200),
     )
 
-    # --- Cricket ball icon (right side, gold theme) ---
-    ball_ix = WIDTH - icon_size - 38
-    ball_iy = stats_y - 2
+    # BALL side (right)
+    ball_ix = WIDTH - icon_size - MARGIN
+    ball_iy = STATS_Y - 2
     ball_cx = ball_ix + icon_size // 2
     ball_cy = ball_iy + icon_size // 2
     ball_r = icon_size // 2
-    # Ball body
     draw.ellipse(
         [(ball_ix, ball_iy), (ball_ix + icon_size, ball_iy + icon_size)],
         fill=(180, 30, 30, 230),
         outline=(252, 194, 76, 255),
         width=3,
     )
-    # Seam: vertical arc on left half
     draw.arc(
         [(ball_cx - ball_r + 6, ball_cy - ball_r + 4), (ball_cx + 8, ball_cy + ball_r - 4)],
-        start=200,
-        end=340,
-        fill=(255, 255, 255, 200),
-        width=3,
+        start=200, end=340, fill=(255, 255, 255, 200), width=3,
     )
-    # Seam: vertical arc on right half (mirrored)
     draw.arc(
         [(ball_cx - 8, ball_cy - ball_r + 4), (ball_cx + ball_r - 6, ball_cy + ball_r - 4)],
-        start=20,
-        end=160,
-        fill=(255, 255, 255, 200),
-        width=3,
+        start=20, end=160, fill=(255, 255, 255, 200), width=3,
     )
-
-    # Ball score number
     draw.text(
-        (ball_ix - 14, stats_y),
+        (ball_ix - 12, STATS_Y),
         str(ball_score),
         font=nulshock_stats_font,
         fill=(252, 194, 76, 255),
@@ -424,19 +481,19 @@ def draw_premade_card(
         anchor="ra",
     )
     draw.text(
-        (WIDTH - 38, stats_y + 140),
+        (WIDTH - MARGIN, STATS_Y + 132),
         "BALL",
         font=nulshock_codename_font,
         fill=(252, 194, 76, 200),
         anchor="ra",
     )
 
-    # Credits (bottom-left, always "Created by El Laggron")
+    # ── 6. Credits ────────────────────────────────────────────────────────────
     draw.text(
-        (32, HEIGHT - 82),
+        (MARGIN, CREDITS_Y),
         f"Created by El Laggron  \u2022  Artwork: {artwork_author}",
         font=credits_font,
-        fill=(170, 170, 170, 255),
+        fill=(150, 150, 165, 255),
     )
 
     return bg, {"format": "PNG"}
