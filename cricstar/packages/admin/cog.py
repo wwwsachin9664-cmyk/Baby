@@ -884,19 +884,19 @@ class Admin(commands.Cog):
     @checks.is_superuser()
     @app_commands.describe(
         player_name="Select the cricketer to update",
-        url="Direct image URL for the spawn image",
+        url_or_path="Direct image URL  OR  a path/preset name already in the media folder (e.g. Virat_spawn, dhoni_spawn)",
     )
     @app_commands.autocomplete(player_name=_player_name_autocomplete)
     async def setspawnimg(
         self,
         ctx: commands.Context["CricStarBot"],
         player_name: str,
-        url: str,
+        url_or_path: str,
     ):
         """
         Set the spawn image for an existing cricketer.
-        Start typing the player name to see a dropdown of all players.
-        url: direct image link (jpg, png, webp, etc.)
+        Accepts a direct image URL (http/https) OR a preset filename already in admin_panel/media/.
+        Examples: Virat_spawn   dhoni_spawn   https://example.com/img.png
         """
         await ctx.defer()
 
@@ -914,55 +914,86 @@ class Admin(commands.Cog):
             )
             return
 
-        url = url.strip()
-        if not url.startswith(("http://", "https://")):
-            await ctx.send("❌ Please provide a direct image URL (starting with http or https).", ephemeral=True)
-            return
-
-        slug = re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
+        src = url_or_path.strip()
         media_dir = Path("admin_panel/media")
+        slug = re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
 
-        def _download_spawn(src_url: str, dest: str) -> bool:
-            try:
-                req = urllib.request.Request(src_url, headers={"User-Agent": "CricStar-Bot/1.0"})
-                with urllib.request.urlopen(req, timeout=15) as resp:
-                    data = resp.read(15 * 1024 * 1024)
-                with open(dest, "wb") as f:
-                    f.write(data)
-                return True
-            except Exception as exc:
-                log.error(f"setspawnimg: download failed: {exc}")
-                return False
+        dest_path: str | None = None
+        filename: str | None = None
 
-        # Detect extension from URL or default to .jpg
-        ext = ".jpg"
-        url_path = url.split("?")[0].lower()
-        for candidate in (".png", ".webp", ".gif", ".jpg", ".jpeg"):
-            if url_path.endswith(candidate):
-                ext = candidate
-                break
+        if src.startswith(("http://", "https://")):
+            # ── URL mode: download the image ────────────────────────────
+            def _download_spawn(src_url: str, dest: str) -> bool:
+                try:
+                    req = urllib.request.Request(src_url, headers={"User-Agent": "CricStar-Bot/1.0"})
+                    with urllib.request.urlopen(req, timeout=15) as resp:
+                        data = resp.read(15 * 1024 * 1024)
+                    with open(dest, "wb") as f:
+                        f.write(data)
+                    return True
+                except Exception as exc:
+                    log.error(f"setspawnimg: download failed: {exc}")
+                    return False
 
-        filename = f"spawn_{slug}{ext}"
-        dest_path = str(media_dir / filename)
+            # Detect extension from URL
+            ext = ".jpg"
+            url_path_lower = src.split("?")[0].lower()
+            for candidate in (".png", ".webp", ".gif", ".jpg", ".jpeg"):
+                if url_path_lower.endswith(candidate):
+                    ext = candidate
+                    break
 
-        with ThreadPoolExecutor() as pool:
-            ok = await self.bot.loop.run_in_executor(pool, _download_spawn, url, dest_path)
+            filename = f"spawn_{slug}{ext}"
+            dest_path = str(media_dir / filename)
 
-        if not ok:
-            await ctx.send(
-                "❌ Could not download the image. Make sure it's a direct link to an image file.",
-                ephemeral=True,
-            )
-            return
+            with ThreadPoolExecutor() as pool:
+                ok = await self.bot.loop.run_in_executor(pool, _download_spawn, src, dest_path)
+
+            if not ok:
+                await ctx.send(
+                    "❌ Could not download the image. Make sure it's a direct link to an image file.",
+                    ephemeral=True,
+                )
+                return
+
+        else:
+            # ── Path/preset mode: find existing file in media folder ─────
+            import shutil as _shutil
+
+            found: Path | None = None
+            # Search with and without extension in admin_panel/media/
+            for ext in (".png", ".jpg", ".jpeg", ".webp", ".gif", ""):
+                candidate = media_dir / f"{src}{ext}"
+                if candidate.exists():
+                    found = candidate
+                    break
+
+            if found is None:
+                await ctx.send(
+                    f"❌ No file named **`{src}`** found in the media folder.\n"
+                    f"Make sure you've uploaded it first. Accepted names: `Virat_spawn`, `dhoni_spawn`, etc. "
+                    f"(with or without extension — .png, .jpg, .webp supported).",
+                    ephemeral=True,
+                )
+                return
+
+            # Copy to a spawn_<slug> filename so the DB entry is consistent
+            ext_found = found.suffix or ".jpg"
+            filename = f"spawn_{slug}{ext_found}"
+            dest_path = str(media_dir / filename)
+
+            if str(found) != dest_path:
+                _shutil.copy2(str(found), dest_path)
 
         ball.wild_card = filename
         await ball.asave(update_fields=["wild_card"])
         balls_cache[ball.id] = ball
 
+        source_label = f"URL" if src.startswith(("http://", "https://")) else f"path `{src}`"
         preview_file = discord.File(dest_path, filename=filename)
         try:
             await ctx.send(
-                f"✅ Spawn image updated for **{player_name}**!\n`{filename}`",
+                f"✅ Spawn image updated for **{player_name}** (from {source_label})!\n`{filename}`",
                 file=preview_file,
             )
         except Exception as send_err:
