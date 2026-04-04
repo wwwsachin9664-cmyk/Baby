@@ -389,18 +389,17 @@ class Admin(commands.Cog):
         player_name="Unique identifier name of the cricketer (used for DB/file lookup)",
         display_name="Name shown on the card header — if blank, player_name is used",
         codename="Codename shown on the card (e.g. KING KOHLI)",
-        description="Description text shown on the card",
+        description="Description text shown on the card (max 256 characters)",
         bat_score="Bat / health score shown on left (e.g. 342)",
         ball_score="Ball / attack score shown on right (e.g. 327)",
         rarity="Value shown on card badge (e.g. 50.0) — cosmetic only",
-        spawn_chance="Spawn probability as percentage 0–100 (e.g. 20 = 20%)",
+        spawn_chance="Spawn probability 0–100% — set to 0 to disable random spawning",
         artwork_author="Name of the artwork creator",
         background="Preset name (e.g. base_background) or image URL",
         foreground="Player image URL or preset name (saved by player name after first use)",
         logo_url="Optional team/event logo URL shown on the card",
         event="Assign card to a special event (always spawns with it)",
         tradeable="Whether this card can be traded (default True)",
-        spawnable="If False, card will never spawn randomly even if enabled (default True)",
     )
     @app_commands.choices(event=[
         app_commands.Choice(name="None", value="none"),
@@ -423,16 +422,23 @@ class Admin(commands.Cog):
         logo_url: str = "",
         event: str = "none",
         tradeable: bool = True,
-        spawnable: bool = True,
         display_name: str = "",
     ):
         """
         Generate a Dembele-style cricket card and add it to the database.
         rarity: badge display value (any number, e.g. 50.0).
-        spawn_chance: 0-100 percent chance to spawn.
+        spawn_chance: 0-100 percent chance to spawn. Set to 0 to disable spawning.
         background: preset name or URL. foreground: URL or saved preset name.
         """
         await ctx.defer()
+
+        if len(description) > 256:
+            await ctx.send(
+                f"❌ Description is too long — **{len(description)} characters**. "
+                f"Maximum is **256 characters**. Please shorten it and try again.",
+                ephemeral=True,
+            )
+            return
 
         # display_name is what shows on the card header; player_name is used for slug/file
         card_name = display_name.strip() if display_name.strip() else player_name
@@ -557,7 +563,7 @@ class Admin(commands.Cog):
                 capacity_logic={},
                 regime=regime,
                 tradeable=tradeable,
-                spawnable=spawnable,
+                spawnable=(spawn_chance > 0),
             )
 
             event_text = ""
@@ -605,15 +611,14 @@ class Admin(commands.Cog):
         background="Preset name or URL (leave blank to keep / use base_background)",
         foreground="Player image URL or preset name (leave blank to use saved preset)",
         codename="New codename shown on card (leave blank to keep existing)",
-        description="New description text (leave blank to keep existing)",
+        description="New description text, max 256 characters (leave blank to keep existing)",
         bat_score="New bat / health score (leave blank to keep existing)",
         ball_score="New ball / attack score (leave blank to keep existing)",
         rarity="New badge display value — cosmetic only (leave blank to keep existing)",
-        spawn_chance="New spawn probability 0–100% (leave blank to keep existing)",
+        spawn_chance="New spawn probability 0–100% — set to 0 to disable spawning",
         artwork_author="New artwork author name (leave blank to keep existing)",
         logo_url="New team/event logo URL (leave blank to keep existing)",
         tradeable="Change tradeability (leave blank to keep existing)",
-        spawnable="Change spawnable (leave blank to keep existing)",
     )
     async def editcard(
         self,
@@ -631,14 +636,22 @@ class Admin(commands.Cog):
         artwork_author: str = "",
         logo_url: str = "",
         tradeable: bool | None = None,
-        spawnable: bool | None = None,
     ):
         """
         Edit an existing cricket card. Only supply the fields you want to change.
         Provide background/foreground to regenerate the card image.
         background: preset name or URL. foreground: URL or saved preset slug.
+        Set spawn_chance to 0 to disable random spawning.
         """
         await ctx.defer()
+
+        if description.strip() and len(description) > 256:
+            await ctx.send(
+                f"❌ Description is too long — **{len(description)} characters**. "
+                f"Maximum is **256 characters**. Please shorten it and try again.",
+                ephemeral=True,
+            )
+            return
 
         slug = re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
         media_dir = Path("admin_panel/media")
@@ -646,11 +659,23 @@ class Admin(commands.Cog):
         foregrounds_dir = Path("admin_panel/media/foregrounds")
         foregrounds_dir.mkdir(parents=True, exist_ok=True)
 
+        ball = None
         try:
             ball = await Ball.objects.aget(country=player_name)
         except Ball.DoesNotExist:
+            pass
+
+        if ball is None:
+            premade_slug_file = f"premade_{slug}.png"
+            try:
+                ball = await Ball.objects.aget(wild_card=premade_slug_file)
+            except Ball.DoesNotExist:
+                pass
+
+        if ball is None:
             await ctx.send(
-                f"❌ No cricketer named **{player_name}** found. Check the exact name and try again.",
+                f"❌ No cricketer named **{player_name}** found. "
+                f"Check the exact name (try the display name or the original player_name) and try again.",
                 ephemeral=True,
             )
             return
@@ -792,8 +817,8 @@ class Admin(commands.Cog):
         if tradeable is not None:
             ball.tradeable = tradeable
             changed_fields.append("tradeable")
-        if spawnable is not None:
-            ball.spawnable = spawnable
+        if spawn_chance is not None:
+            ball.spawnable = (spawn_chance > 0)
             changed_fields.append("spawnable")
 
         if not changed_fields:
@@ -820,13 +845,12 @@ class Admin(commands.Cog):
         if ball_score is not None:
             summary_parts.append(f"BALL → `{ball.attack}`")
         if spawn_chance is not None:
-            summary_parts.append(f"Spawn chance → `{spawn_chance}%`")
+            spawn_label = f"Spawn chance → `{spawn_chance}%`" + (" *(spawning disabled)*" if spawn_chance == 0 else "")
+            summary_parts.append(spawn_label)
         if artwork_author.strip():
             summary_parts.append(f"Author → `{ball.credits}`")
         if tradeable is not None:
             summary_parts.append(f"Tradeable → `{ball.tradeable}`")
-        if spawnable is not None:
-            summary_parts.append(f"Spawnable → `{ball.spawnable}`")
 
         summary = " | ".join(summary_parts)
         card_path = media_dir / filename
