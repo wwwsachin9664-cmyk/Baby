@@ -273,8 +273,7 @@ def draw_premade_card(
     FRAME_W = WIDTH - 2 * MARGIN        # 1444 px
     FRAME_BOTTOM = FRAME_Y + FRAME_H    # ≈ 884
     INFO_Y = FRAME_BOTTOM + 16          # info panel starts here
-    STATS_Y = HEIGHT - 310              # stats row
-    CREDITS_Y = HEIGHT - 58
+    # Bottom bar constants are defined inline in section 5
 
     # Smaller Nulshock font for the top name/rarity bar
     try:
@@ -294,23 +293,33 @@ def draw_premade_card(
     top_strip.close()
     draw = ImageDraw.Draw(bg)
 
-    # Rarity — right-aligned, gold, Nulshock (plain text, no badge circle)
+    # Rarity badge — top-right, orange circle with number (Dembele style)
     rarity_str = str(rarity)
+    badge_r = 72
+    badge_cx = WIDTH - MARGIN - badge_r
+    badge_cy = TOP_BAR_H // 2
+    draw.ellipse(
+        [(badge_cx - badge_r, badge_cy - badge_r),
+         (badge_cx + badge_r, badge_cy + badge_r)],
+        fill=(200, 100, 0, 230),
+        outline=(255, 190, 0, 255),
+        width=5,
+    )
     draw.text(
-        (WIDTH - MARGIN, 14),
+        (badge_cx, badge_cy),
         rarity_str,
-        font=bar_font,
-        fill=(255, 210, 0, 255),
-        anchor="ra",
-        stroke_width=2,
-        stroke_fill=(0, 0, 0, 180),
+        font=nulshock_rarity_font,
+        fill=(255, 255, 255, 255),
+        anchor="mm",
+        stroke_width=1,
+        stroke_fill=(0, 0, 0, 200),
     )
 
     # Player name — left-aligned, white, Nulshock
     # Dynamically shrink font if the name is too wide to fit beside the rarity
     name_text = player_name.upper()
-    rarity_w = int(bar_font.getlength(rarity_str)) + MARGIN + 30
-    avail_name_w = WIDTH - 2 * MARGIN - rarity_w
+    # Badge occupies: badge_cx - badge_r to WIDTH; leave 20px gap
+    avail_name_w = (badge_cx - badge_r) - MARGIN - 20
     if bar_font.getlength(name_text) <= avail_name_w:
         name_font = bar_font
     else:
@@ -362,8 +371,9 @@ def draw_premade_card(
     )
 
     # ── 4. Info panel (below frame) ───────────────────────────────────────────
+    # High opacity (252) so the background image does NOT bleed through the panel
     panel_h = HEIGHT - INFO_Y
-    panel = Image.new("RGBA", (WIDTH, panel_h), (12, 10, 35, 230))
+    panel = Image.new("RGBA", (WIDTH, panel_h), (10, 8, 28, 252))
     bg.paste(panel, (0, INFO_Y), mask=panel)
     panel.close()
     draw = ImageDraw.Draw(bg)
@@ -415,85 +425,98 @@ def draw_premade_card(
             fill=(215, 215, 230, 255),
         )
 
-    # ── 5. Stats row ──────────────────────────────────────────────────────────
-    icon_size = 64
+    # ── 5. Bottom stats + credits bar (Dembele style) ─────────────────────────
+    # Solid darker strip at the very bottom of the card
+    BAR_H = 120
+    BAR_Y = HEIGHT - BAR_H
+    bottom_bar = Image.new("RGBA", (WIDTH, BAR_H), (6, 5, 18, 255))
+    bg.paste(bottom_bar, (0, BAR_Y), mask=bottom_bar)
+    bottom_bar.close()
+    draw = ImageDraw.Draw(bg)
 
-    # BAT side (left)
-    bat_ix = MARGIN
-    bat_iy = STATS_Y - 8
+    # Thin separator line above the bar
+    draw.rectangle([(0, BAR_Y), (WIDTH, BAR_Y + 3)], fill=(120, 90, 220, 180))
+
+    # Stat numbers font — smaller than before, matching Dembele proportions
+    try:
+        stat_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 88)
+    except Exception:
+        stat_font = nulshock_codename_font
+
+    ICON = 52          # icon square size
+    STAT_Y = BAR_Y + (BAR_H - ICON) // 2   # vertically centred in bar
+
+    # ── BAT stat: icon + number, left half of stats area ─────────────────────
+    # Bat positions (Dembele: ❤️342 sits around 40% from left)
+    bat_ix = 470
+    bat_iy = STAT_Y
+    # Bat blade
     draw.rounded_rectangle(
-        [(bat_ix, bat_iy), (bat_ix + icon_size, bat_iy + icon_size - 16)],
-        radius=12,
-        fill=(200, 80, 60, 230),
+        [(bat_ix, bat_iy), (bat_ix + ICON, bat_iy + ICON - 14)],
+        radius=10,
+        fill=(200, 80, 60, 235),
         outline=(237, 115, 101, 255),
         width=3,
     )
-    hx = bat_ix + icon_size // 2 - 5
+    # Bat handle
+    hx = bat_ix + ICON // 2 - 4
     draw.rounded_rectangle(
-        [(hx, bat_iy + icon_size - 18), (hx + 10, bat_iy + icon_size + 10)],
-        radius=4,
+        [(hx, bat_iy + ICON - 16), (hx + 8, bat_iy + ICON + 8)],
+        radius=3,
         fill=(160, 60, 40, 230),
         outline=(237, 115, 101, 200),
         width=2,
     )
     draw.text(
-        (bat_ix + icon_size + 12, STATS_Y),
+        (bat_ix + ICON + 10, STAT_Y - 4),
         str(bat_score),
-        font=nulshock_stats_font,
+        font=stat_font,
         fill=(237, 115, 101, 255),
         stroke_width=2,
         stroke_fill=(0, 0, 0, 255),
     )
-    draw.text(
-        (bat_ix, STATS_Y + 132),
-        "BAT",
-        font=nulshock_codename_font,
-        fill=(237, 115, 101, 200),
-    )
 
-    # BALL side (right)
-    ball_ix = WIDTH - icon_size - MARGIN
-    ball_iy = STATS_Y - 2
-    ball_cx = ball_ix + icon_size // 2
-    ball_cy = ball_iy + icon_size // 2
-    ball_r = icon_size // 2
+    # ── BALL stat: icon + number, right half of stats area ───────────────────
+    ball_ix = 960
+    ball_iy = STAT_Y + 2
+    ball_cx = ball_ix + ICON // 2
+    ball_cy = ball_iy + ICON // 2
+    ball_r = ICON // 2
     draw.ellipse(
-        [(ball_ix, ball_iy), (ball_ix + icon_size, ball_iy + icon_size)],
-        fill=(180, 30, 30, 230),
+        [(ball_ix, ball_iy), (ball_ix + ICON, ball_iy + ICON)],
+        fill=(180, 30, 30, 235),
         outline=(252, 194, 76, 255),
         width=3,
     )
     draw.arc(
-        [(ball_cx - ball_r + 6, ball_cy - ball_r + 4), (ball_cx + 8, ball_cy + ball_r - 4)],
+        [(ball_cx - ball_r + 5, ball_cy - ball_r + 3), (ball_cx + 7, ball_cy + ball_r - 3)],
         start=200, end=340, fill=(255, 255, 255, 200), width=3,
     )
     draw.arc(
-        [(ball_cx - 8, ball_cy - ball_r + 4), (ball_cx + ball_r - 6, ball_cy + ball_r - 4)],
+        [(ball_cx - 7, ball_cy - ball_r + 3), (ball_cx + ball_r - 5, ball_cy + ball_r - 3)],
         start=20, end=160, fill=(255, 255, 255, 200), width=3,
     )
     draw.text(
-        (ball_ix - 12, STATS_Y),
+        (ball_ix + ICON + 10, STAT_Y - 2),
         str(ball_score),
-        font=nulshock_stats_font,
+        font=stat_font,
         fill=(252, 194, 76, 255),
         stroke_width=2,
         stroke_fill=(0, 0, 0, 255),
-        anchor="ra",
-    )
-    draw.text(
-        (WIDTH - MARGIN, STATS_Y + 132),
-        "BALL",
-        font=nulshock_codename_font,
-        fill=(252, 194, 76, 200),
-        anchor="ra",
     )
 
-    # ── 6. Credits ────────────────────────────────────────────────────────────
+    # ── Credits — two lines, bottom-left (Dembele style) ─────────────────────
     draw.text(
-        (MARGIN, CREDITS_Y),
-        f"Created by El Laggron  \u2022  Artwork: {artwork_author}",
+        (MARGIN, BAR_Y + 14),
+        "Created by El Laggron",
         font=credits_font,
-        fill=(150, 150, 165, 255),
+        fill=(190, 190, 210, 255),
+    )
+    draw.text(
+        (MARGIN, BAR_Y + 60),
+        f"Artwork: {artwork_author}",
+        font=credits_font,
+        fill=(190, 190, 210, 255),
     )
 
     return bg, {"format": "PNG"}
