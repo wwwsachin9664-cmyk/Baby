@@ -98,6 +98,20 @@ class SyncView(LayoutView):
         log.info(f"Admin commands removed from guild {interaction.guild.id} by {interaction.user}")
 
 
+async def _event_autocomplete(
+    interaction: discord.Interaction,
+    current: str,
+) -> list[app_commands.Choice[str]]:
+    """Module-level autocomplete for special events — always available when the class is loaded."""
+    from bd_models.models import specials as _specials
+    current_lower = current.lower()
+    choices = [app_commands.Choice(name="None", value="none")]
+    for special in _specials.values():
+        if current_lower in special.name.lower():
+            choices.append(app_commands.Choice(name=special.name, value=special.name))
+    return choices[:25]
+
+
 class Admin(commands.Cog):
     """
     Bot admin commands.
@@ -401,11 +415,7 @@ class Admin(commands.Cog):
         event="Assign card to a special event (always spawns with it)",
         tradeable="Whether this card can be traded (default True)",
     )
-    @app_commands.choices(event=[
-        app_commands.Choice(name="None", value="none"),
-        app_commands.Choice(name="T20 World Cup", value="T20 World Cup"),
-        app_commands.Choice(name="IPL2026", value="IPL2026"),
-    ])
+    @app_commands.autocomplete(event=_event_autocomplete)
     async def cardmaker(
         self,
         ctx: commands.Context["CricStarBot"],
@@ -999,6 +1009,148 @@ class Admin(commands.Cog):
         except Exception as send_err:
             log.error(f"setspawnimg: preview send failed: {send_err}")
             await ctx.send(f"✅ Spawn image updated for **{player_name}**! Saved as `{filename}`.")
+
+    @commands.hybrid_command(name="createevent")
+    @checks.is_superuser()
+    @app_commands.describe(
+        name="Event name (e.g. IPL 2026, T20 World Cup) — must be unique",
+        rarity="Spawn weight 0.0–1.0 — how often this event's background appears (e.g. 0.05 = 5%)",
+        emoji="An emoji or Discord emoji ID shown next to the event name",
+        catch_phrase="Message shown when catching a card with this event (max 128 chars)",
+        start_date="When the event starts (YYYY-MM-DD or YYYY-MM-DD HH:MM). Leave blank to start immediately",
+        end_date="When the event ends (YYYY-MM-DD or YYYY-MM-DD HH:MM). Leave blank to never expire",
+        tradeable="Whether cards with this event can be traded (default True)",
+        hidden="If True, hides this event from user-facing commands like /cricketers list",
+        credits="Author/credit for this event's artwork",
+    )
+    async def createevent(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        name: str,
+        rarity: app_commands.Range[float, 0.0, 1.0],
+        emoji: str = "",
+        catch_phrase: str = "",
+        start_date: str = "",
+        end_date: str = "",
+        tradeable: bool = True,
+        hidden: bool = False,
+        credits: str = "",
+    ):
+        """
+        Create a new special event. Events appear as coloured backgrounds on cards when they spawn.
+        rarity: 0.0–1.0 weight (0.05 = 5% chance the event background activates during a spawn).
+        Dates are optional — leave blank to start immediately / never expire.
+        """
+        import datetime
+        from django.utils import timezone as tz
+
+        await ctx.defer(ephemeral=True)
+
+        name = name.strip()
+        if not name:
+            await ctx.send("❌ Event name cannot be blank.", ephemeral=True)
+            return
+
+        if len(name) > 64:
+            await ctx.send(
+                f"❌ Event name is too long ({len(name)} chars). Maximum is 64 characters.",
+                ephemeral=True,
+            )
+            return
+
+        if catch_phrase and len(catch_phrase) > 128:
+            await ctx.send(
+                f"❌ Catch phrase is too long ({len(catch_phrase)} chars). Maximum is 128 characters.",
+                ephemeral=True,
+            )
+            return
+
+        # Check for duplicate name
+        if await Special.objects.filter(name=name).aexists():
+            await ctx.send(
+                f"❌ An event named **{name}** already exists. Use a different name.",
+                ephemeral=True,
+            )
+            return
+
+        def _parse_date(s: str) -> datetime.datetime | None:
+            s = s.strip()
+            if not s:
+                return None
+            for fmt in ("%Y-%m-%d %H:%M", "%Y-%m-%d"):
+                try:
+                    naive = datetime.datetime.strptime(s, fmt)
+                    return tz.make_aware(naive)
+                except ValueError:
+                    continue
+            return "invalid"
+
+        parsed_start: datetime.datetime | None = None
+        parsed_end: datetime.datetime | None = None
+
+        if start_date.strip():
+            parsed_start = _parse_date(start_date)
+            if parsed_start == "invalid":
+                await ctx.send(
+                    f"❌ Invalid start date `{start_date}`. Use format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM`.",
+                    ephemeral=True,
+                )
+                return
+
+        if end_date.strip():
+            parsed_end = _parse_date(end_date)
+            if parsed_end == "invalid":
+                await ctx.send(
+                    f"❌ Invalid end date `{end_date}`. Use format `YYYY-MM-DD` or `YYYY-MM-DD HH:MM`.",
+                    ephemeral=True,
+                )
+                return
+
+        if parsed_start and parsed_end and parsed_end <= parsed_start:
+            await ctx.send("❌ End date must be after start date.", ephemeral=True)
+            return
+
+        special = await Special.objects.acreate(
+            name=name,
+            rarity=rarity,
+            emoji=emoji.strip() or None,
+            catch_phrase=catch_phrase.strip() or None,
+            start_date=parsed_start,
+            end_date=parsed_end,
+            tradeable=tradeable,
+            hidden=hidden,
+            credits=credits.strip() or None,
+        )
+
+        # Add to live cache so it's usable immediately without restart
+        specials_cache[special.id] = special
+
+        log.info(f"createevent: '{name}' (id={special.id}) created by {ctx.author}")
+
+        # Build summary
+        start_label = parsed_start.strftime("%Y-%m-%d %H:%M") if parsed_start else "immediately"
+        end_label = parsed_end.strftime("%Y-%m-%d %H:%M") if parsed_end else "never (permanent)"
+        status_label = "Hidden" if hidden else "Visible"
+
+        summary_lines = [
+            f"✅ **Event `{name}` created!** (ID: `{special.id}`)\n",
+            f"• **Rarity:** `{rarity}` ({rarity * 100:.1f}% spawn weight)",
+            f"• **Emoji:** {emoji.strip() or '*(none)*'}",
+            f"• **Catch phrase:** {catch_phrase.strip() or '*(none)*'}",
+            f"• **Starts:** {start_label}",
+            f"• **Ends:** {end_label}",
+            f"• **Tradeable:** {tradeable}",
+            f"• **Status:** {status_label}",
+        ]
+        if credits.strip():
+            summary_lines.append(f"• **Credits:** {credits.strip()}")
+
+        summary_lines.append(
+            f"\nThe event is now **live** in the bot cache. "
+            f"Use `/cardmaker` → event field to assign cards to **{name}**."
+        )
+
+        await ctx.send("\n".join(summary_lines), ephemeral=True)
 
     @commands.hybrid_command(name="removecard")
     @commands.is_owner()
