@@ -393,8 +393,8 @@ class Admin(commands.Cog):
         ball_score="Ball / attack score shown on right (e.g. 327)",
         rarity="Auto-spawn rarity 0.0–1.0 (0=never, 1=always)",
         artwork_author="Name of the artwork creator",
-        background="Background image for the card",
-        foreground="Foreground player image (transparent PNG recommended)",
+        background="Preset name (e.g. base_background) or image URL",
+        foreground="Player image URL (transparent PNG recommended)",
         logo_url="Optional team/event logo URL shown on the card",
         event="Assign card to a special event (always spawns with it)",
         tradeable="Whether this card can be traded (default True)",
@@ -414,21 +414,23 @@ class Admin(commands.Cog):
         ball_score: int,
         rarity: app_commands.Range[float, 0.0, 1.0],
         artwork_author: str,
-        background: discord.Attachment,
-        foreground: discord.Attachment,
+        background: str,
+        foreground: str,
         logo_url: str = "",
         event: str = "none",
         tradeable: bool = True,
     ):
         """
         Generate a Dembele-style cricket card and add it to the database.
-        Provide background and foreground images as attachments.
+        background: preset name (e.g. base_background) or image URL.
+        foreground: image URL for the player art.
         """
         await ctx.defer()
 
         slug = re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
         filename = f"premade_{slug}.png"
         media_dir = Path("admin_panel/media")
+        backgrounds_dir = Path("admin_panel/media/backgrounds")
 
         if await Ball.objects.filter(country=player_name).aexists():
             await ctx.send(
@@ -442,18 +444,59 @@ class Admin(commands.Cog):
             await ctx.send("❌ No regime found in the database. Add one first.", ephemeral=True)
             return
 
+        def _fetch_image(name_or_url: str, dest: str, max_bytes: int = 10 * 1024 * 1024) -> bool:
+            """Copy preset or download URL to dest. Returns True on success."""
+            name_or_url = name_or_url.strip()
+            if not name_or_url.startswith(("http://", "https://")):
+                # Treat as preset background name
+                for ext in (".jpg", ".jpeg", ".png", ".webp"):
+                    candidate = backgrounds_dir / f"{name_or_url}{ext}"
+                    if candidate.exists():
+                        import shutil
+                        shutil.copy2(str(candidate), dest)
+                        return True
+                return False
+            try:
+                req = urllib.request.Request(
+                    name_or_url,
+                    headers={"User-Agent": "CricStar-Bot/1.0"},
+                )
+                with urllib.request.urlopen(req, timeout=15) as resp:
+                    data = resp.read(max_bytes)
+                with open(dest, "wb") as f:
+                    f.write(data)
+                return True
+            except Exception:
+                return False
+
         with tempfile.TemporaryDirectory() as tmpdir:
-            bg_path = os.path.join(tmpdir, "bg.png")
-            fg_path = os.path.join(tmpdir, "fg.png")
+            bg_path = os.path.join(tmpdir, "bg.img")
+            fg_path = os.path.join(tmpdir, "fg.img")
             logo_path: str | None = None
 
-            bg_bytes = await background.read()
-            with open(bg_path, "wb") as f:
-                f.write(bg_bytes)
+            with ThreadPoolExecutor() as pool:
+                bg_ok, fg_ok = await self.bot.loop.run_in_executor(
+                    pool,
+                    lambda: (
+                        _fetch_image(background, bg_path),
+                        _fetch_image(foreground, fg_path),
+                    ),
+                )
 
-            fg_bytes = await foreground.read()
-            with open(fg_path, "wb") as f:
-                f.write(fg_bytes)
+            if not bg_ok:
+                await ctx.send(
+                    f"❌ Could not load background `{background}`. "
+                    f"Check the preset name or URL and try again.",
+                    ephemeral=True,
+                )
+                return
+            if not fg_ok:
+                await ctx.send(
+                    f"❌ Could not download foreground from the provided URL. "
+                    f"Make sure it is a direct image link.",
+                    ephemeral=True,
+                )
+                return
 
             if logo_url.strip():
                 logo_path = os.path.join(tmpdir, "logo.png")
