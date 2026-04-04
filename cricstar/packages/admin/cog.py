@@ -1,5 +1,11 @@
 import logging
+import os
+import re
+import tempfile
+import urllib.request
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
 import discord
@@ -9,6 +15,7 @@ from discord.ui import ActionRow, Button, Container, Section, TextDisplay
 
 from cricstar.core.bot import impersonations
 from cricstar.core.discord import LayoutView
+from cricstar.core.image_generator.image_gen import draw_premade_card
 from cricstar.core.utils import checks
 from cricstar.core.utils.buttons import ConfirmChoiceView
 from cricstar.core.utils.menus import (
@@ -20,7 +27,9 @@ from cricstar.core.utils.menus import (
     dynamic_chunks,
     iter_to_async,
 )
-from bd_models.models import Ball, GuildConfig
+from bd_models.models import Ball, GuildConfig, Regime, Special
+from bd_models.models import balls as balls_cache
+from bd_models.models import specials as specials_cache
 from settings.models import settings
 
 from .balls import balls as balls_group
@@ -373,6 +382,137 @@ class Admin(commands.Cog):
         )
         await pages.init()
         await ctx.send(view=view, ephemeral=True)
+
+    @admin.command()
+    @checks.is_superuser()
+    @app_commands.describe(
+        player_name="Unique name of the cricketer",
+        codename="Codename shown on the card (e.g. KING KOHLI)",
+        description="Description text shown on the card",
+        bat_score="Bat / health score shown on left (e.g. 342)",
+        ball_score="Ball / attack score shown on right (e.g. 327)",
+        rarity="Auto-spawn rarity 0.0–1.0 (0=never, 1=always)",
+        artwork_author="Name of the artwork creator",
+        background="Background image for the card",
+        foreground="Foreground player image (transparent PNG recommended)",
+        logo_url="Optional team/event logo URL shown on the card",
+        event="Assign card to a special event (always spawns with it)",
+        tradeable="Whether this card can be traded (default True)",
+    )
+    @app_commands.choices(event=[
+        app_commands.Choice(name="None", value="none"),
+        app_commands.Choice(name="T20 World Cup", value="T20 World Cup"),
+        app_commands.Choice(name="IPL2026", value="IPL2026"),
+    ])
+    async def cardmaker(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        player_name: str,
+        codename: str,
+        description: str,
+        bat_score: int,
+        ball_score: int,
+        rarity: app_commands.Range[float, 0.0, 1.0],
+        artwork_author: str,
+        background: discord.Attachment,
+        foreground: discord.Attachment,
+        logo_url: str = "",
+        event: str = "none",
+        tradeable: bool = True,
+    ):
+        """
+        Generate a Dembele-style cricket card and add it to the database.
+        Provide background and foreground images as attachments.
+        """
+        await ctx.defer()
+
+        slug = re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
+        filename = f"premade_{slug}.png"
+        media_dir = Path("admin_panel/media")
+
+        if await Ball.objects.filter(country=player_name).aexists():
+            await ctx.send(
+                f"❌ A cricketer named **{player_name}** already exists. Use a unique name.",
+                ephemeral=True,
+            )
+            return
+
+        regime = await Regime.objects.afirst()
+        if not regime:
+            await ctx.send("❌ No regime found in the database. Add one first.", ephemeral=True)
+            return
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            bg_path = os.path.join(tmpdir, "bg.png")
+            fg_path = os.path.join(tmpdir, "fg.png")
+            logo_path: str | None = None
+
+            bg_bytes = await background.read()
+            with open(bg_path, "wb") as f:
+                f.write(bg_bytes)
+
+            fg_bytes = await foreground.read()
+            with open(fg_path, "wb") as f:
+                f.write(fg_bytes)
+
+            if logo_url.strip():
+                logo_path = os.path.join(tmpdir, "logo.png")
+                try:
+                    urllib.request.urlretrieve(logo_url.strip(), logo_path)
+                except Exception:
+                    logo_path = None
+
+            def _generate() -> tuple:
+                return draw_premade_card(
+                    bg_path, fg_path, player_name, codename, description,
+                    float(rarity), bat_score, ball_score, artwork_author, logo_path,
+                )
+
+            with ThreadPoolExecutor() as pool:
+                image, img_kwargs = await self.bot.loop.run_in_executor(pool, _generate)
+
+            card_path = media_dir / filename
+            image.save(str(card_path), **img_kwargs)
+            image.close()
+
+            ball = await Ball.objects.acreate(
+                country=player_name,
+                health=bat_score,
+                attack=ball_score,
+                rarity=float(rarity),
+                emoji_id=0,
+                wild_card=filename,
+                collection_card=filename,
+                credits=artwork_author,
+                capacity_name=codename,
+                capacity_description=description,
+                capacity_logic={},
+                regime=regime,
+                tradeable=tradeable,
+            )
+
+            event_text = ""
+            if event != "none":
+                try:
+                    special = await Special.objects.aget(name=event)
+                    ball.capacity_logic = {"forced_special": special.id}
+                    await ball.asave(update_fields=["capacity_logic"])
+                    specials_cache[special.id] = special
+                    event_text = f" | Event: **{event}**"
+                except Special.DoesNotExist:
+                    event_text = f" | ⚠️ Event '{event}' not found in DB"
+
+            balls_cache[ball.id] = ball
+
+            with open(str(card_path), "rb") as f:
+                preview_file = discord.File(f, filename=filename)
+
+            await ctx.send(
+                f"✅ **{player_name}** card created!{event_text}\n"
+                f"`{filename}` | Rarity: `{rarity}` | Tradeable: `{tradeable}`\n"
+                f"BAT: `{bat_score}` | BALL: `{ball_score}` | Artwork: {artwork_author}",
+                file=preview_file,
+            )
 
     @admin.command()
     @checks.is_superuser()

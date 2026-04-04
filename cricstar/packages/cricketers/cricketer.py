@@ -204,6 +204,13 @@ class BallSpawnView(View):
         return self.model.country
 
     def get_random_special(self) -> Special | None:
+        # If this ball has a forced special (set by /cardmaker), always return it
+        forced_id = self.model.capacity_logic.get("forced_special") if self.model.capacity_logic else None
+        if forced_id:
+            forced = specials.get(int(forced_id))
+            if forced:
+                return forced
+
         population = [
             x
             for x in specials.values()

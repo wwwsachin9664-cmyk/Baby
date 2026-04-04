@@ -62,6 +62,17 @@ capacity_description_font = ImageFont.truetype(str(SOURCES_PATH / "OpenSans-Semi
 stats_font = ImageFont.truetype(str(SOURCES_PATH / "Bobby Jones Soft.otf"), 130)
 credits_font = ImageFont.truetype(str(SOURCES_PATH / "arial.ttf"), 40)
 
+try:
+    nulshock_title_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 150)
+    nulshock_codename_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 76)
+    nulshock_rarity_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 58)
+    nulshock_stats_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 130)
+except Exception:
+    nulshock_title_font = title_font
+    nulshock_codename_font = capacity_name_font
+    nulshock_rarity_font = stats_font
+    nulshock_stats_font = stats_font
+
 credits_color_cache = {}
 
 
@@ -223,4 +234,156 @@ def draw_card(ball_instance: "BallInstance") -> tuple[Image.Image, dict[str, Any
             overlay.close()
 
     return image, {"format": "WEBP"}
-    
+
+
+def draw_premade_card(
+    background_path: "str | Path",
+    foreground_path: "str | Path",
+    player_name: str,
+    codename: str,
+    description: str,
+    rarity: float,
+    bat_score: int,
+    ball_score: int,
+    artwork_author: str,
+    logo_path: "str | Path | None" = None,
+) -> "tuple[Image.Image, dict[str, Any]]":
+    """Generate a Dembele-style cricket card with Nulshock Bold font."""
+
+    PANEL_Y = int(HEIGHT * 0.61)
+
+    # Background (full card)
+    bg = Image.open(str(background_path)).convert("RGBA")
+    bg = ImageOps.fit(bg, (WIDTH, HEIGHT), Image.LANCZOS)
+
+    # Foreground player image (top 61%, pasted over background)
+    fg = Image.open(str(foreground_path)).convert("RGBA")
+    fg_fitted = ImageOps.fit(fg, (WIDTH, PANEL_Y), Image.LANCZOS)
+    bg.paste(fg_fitted, (0, 0), mask=fg_fitted)
+    fg.close()
+    fg_fitted.close()
+
+    draw = ImageDraw.Draw(bg)
+
+    # Player name (top-left, over the foreground)
+    draw.text(
+        (45, 18),
+        player_name.upper(),
+        font=nulshock_title_font,
+        fill=(255, 255, 255, 255),
+        stroke_width=4,
+        stroke_fill=(0, 0, 0, 220),
+    )
+
+    # Rarity badge (top-right, orange circle)
+    rarity_str = str(rarity)
+    badge_cx, badge_cy = WIDTH - 115, 112
+    badge_r = 96
+    draw.ellipse(
+        [(badge_cx - badge_r, badge_cy - badge_r), (badge_cx + badge_r, badge_cy + badge_r)],
+        fill=(200, 100, 0, 220),
+        outline=(255, 180, 0, 255),
+        width=6,
+    )
+    draw.text(
+        (badge_cx, badge_cy),
+        rarity_str,
+        font=nulshock_rarity_font,
+        fill=(255, 255, 255, 255),
+        anchor="mm",
+        stroke_width=1,
+        stroke_fill=(0, 0, 0, 255),
+    )
+
+    # Dark info panel (bottom 39%)
+    panel_overlay = Image.new("RGBA", (WIDTH, HEIGHT - PANEL_Y), (12, 12, 32, 225))
+    bg.paste(panel_overlay, (0, PANEL_Y), mask=panel_overlay)
+    panel_overlay.close()
+
+    # Gold separator line
+    draw = ImageDraw.Draw(bg)
+    draw.rectangle([(0, PANEL_Y), (WIDTH, PANEL_Y + 6)], fill=(200, 150, 0, 210))
+
+    # Logo (top-right of panel, optional)
+    if logo_path and os.path.exists(str(logo_path)):
+        try:
+            logo = Image.open(str(logo_path)).convert("RGBA")
+            logo_size = 140
+            logo_fitted = ImageOps.fit(logo, (logo_size, logo_size))
+            bg.paste(logo_fitted, (WIDTH - logo_size - 22, PANEL_Y + 22), mask=logo_fitted)
+            logo.close()
+            logo_fitted.close()
+        except Exception:
+            pass
+
+    # Codename header
+    codename_y = PANEL_Y + 28
+    draw.text(
+        (42, codename_y),
+        f"CODENAME: {codename.upper()}",
+        font=nulshock_codename_font,
+        fill=(255, 200, 50, 255),
+        stroke_width=1,
+        stroke_fill=(0, 0, 0, 255),
+    )
+
+    # Description text (wrapped)
+    desc_y = codename_y + 108
+    desc_lines: list[str] = []
+    for raw_line in description.splitlines():
+        desc_lines.extend(textwrap.wrap(raw_line, width=38))
+
+    for i, line in enumerate(desc_lines[:7]):
+        draw.text(
+            (42, desc_y + 72 * i),
+            line,
+            font=capacity_description_font,
+            fill=(210, 210, 210, 255),
+        )
+
+    # Stats area
+    stats_y = HEIGHT - 300
+
+    # Bat score (left, pink/red)
+    draw.text(
+        (95, stats_y),
+        str(bat_score),
+        font=nulshock_stats_font,
+        fill=(237, 115, 101, 255),
+        stroke_width=2,
+        stroke_fill=(0, 0, 0, 255),
+    )
+    draw.text(
+        (42, stats_y + 135),
+        "BAT",
+        font=nulshock_codename_font,
+        fill=(237, 115, 101, 200),
+    )
+
+    # Ball score (right, gold)
+    draw.text(
+        (WIDTH - 95, stats_y),
+        str(ball_score),
+        font=nulshock_stats_font,
+        fill=(252, 194, 76, 255),
+        stroke_width=2,
+        stroke_fill=(0, 0, 0, 255),
+        anchor="ra",
+    )
+    draw.text(
+        (WIDTH - 42, stats_y + 135),
+        "BALL",
+        font=nulshock_codename_font,
+        fill=(252, 194, 76, 200),
+        anchor="ra",
+    )
+
+    # Credits (bottom-left, always "Created by El Laggron")
+    draw.text(
+        (32, HEIGHT - 82),
+        f"Created by El Laggron  \u2022  Artwork: {artwork_author}",
+        font=credits_font,
+        fill=(170, 170, 170, 255),
+    )
+
+    return bg, {"format": "PNG"}
