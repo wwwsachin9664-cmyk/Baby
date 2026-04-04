@@ -383,7 +383,7 @@ class Admin(commands.Cog):
         await pages.init()
         await ctx.send(view=view, ephemeral=True)
 
-    @admin.command()
+    @commands.hybrid_command(name="cardmaker")
     @checks.is_superuser()
     @app_commands.describe(
         player_name="Unique name of the cricketer",
