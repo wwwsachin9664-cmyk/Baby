@@ -23,7 +23,7 @@ if not regime:
 
 CRICKETERS = [
     (0.01, "ODI World Cup"),
-    (0.05, "rvd"),
+    (0.05, "VDR"),
     (0.05, "Sachin Tendulkar"),
     (0.05, "India"),
     (0.05, "Australia"),
@@ -34,7 +34,7 @@ CRICKETERS = [
     (0.1, "Lords"),
     (0.1, "Melbourne"),
     (0.1, "Ms Dhoni"),
-    (0.1, "Rohit Sharma"),
+    (0.1, "Rohit Sharma (T20 WC)"),
     (0.1, "Virat Kohli"),
     (0.1, "Brian Lara"),
     (0.1, "Dale Steyn"),

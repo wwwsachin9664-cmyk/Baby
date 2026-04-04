@@ -1,7 +1,5 @@
-import asyncio
 import json
 import logging
-import os
 import random
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -20,31 +18,23 @@ if TYPE_CHECKING:
 log = logging.getLogger("cricstar.packages.daily")
 
 CLAIMS_FILE = Path(__file__).parent.parent.parent.parent / "data" / "claims.json"
-MEDIA_DIR = Path(__file__).parent.parent.parent.parent / "admin_panel" / "media"
 
-DAILY_TIERS = [
-    (1.0,  5.0,  30),
-    (5.0,  10.0, 60),
-    (10.0, 20.0, 80),
-]
-
-SUSPENSE_STAGES = [
-    (0x1a1a2e, "🎴  Shuffling the deck...",              "```\n▓░░░░░░░░░░░░░░  10%\n```"),
-    (0x16213e, "🌟  The cricket gods are deciding...",   "```\n▓▓▓▓▓░░░░░░░░░░  35%\n```"),
-    (0x0f3460, "⚡  Something incoming for you...",      "```\n▓▓▓▓▓▓▓▓▓░░░░░░  60%\n```"),
-    (0x1b0044, "🏏  Finalising your destiny...",         "```\n▓▓▓▓▓▓▓▓▓▓▓▓░░░  85%\n```"),
-    (0x2d0057, "🎯  Almost revealed...",                 "```\n▓▓▓▓▓▓▓▓▓▓▓▓▓▓░  95%\n```"),
-]
-
-RARITY_STAR_MAP = [
-    (0.01,  "💎 MYTHIC"),
-    (0.05,  "⭐⭐⭐⭐⭐ LEGENDARY"),
-    (0.1,   "⭐⭐⭐⭐ EPIC"),
-    (0.5,   "⭐⭐⭐ RARE"),
-    (1.0,   "⭐⭐ UNCOMMON"),
-    (5.0,   "⭐ COMMON"),
-    (float("inf"), "✦ BASIC"),
-]
+# Rarity -> weight mapping (only 1.0 to 20.0 allowed)
+RARITY_WEIGHTS = {
+    1.0:  4,
+    1.5:  6,
+    2.0:  7,
+    2.5:  9,
+    3.0:  12,
+    4.0:  13,
+    5.0:  15,
+    6.0:  18,
+    7.0:  19,
+    8.0:  20,
+    9.0:  22,
+}
+# 10.0 to 15.0 = weight 60
+# 16.0 to 20.0 = weight 90
 
 
 def load_claims() -> dict:
@@ -61,31 +51,33 @@ def save_claims(data: dict):
     CLAIMS_FILE.write_text(json.dumps(data, indent=2))
 
 
-def get_rarity_label(rarity: float) -> str:
-    for threshold, label in RARITY_STAR_MAP:
-        if rarity <= threshold:
-            return label
-    return "✦ BASIC"
+def get_rarity_weight(rarity: float) -> int:
+    if rarity in RARITY_WEIGHTS:
+        return RARITY_WEIGHTS[rarity]
+    if 10.0 <= rarity <= 15.0:
+        return 60
+    if 16.0 <= rarity <= 20.0:
+        return 90
+    return 0
 
 
 def pick_daily_card() -> Ball | None:
-    all_balls = [b for b in balls_cache.values() if b.enabled and 1.0 <= b.rarity <= 20.0]
-    if not all_balls:
+    # Only cards with rarity 1.0 to 20.0 (never below 1.0)
+    eligible = [
+        b for b in balls_cache.values()
+        if b.enabled and 1.0 <= b.rarity <= 20.0
+    ]
+    if not eligible:
         return None
 
-    tier_pools = []
-    tier_weights = []
-    for lo, hi, weight in DAILY_TIERS:
-        pool = [b for b in all_balls if lo <= b.rarity < hi]
-        if pool:
-            tier_pools.append(pool)
-            tier_weights.append(weight)
+    weights = [get_rarity_weight(b.rarity) for b in eligible]
+    # Filter out zero-weight cards
+    filtered = [(b, w) for b, w in zip(eligible, weights) if w > 0]
+    if not filtered:
+        return None
 
-    if not tier_pools:
-        return random.choice(all_balls)
-
-    chosen_pool = random.choices(tier_pools, weights=tier_weights, k=1)[0]
-    return random.choice(chosen_pool)
+    balls_list, weights_list = zip(*filtered)
+    return random.choices(balls_list, weights=weights_list, k=1)[0]
 
 
 def get_random_special() -> Special | None:
@@ -117,23 +109,11 @@ class DailyCog(commands.Cog):
         daily_claims = claims.get("daily", {})
 
         if daily_claims.get(user_id) == today:
-            next_midnight = datetime.combine(
-                date.today(), datetime.min.time()
-            ).replace(tzinfo=timezone.utc)
-            next_midnight = next_midnight.replace(
-                hour=0, minute=0, second=0
+            await interaction.response.send_message(
+                f"You've already claimed your daily card today, {interaction.user.mention}!\n"
+                f"Come back **tomorrow** for your next card. 🏏",
+                ephemeral=True,
             )
-            wait_embed = discord.Embed(
-                title="⏳ Already Claimed!",
-                description=(
-                    f"You've already claimed your daily card today, {interaction.user.mention}!\n\n"
-                    f"Come back **tomorrow** for your next card.\n"
-                    f"Keep collecting and climbing the ranks! 🏏"
-                ),
-                color=0xff4444,
-            )
-            wait_embed.set_footer(text="CricStar Daily • Resets at midnight UTC")
-            await interaction.response.send_message(embed=wait_embed, ephemeral=True)
             return
 
         await interaction.response.defer()
@@ -145,29 +125,13 @@ class DailyCog(commands.Cog):
             )
             return
 
-        stage_embed = discord.Embed(
-            title=SUSPENSE_STAGES[0][1],
-            description=SUSPENSE_STAGES[0][2],
-            color=SUSPENSE_STAGES[0][0],
-        )
-        stage_embed.set_footer(text="🎴 CricStar Daily Card")
-        msg = await interaction.followup.send(embed=stage_embed)
-
-        delays = [1.2, 1.4, 1.4, 1.2, 1.2]
-        for i, (color, title, desc) in enumerate(SUSPENSE_STAGES[1:], start=1):
-            await asyncio.sleep(delays[i - 1])
-            e = discord.Embed(title=title, description=desc, color=color)
-            e.set_footer(text="🎴 CricStar Daily Card")
-            await msg.edit(embed=e)
-
-        await asyncio.sleep(delays[-1])
-
         bonus_attack = random.randint(-settings.max_attack_bonus, settings.max_attack_bonus)
         bonus_health = random.randint(-settings.max_health_bonus, settings.max_health_bonus)
         special = get_random_special()
 
         player, _ = await Player.objects.aget_or_create(discord_id=interaction.user.id)
         is_new = not await BallInstance.objects.filter(player=player, ball=card).aexists()
+
         from django.utils import timezone as dj_tz
         ball_instance = await BallInstance.objects.acreate(
             ball=card,
@@ -183,43 +147,24 @@ class DailyCog(commands.Cog):
         claims["daily"] = daily_claims
         save_claims(claims)
 
-        rarity_label = get_rarity_label(card.rarity)
-        new_badge = "🆕 **NEW to your collection!**\n" if is_new else ""
-        special_text = f"✨ *{special.catch_phrase}*\n" if special and special.catch_phrase else ""
+        special_text = f"✨ *{special.catch_phrase}*\n\n" if special and special.catch_phrase else ""
+        new_badge = "This is a **new cricketer** that has been added to your completion!" if is_new else ""
 
-        reveal_embed = discord.Embed(
-            title="🏏  Your Daily Cricketer!",
-            description=(
-                f"## {card.country}\n"
-                f"{rarity_label}\n\n"
-                f"{special_text}"
-                f"{new_badge}"
-                f"**ATK Bonus:** {bonus_attack:+}%  •  **HP Bonus:** {bonus_health:+}%\n"
-                f"**Card ID:** `#{ball_instance.pk:0X}`"
-            ),
-            color=0xf5a623,
-        )
-        reveal_embed.set_footer(
-            text=f"CricStar Daily • Come back tomorrow!",
-            icon_url=interaction.user.display_avatar.url,
-        )
-        reveal_embed.set_author(
-            name=f"{interaction.user.display_name}'s Daily Card",
-            icon_url=interaction.user.display_avatar.url,
+        message = (
+            f"{interaction.user.mention} You packed **{card.country}**! "
+            f"`#{ball_instance.pk:0X}, {bonus_attack:+}%, {bonus_health:+}%`\n\n"
+            f"{special_text}"
+            f"{new_badge}"
         )
 
-        card_path = MEDIA_DIR / card.collection_card.name
-        if card_path.exists():
-            reveal_embed.set_image(url="attachment://card.png")
-            await msg.delete()
-            await interaction.followup.send(
-                embed=reveal_embed,
-                file=discord.File(str(card_path), filename="card.png"),
-            )
-        else:
-            await msg.edit(embed=reveal_embed)
+        await interaction.followup.send(message)
 
         log.info(
             f"{interaction.user} claimed daily card: {card.country} "
             f"(rarity={card.rarity}, special={special})"
         )
+
+
+async def setup(bot):
+    await bot.add_cog(DailyCog(bot))
+    
