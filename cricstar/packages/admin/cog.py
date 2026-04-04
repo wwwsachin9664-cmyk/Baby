@@ -589,6 +589,237 @@ class Admin(commands.Cog):
                     f"but preview upload failed: {send_err}"
                 )
 
+    @commands.hybrid_command(name="editcard")
+    @checks.is_superuser()
+    @app_commands.describe(
+        player_name="Exact name of the cricketer to edit",
+        background="Preset name or URL (leave blank to keep / use base_background)",
+        foreground="Player image URL or preset name (leave blank to use saved preset)",
+        codename="New codename shown on card (leave blank to keep existing)",
+        description="New description text (leave blank to keep existing)",
+        bat_score="New bat / health score (leave blank to keep existing)",
+        ball_score="New ball / attack score (leave blank to keep existing)",
+        rarity="New badge display value — cosmetic only (leave blank to keep existing)",
+        spawn_chance="New spawn probability 0–100% (leave blank to keep existing)",
+        artwork_author="New artwork author name (leave blank to keep existing)",
+        logo_url="New team/event logo URL (leave blank to keep existing)",
+        tradeable="Change tradeability (leave blank to keep existing)",
+    )
+    async def editcard(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        player_name: str,
+        background: str = "",
+        foreground: str = "",
+        codename: str = "",
+        description: str = "",
+        bat_score: int | None = None,
+        ball_score: int | None = None,
+        rarity: float | None = None,
+        spawn_chance: app_commands.Range[int, 0, 100] | None = None,
+        artwork_author: str = "",
+        logo_url: str = "",
+        tradeable: bool | None = None,
+    ):
+        """
+        Edit an existing cricket card. Only supply the fields you want to change.
+        Provide background/foreground to regenerate the card image.
+        background: preset name or URL. foreground: URL or saved preset slug.
+        """
+        await ctx.defer()
+
+        slug = re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
+        media_dir = Path("admin_panel/media")
+        backgrounds_dir = Path("admin_panel/media/backgrounds")
+        foregrounds_dir = Path("admin_panel/media/foregrounds")
+        foregrounds_dir.mkdir(parents=True, exist_ok=True)
+
+        try:
+            ball = await Ball.objects.aget(country=player_name)
+        except Ball.DoesNotExist:
+            await ctx.send(
+                f"❌ No cricketer named **{player_name}** found. Check the exact name and try again.",
+                ephemeral=True,
+            )
+            return
+
+        # --- Determine whether to regenerate the card image ---
+        want_image = bool(background.strip() or foreground.strip())
+        # Also regenerate if the card is already a premade card (keeps it up-to-date)
+        is_premade = (ball.wild_card or "").startswith("premade_")
+        regen = want_image or is_premade
+
+        bg_source = background.strip() or "base_background"
+        fg_source = foreground.strip() or slug
+
+        filename = f"premade_{slug}.png"
+        changed_fields: list[str] = []
+
+        def _fetch_image(name_or_url: str, dest: str, max_bytes: int = 10 * 1024 * 1024) -> bool:
+            import shutil
+            name_or_url = name_or_url.strip()
+            if not name_or_url.startswith(("http://", "https://")):
+                for search_dir in (backgrounds_dir, foregrounds_dir):
+                    for ext in (".jpg", ".jpeg", ".png", ".webp", ""):
+                        candidate = search_dir / f"{name_or_url}{ext}"
+                        if candidate.exists():
+                            shutil.copy2(str(candidate), dest)
+                            return True
+                return False
+            try:
+                req = urllib.request.Request(
+                    name_or_url, headers={"User-Agent": "CricStar-Bot/1.0"}
+                )
+                with urllib.request.urlopen(req, timeout=15) as resp:
+                    data = resp.read(max_bytes)
+                with open(dest, "wb") as f:
+                    f.write(data)
+                return True
+            except Exception:
+                return False
+
+        if regen:
+            with tempfile.TemporaryDirectory() as tmpdir:
+                bg_path = os.path.join(tmpdir, "bg.img")
+                fg_path = os.path.join(tmpdir, "fg.img")
+                logo_path: str | None = None
+
+                with ThreadPoolExecutor() as pool:
+                    bg_ok, fg_ok = await self.bot.loop.run_in_executor(
+                        pool,
+                        lambda: (
+                            _fetch_image(bg_source, bg_path),
+                            _fetch_image(fg_source, fg_path),
+                        ),
+                    )
+
+                if not bg_ok:
+                    await ctx.send(
+                        f"❌ Could not load background `{bg_source}`. "
+                        f"Check the preset name or URL.",
+                        ephemeral=True,
+                    )
+                    return
+                if not fg_ok:
+                    await ctx.send(
+                        f"❌ Could not load foreground `{fg_source}`. "
+                        f"Provide a direct image URL or make sure the preset exists.",
+                        ephemeral=True,
+                    )
+                    return
+
+                # Save/update foreground preset for this player
+                fg_preset = foregrounds_dir / slug
+                import shutil as _shutil
+                _shutil.copy2(fg_path, str(fg_preset))
+
+                # Resolve display values (use new value or fall back to existing DB value)
+                _codename = codename.strip() or ball.capacity_name or ""
+                _description = description.strip() or ball.capacity_description or ""
+                _rarity = rarity if rarity is not None else ball.rarity * 100
+                _bat = bat_score if bat_score is not None else ball.health
+                _ball = ball_score if ball_score is not None else ball.attack
+                _author = artwork_author.strip() or ball.credits or ""
+
+                # Optional logo
+                logo_url_clean = logo_url.strip()
+                if logo_url_clean:
+                    logo_path = os.path.join(tmpdir, "logo.png")
+                    try:
+                        req = urllib.request.Request(
+                            logo_url_clean, headers={"User-Agent": "CricStar-Bot/1.0"}
+                        )
+                        with urllib.request.urlopen(req, timeout=10) as resp:
+                            data = resp.read(2 * 1024 * 1024)
+                        with open(logo_path, "wb") as f:
+                            f.write(data)
+                    except Exception:
+                        logo_path = None
+
+                def _generate() -> tuple:
+                    return draw_premade_card(
+                        bg_path, fg_path, player_name, _codename, _description,
+                        _rarity, _bat, _ball, _author, logo_path,
+                    )
+
+                with ThreadPoolExecutor() as pool:
+                    image, img_kwargs = await self.bot.loop.run_in_executor(pool, _generate)
+
+                card_path = media_dir / filename
+                image.save(str(card_path), **img_kwargs)
+                image.close()
+
+                ball.wild_card = filename
+                ball.collection_card = filename
+                changed_fields += ["wild_card", "collection_card"]
+
+        # --- Apply text / stat field changes ---
+        if codename.strip():
+            ball.capacity_name = codename.strip()
+            changed_fields.append("capacity_name")
+        if description.strip():
+            ball.capacity_description = description.strip()
+            changed_fields.append("capacity_description")
+        if bat_score is not None:
+            ball.health = bat_score
+            changed_fields.append("health")
+        if ball_score is not None:
+            ball.attack = ball_score
+            changed_fields.append("attack")
+        if spawn_chance is not None:
+            ball.rarity = spawn_chance / 100
+            changed_fields.append("rarity")
+        if artwork_author.strip():
+            ball.credits = artwork_author.strip()
+            changed_fields.append("credits")
+        if tradeable is not None:
+            ball.tradeable = tradeable
+            changed_fields.append("tradeable")
+
+        if not changed_fields:
+            await ctx.send(
+                "⚠️ Nothing to change — you didn't supply any new values.",
+                ephemeral=True,
+            )
+            return
+
+        await ball.asave(update_fields=list(set(changed_fields)))
+        balls_cache[ball.id] = ball
+
+        summary_parts = []
+        if regen:
+            summary_parts.append("Card image regenerated")
+        if codename.strip():
+            summary_parts.append(f"Codename → `{ball.capacity_name}`")
+        if description.strip():
+            summary_parts.append(f"Description updated")
+        if bat_score is not None:
+            summary_parts.append(f"BAT → `{ball.health}`")
+        if ball_score is not None:
+            summary_parts.append(f"BALL → `{ball.attack}`")
+        if spawn_chance is not None:
+            summary_parts.append(f"Spawn chance → `{spawn_chance}%`")
+        if artwork_author.strip():
+            summary_parts.append(f"Author → `{ball.credits}`")
+        if tradeable is not None:
+            summary_parts.append(f"Tradeable → `{ball.tradeable}`")
+
+        summary = " | ".join(summary_parts)
+        card_path = media_dir / filename
+
+        if regen and card_path.exists():
+            preview_file = discord.File(str(card_path), filename=filename)
+            try:
+                await ctx.send(
+                    f"✅ **{player_name}** updated!\n{summary}",
+                    file=preview_file,
+                )
+            except Exception as send_err:
+                log.error(f"editcard: preview send failed: {send_err}")
+                await ctx.send(f"✅ **{player_name}** updated!\n{summary}")
+        else:
+            await ctx.send(f"✅ **{player_name}** updated!\n{summary}")
+
     @admin.command()
     @checks.is_superuser()
     async def impersonate(self, ctx: commands.Context["CricStarBot"], user: discord.Member | None = None):
