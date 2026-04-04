@@ -27,7 +27,7 @@ from cricstar.core.utils.menus import (
     dynamic_chunks,
     iter_to_async,
 )
-from bd_models.models import Ball, GuildConfig, Regime, Special
+from bd_models.models import Ball, BallInstance, GuildConfig, Regime, Special
 from bd_models.models import balls as balls_cache
 from bd_models.models import specials as specials_cache
 from settings.models import settings
@@ -999,6 +999,121 @@ class Admin(commands.Cog):
         except Exception as send_err:
             log.error(f"setspawnimg: preview send failed: {send_err}")
             await ctx.send(f"✅ Spawn image updated for **{player_name}**! Saved as `{filename}`.")
+
+    @commands.hybrid_command(name="removecard")
+    @commands.is_owner()
+    @app_commands.describe(
+        player_name="Name of the cricketer to permanently delete (autocomplete available)",
+    )
+    @app_commands.autocomplete(player_name=_player_name_autocomplete)
+    async def removecard(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        player_name: str,
+    ):
+        """
+        Permanently delete a cricketer card — removes the DB record, all player instances, and image files.
+        ONLY the bot owner can run this. Action is irreversible.
+        """
+        await ctx.defer(ephemeral=True)
+
+        # Look up by display name first, then by slug-based file as fallback
+        ball: Ball | None = None
+        try:
+            ball = await Ball.objects.aget(country=player_name)
+        except Ball.DoesNotExist:
+            pass
+
+        if ball is None:
+            slug = re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
+            premade_slug_file = f"premade_{slug}.png"
+            try:
+                ball = await Ball.objects.aget(wild_card=premade_slug_file)
+            except Ball.DoesNotExist:
+                pass
+
+        if ball is None:
+            close = [
+                b.country for b in balls_cache.values()
+                if player_name.lower() in b.country.lower()
+            ][:5]
+            hint = f"\nDid you mean: {', '.join(close)}?" if close else ""
+            await ctx.send(
+                f"❌ No cricketer named **{player_name}** found.{hint}",
+                ephemeral=True,
+            )
+            return
+
+        # Count how many player instances will also be deleted
+        instance_count = await BallInstance.objects.filter(ball=ball).acount()
+
+        # Collect the image file paths before deleting
+        media_dir = Path("admin_panel/media")
+        files_to_delete: list[Path] = []
+        for field_name in ("wild_card", "collection_card"):
+            field_val = getattr(ball, field_name, None)
+            if field_val:
+                fname = field_val.name if hasattr(field_val, "name") else str(field_val)
+                if fname:
+                    p = media_dir / fname
+                    if p.exists() and p not in files_to_delete:
+                        files_to_delete.append(p)
+
+        # Confirmation prompt
+        confirm_view = ConfirmChoiceView(
+            ctx,
+            user=ctx.author,
+            accept_message="Proceeding with deletion...",
+            cancel_message="Deletion cancelled.",
+        )
+        warning = (
+            f"⚠️ **Are you sure you want to delete `{ball.country}`?**\n\n"
+            f"This will permanently remove:\n"
+            f"• The card from the database\n"
+            f"• **{instance_count}** player instance(s) that own this card\n"
+            f"• {len(files_to_delete)} image file(s) from disk\n\n"
+            f"**This cannot be undone.**"
+        )
+        await ctx.send(warning, view=confirm_view, ephemeral=True)
+        await confirm_view.wait()
+
+        if not confirm_view.value:
+            await ctx.send("❌ Deletion cancelled.", ephemeral=True)
+            return
+
+        ball_name = ball.country
+        ball_id = ball.id
+
+        # Delete all BallInstance records for this ball
+        deleted_instances, _ = await BallInstance.objects.filter(ball=ball).adelete()
+
+        # Delete the Ball record itself
+        await ball.adelete()
+
+        # Remove from in-memory cache
+        balls_cache.pop(ball_id, None)
+
+        # Delete image files from disk
+        deleted_files: list[str] = []
+        for p in files_to_delete:
+            try:
+                p.unlink()
+                deleted_files.append(p.name)
+            except Exception as exc:
+                log.warning(f"removecard: could not delete file {p}: {exc}")
+
+        files_summary = ", ".join(f"`{f}`" for f in deleted_files) if deleted_files else "none"
+        log.info(
+            f"removecard: '{ball_name}' (id={ball_id}) deleted by {ctx.author} — "
+            f"{deleted_instances} instances removed, files: {files_summary}"
+        )
+
+        await ctx.send(
+            f"✅ **{ball_name}** has been permanently deleted.\n"
+            f"• `{deleted_instances}` player instance(s) removed\n"
+            f"• Files deleted: {files_summary}",
+            ephemeral=True,
+        )
 
     @admin.command()
     @checks.is_superuser()
