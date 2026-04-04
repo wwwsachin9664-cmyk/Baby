@@ -396,7 +396,9 @@ def draw_premade_card(
     )
 
     # ── 4c. Description ───────────────────────────────────────────────────────
-    desc_y = codename_y + 98
+    # Anchor description from the bottom so it sits right above the stats bar
+    # (6 lines × 82px = 492px; leave 18px gap above the bar)
+    desc_y = (HEIGHT - 120) - 6 * 82 - 18   # BAR_Y − max_lines×line_h − gap
     desc_lines: list[str] = []
     for raw_line in description.splitlines():
         desc_lines.extend(textwrap.wrap(raw_line, width=36))
