@@ -386,7 +386,8 @@ class Admin(commands.Cog):
     @commands.hybrid_command(name="cardmaker")
     @checks.is_superuser()
     @app_commands.describe(
-        player_name="Unique name of the cricketer",
+        player_name="Unique identifier name of the cricketer (used for DB/file lookup)",
+        display_name="Name shown on the card header — if blank, player_name is used",
         codename="Codename shown on the card (e.g. KING KOHLI)",
         description="Description text shown on the card",
         bat_score="Bat / health score shown on left (e.g. 342)",
@@ -423,6 +424,7 @@ class Admin(commands.Cog):
         event: str = "none",
         tradeable: bool = True,
         spawnable: bool = True,
+        display_name: str = "",
     ):
         """
         Generate a Dembele-style cricket card and add it to the database.
@@ -431,6 +433,9 @@ class Admin(commands.Cog):
         background: preset name or URL. foreground: URL or saved preset name.
         """
         await ctx.defer()
+
+        # display_name is what shows on the card header; player_name is used for slug/file
+        card_name = display_name.strip() if display_name.strip() else player_name
 
         slug = re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
         filename = f"premade_{slug}.png"
@@ -527,7 +532,7 @@ class Admin(commands.Cog):
 
             def _generate() -> tuple:
                 return draw_premade_card(
-                    bg_path, fg_path, player_name, codename, description,
+                    bg_path, fg_path, card_name, codename, description,
                     rarity, bat_score, ball_score, artwork_author, logo_path,
                 )
 
@@ -539,7 +544,7 @@ class Admin(commands.Cog):
             image.close()
 
             ball = await Ball.objects.acreate(
-                country=player_name,
+                country=card_name,
                 health=bat_score,
                 attack=ball_score,
                 rarity=spawn_chance / 100,
@@ -595,7 +600,8 @@ class Admin(commands.Cog):
     @commands.hybrid_command(name="editcard")
     @checks.is_superuser()
     @app_commands.describe(
-        player_name="Exact name of the cricketer to edit",
+        player_name="Exact name of the cricketer to edit (use the name stored in DB)",
+        display_name="Change the name shown on the card header (leave blank to keep existing)",
         background="Preset name or URL (leave blank to keep / use base_background)",
         foreground="Player image URL or preset name (leave blank to use saved preset)",
         codename="New codename shown on card (leave blank to keep existing)",
@@ -613,6 +619,7 @@ class Admin(commands.Cog):
         self,
         ctx: commands.Context["CricStarBot"],
         player_name: str,
+        display_name: str = "",
         background: str = "",
         foreground: str = "",
         codename: str = "",
@@ -720,6 +727,7 @@ class Admin(commands.Cog):
                 _shutil.copy2(fg_path, str(fg_preset))
 
                 # Resolve display values (use new value or fall back to existing DB value)
+                _card_name = display_name.strip() or ball.country
                 _codename = codename.strip() or ball.capacity_name or ""
                 _description = description.strip() or ball.capacity_description or ""
                 _rarity = rarity if rarity is not None else ball.rarity * 100
@@ -744,7 +752,7 @@ class Admin(commands.Cog):
 
                 def _generate() -> tuple:
                     return draw_premade_card(
-                        bg_path, fg_path, player_name, _codename, _description,
+                        bg_path, fg_path, _card_name, _codename, _description,
                         _rarity, _bat, _ball, _author, logo_path,
                     )
 
@@ -760,6 +768,9 @@ class Admin(commands.Cog):
                 changed_fields += ["wild_card", "collection_card"]
 
         # --- Apply text / stat field changes ---
+        if display_name.strip():
+            ball.country = display_name.strip()
+            changed_fields.append("country")
         if codename.strip():
             ball.capacity_name = codename.strip()
             changed_fields.append("capacity_name")
@@ -798,6 +809,8 @@ class Admin(commands.Cog):
         summary_parts = []
         if regen:
             summary_parts.append("Card image regenerated")
+        if display_name.strip():
+            summary_parts.append(f"Display name → `{ball.country}`")
         if codename.strip():
             summary_parts.append(f"Codename → `{ball.capacity_name}`")
         if description.strip():
