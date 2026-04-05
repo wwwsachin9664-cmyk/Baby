@@ -414,6 +414,7 @@ class Admin(commands.Cog):
         logo_url="Optional team/event logo URL shown on the card",
         event="Assign card to a special event (always spawns with it)",
         tradeable="Whether this card can be traded (default True)",
+        catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
     )
     @app_commands.autocomplete(event=_event_autocomplete)
     async def cardmaker(
@@ -433,6 +434,7 @@ class Admin(commands.Cog):
         event: str = "none",
         tradeable: bool = True,
         display_name: str = "",
+        catch_name: str = "",
     ):
         """
         Generate a Dembele-style cricket card and add it to the database.
@@ -574,6 +576,7 @@ class Admin(commands.Cog):
                 regime=regime,
                 tradeable=tradeable,
                 spawnable=(spawn_chance > 0),
+                catch_names=catch_name.strip().lower() or None,
             )
 
             event_text = ""
@@ -629,6 +632,7 @@ class Admin(commands.Cog):
         artwork_author="New artwork author name (leave blank to keep existing)",
         logo_url="New team/event logo URL (leave blank to keep existing)",
         tradeable="Change tradeability (leave blank to keep existing)",
+        catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
     )
     async def editcard(
         self,
@@ -646,6 +650,7 @@ class Admin(commands.Cog):
         artwork_author: str = "",
         logo_url: str = "",
         tradeable: bool | None = None,
+        catch_name: str = "",
     ):
         """
         Edit an existing cricket card. Only supply the fields you want to change.
@@ -830,6 +835,9 @@ class Admin(commands.Cog):
         if spawn_chance is not None:
             ball.spawnable = (spawn_chance > 0)
             changed_fields.append("spawnable")
+        if catch_name.strip():
+            ball.catch_names = catch_name.strip().lower()
+            changed_fields.append("catch_names")
 
         if not changed_fields:
             await ctx.send(
