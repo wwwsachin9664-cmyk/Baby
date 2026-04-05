@@ -331,16 +331,6 @@ def draw_premade_card(
     )
 
     # ── 3. Player image: landscape frame ─────────────────────────────────────
-    # Frame border (rounded rectangle, gold outline)
-    BORDER = 5
-    draw.rounded_rectangle(
-        [(MARGIN - BORDER, FRAME_Y - BORDER),
-         (MARGIN + FRAME_W + BORDER, FRAME_BOTTOM + BORDER)],
-        radius=14,
-        outline=(255, 210, 0, 220),
-        width=BORDER,
-    )
-
     # Paste foreground image inside the frame
     fg = Image.open(str(foreground_path)).convert("RGBA")
     # Fit inside the landscape frame — minimal cropping for landscape images
@@ -351,24 +341,8 @@ def draw_premade_card(
     fg.close()
     fg_fitted.close()
 
-    # Re-draw the border on top of the pasted image so it's always visible
-    draw = ImageDraw.Draw(bg)
-    draw.rounded_rectangle(
-        [(MARGIN - BORDER, FRAME_Y - BORDER),
-         (MARGIN + FRAME_W + BORDER, FRAME_BOTTOM + BORDER)],
-        radius=14,
-        outline=(255, 210, 0, 220),
-        width=BORDER,
-    )
-
     # ── 4. Info section (drawn directly on background — NO dark overlay) ────────
     draw = ImageDraw.Draw(bg)
-
-    # Gold separator line between frame and info
-    draw.rectangle(
-        [(0, INFO_Y - 2), (WIDTH, INFO_Y + 4)],
-        fill=(200, 150, 0, 200),
-    )
 
     # ── 4a. Logo (top-right of info panel, optional) ──────────────────────────
     logo_x = WIDTH - MARGIN
