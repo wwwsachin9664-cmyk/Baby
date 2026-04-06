@@ -317,13 +317,14 @@ def draw_premade_card(
     """
 
     # ── Layout constants ──────────────────────────────────────────────────────
-    MARGIN = 28                          # card edge → frame edge
+    MARGIN = 28                          # card edge → text/info margin
     TOP_BAR_H = 160                      # name + rarity strip (tall enough for 120px font)
-    FRAME_Y = TOP_BAR_H + 4             # frame top edge
-    FRAME_H = 720                        # landscape frame height
-    FRAME_W = WIDTH - 2 * MARGIN        # 1444 px
-    FRAME_BOTTOM = FRAME_Y + FRAME_H    # ≈ 884
-    INFO_Y = FRAME_BOTTOM + 16          # info panel starts here
+    FRAME_Y = TOP_BAR_H                  # frame starts immediately below name bar (no gap)
+    FRAME_H = 780                        # taller landscape frame — fills more of the card
+    FRAME_W = WIDTH                      # full card width — no side margins on the image
+    FRAME_X = 0                          # foreground image starts at left edge
+    FRAME_BOTTOM = FRAME_Y + FRAME_H    # ≈ 940
+    INFO_Y = FRAME_BOTTOM + 12          # info panel starts here
     # Bottom bar constants are defined inline in section 5
 
     # Smaller Nulshock font for the top name/rarity bar
@@ -382,10 +383,10 @@ def draw_premade_card(
     # Fit inside the landscape frame — minimal cropping for landscape images
     fg_fitted = ImageOps.fit(fg.convert("RGBA"), (FRAME_W, FRAME_H), Image.LANCZOS)
     # Neon glow behind the foreground frame
-    apply_neon_glow(bg, MARGIN, FRAME_Y, FRAME_W, FRAME_H)
+    apply_neon_glow(bg, FRAME_X, FRAME_Y, FRAME_W, FRAME_H)
     # Use alpha channel as mask so transparent PNGs composite correctly;
     # for opaque JPEGs the alpha is all-255 so this works in both cases.
-    bg.paste(fg_fitted, (MARGIN, FRAME_Y), mask=fg_fitted)
+    bg.paste(fg_fitted, (FRAME_X, FRAME_Y), mask=fg_fitted)
     fg.close()
     fg_fitted.close()
 
