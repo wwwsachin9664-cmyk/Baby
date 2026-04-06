@@ -58,7 +58,10 @@ artwork_size = [b - a for a, b in zip(*CORNERS)]
 
 title_font = ImageFont.truetype(str(SOURCES_PATH / "ArsenicaTrial-Extrabold.ttf"), 170)
 capacity_name_font = ImageFont.truetype(str(SOURCES_PATH / "Bobby Jones Soft.otf"), 110)
-capacity_description_font = ImageFont.truetype(str(SOURCES_PATH / "OpenSans-Semibold.ttf"), 75)
+try:
+    capacity_description_font = ImageFont.truetype(str(SOURCES_PATH / "Fontspring-DEMO-alergia_remix-bold-iF66c45d3230ef9_1775467503470.otf"), 65)
+except Exception:
+    capacity_description_font = ImageFont.truetype(str(SOURCES_PATH / "OpenSans-Semibold.ttf"), 75)
 stats_font = ImageFont.truetype(str(SOURCES_PATH / "Bobby Jones Soft.otf"), 130)
 credits_font = ImageFont.truetype(str(SOURCES_PATH / "arial.ttf"), 40)
 
@@ -375,7 +378,7 @@ def draw_premade_card(
     # 170px below codename (60px up from the previous 230px gap)
     desc_y = codename_y + 170
     try:
-        desc_font = ImageFont.truetype(str(SOURCES_PATH / "Fontspring-DEMO-alergia_remix-bold-iF66c45d3230ef9.otf"), 65)
+        desc_font = ImageFont.truetype(str(SOURCES_PATH / "Fontspring-DEMO-alergia_remix-bold-iF66c45d3230ef9_1775467503470.otf"), 65)
     except Exception:
         desc_font = nulshock_desc_font
 
