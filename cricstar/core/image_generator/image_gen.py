@@ -385,7 +385,7 @@ def draw_premade_card(
     apply_neon_glow(bg, MARGIN, FRAME_Y, FRAME_W, FRAME_H)
     # Use alpha channel as mask so transparent PNGs composite correctly;
     # for opaque JPEGs the alpha is all-255 so this works in both cases.
-    bg.paste(fg_fitted.convert('RGB'), (MARGIN, FRAME_Y))
+    bg.paste(fg_fitted, (MARGIN, FRAME_Y), mask=fg_fitted)
     fg.close()
     fg_fitted.close()
 
@@ -429,10 +429,10 @@ def draw_premade_card(
 
     desc_lines: list[str] = []
     words = description.split()
-    for j in range(0, len(words), 7):
-        desc_lines.append(" ".join(words[j:j + 7]))
+    for j in range(0, len(words), 5):
+        desc_lines.append(" ".join(words[j:j + 5]))
 
-    for i, line in enumerate(desc_lines[:8]):
+    for i, line in enumerate(desc_lines[:10]):
         draw.text(
             (MARGIN, desc_y + 80 * i),
             line,
