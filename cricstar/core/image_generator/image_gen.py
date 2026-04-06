@@ -382,9 +382,9 @@ def draw_premade_card(
     bar_font     = _font(nulshock, 122)                          # name + rarity
     codename_fnt = _font(nulshock, 70)                           # CODENAME: …
     try:
-        desc_fnt = _font(fontspring, 76)                         # description body
+        desc_fnt = _font(fontspring, 46)                         # description body
     except Exception:
-        desc_fnt = _font(nulshock, 76)
+        desc_fnt = _font(nulshock, 46)
     stat_fnt     = _font(nulshock, 132)                          # stat numbers (200 / 200)
     cred_fnt     = _font(arial, 42, nulshock)                    # credits small text
 
@@ -488,14 +488,8 @@ def draw_premade_card(
             stroke_fill=(0, 0, 0, 255),
         )
 
-    # ── 5. Bottom stats bar ────────────────────────────────────────────────────
-    bar_img = Image.new("RGBA", (CARD_W, BAR_H), (8, 6, 20, 255))
-    bg.paste(bar_img, (0, BAR_Y), mask=bar_img)
-    bar_img.close()
+    # ── 5. Bottom stats bar (no background fill — background shows through) ─────
     draw = ImageDraw.Draw(bg)
-
-    # Thin accent line above the bar
-    draw.rectangle([(0, BAR_Y), (CARD_W, BAR_Y + 3)], fill=(255, 255, 255, 60))
 
     STAT_CY = BAR_Y + BAR_H // 2   # vertical centre of bar
 
@@ -584,19 +578,18 @@ def draw_premade_card(
         stroke_fill=(0, 0, 0, 255),
     )
 
-    # ── Credits — two lines, bottom-left ─────────────────────────────────────
-    draw.text(
-        (MARGIN, BAR_Y + 16),
-        "Created by El Laggron",
-        font=cred_fnt,
-        fill=(200, 200, 215, 255),
-    )
-    draw.text(
-        (MARGIN, BAR_Y + 16 + int(cred_fnt.size * 1.3)),
-        f"Artwork: {artwork_author}",
-        font=cred_fnt,
-        fill=(200, 200, 215, 255),
-    )
+    # ── Credits — two lines, bottom-left (strong stroke for any background) ────
+    cred_y = BAR_Y + 18
+    for cred_line in ("Created by El Laggron", f"Artwork: {artwork_author}"):
+        draw.text(
+            (MARGIN, cred_y),
+            cred_line,
+            font=cred_fnt,
+            fill=(230, 230, 240, 255),
+            stroke_width=3,
+            stroke_fill=(0, 0, 0, 255),
+        )
+        cred_y += int(cred_fnt.size * 1.3)
 
     return bg, {"format": "PNG"}
     
