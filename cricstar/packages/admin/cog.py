@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+import ssl
 import tempfile
 import urllib.request
 from collections import defaultdict
@@ -516,16 +517,27 @@ class Admin(commands.Cog):
                             return True
                 return False
             try:
+                ctx = ssl.create_default_context()
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 req = urllib.request.Request(
                     name_or_url,
-                    headers={"User-Agent": "CricStar-Bot/1.0"},
+                    headers={
+                        "User-Agent": (
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                            "AppleWebKit/537.36 (KHTML, like Gecko) "
+                            "Chrome/124.0.0.0 Safari/537.36"
+                        ),
+                        "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+                    },
                 )
-                with urllib.request.urlopen(req, timeout=15) as resp:
+                with urllib.request.urlopen(req, timeout=20, context=ctx) as resp:
                     data = resp.read(max_bytes)
                 with open(dest, "wb") as f:
                     f.write(data)
                 return True
-            except Exception:
+            except Exception as e:
+                log.warning("_fetch_image failed for %r: %s", name_or_url[:80], e)
                 return False
 
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -751,15 +763,27 @@ class Admin(commands.Cog):
                             return True
                 return False
             try:
+                ctx = ssl.create_default_context()
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
                 req = urllib.request.Request(
-                    name_or_url, headers={"User-Agent": "CricStar-Bot/1.0"}
+                    name_or_url,
+                    headers={
+                        "User-Agent": (
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                            "AppleWebKit/537.36 (KHTML, like Gecko) "
+                            "Chrome/124.0.0.0 Safari/537.36"
+                        ),
+                        "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+                    },
                 )
-                with urllib.request.urlopen(req, timeout=15) as resp:
+                with urllib.request.urlopen(req, timeout=20, context=ctx) as resp:
                     data = resp.read(max_bytes)
                 with open(dest, "wb") as f:
                     f.write(data)
                 return True
-            except Exception:
+            except Exception as e:
+                log.warning("_fetch_image failed for %r: %s", name_or_url[:80], e)
                 return False
 
         if regen:
