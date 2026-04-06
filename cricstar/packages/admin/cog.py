@@ -99,6 +99,32 @@ class SyncView(LayoutView):
         log.info(f"Admin commands removed from guild {interaction.guild.id} by {interaction.user}")
 
 
+def _list_background_presets() -> list[str]:
+    """Return all saved background preset names (without extension)."""
+    bg_dir = Path("admin_panel/media/backgrounds")
+    if not bg_dir.exists():
+        return []
+    presets: list[str] = []
+    for f in sorted(bg_dir.iterdir()):
+        if f.is_file() and f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp", ""):
+            presets.append(f.stem if f.suffix else f.name)
+    return presets
+
+
+async def _background_autocomplete(
+    interaction: discord.Interaction,
+    current: str,
+) -> list[app_commands.Choice[str]]:
+    """Module-level autocomplete for saved background presets."""
+    import asyncio
+    presets = await asyncio.get_event_loop().run_in_executor(None, _list_background_presets)
+    return [
+        app_commands.Choice(name=p, value=p)
+        for p in presets
+        if current.lower() in p.lower()
+    ][:25]
+
+
 async def _event_autocomplete(
     interaction: discord.Interaction,
     current: str,
@@ -418,7 +444,7 @@ class Admin(commands.Cog):
         tradeable="Whether this card can be traded (default True)",
         catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
     )
-    @app_commands.autocomplete(event=_event_autocomplete)
+    @app_commands.autocomplete(event=_event_autocomplete, background=_background_autocomplete)
     async def cardmaker(
         self,
         ctx: commands.Context["CricStarBot"],
@@ -638,6 +664,7 @@ class Admin(commands.Cog):
         tradeable="Change tradeability (leave blank to keep existing)",
         catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
     )
+    @app_commands.autocomplete(background=_background_autocomplete)
     async def editcard(
         self,
         ctx: commands.Context["CricStarBot"],
@@ -1510,5 +1537,88 @@ class Admin(commands.Cog):
                 f"| bet: {'✅' if e.get('bet') else '❌'}"
                 for e in list_emojis()
             ),
+            ephemeral=True,
+        )
+
+    @commands.hybrid_command(name="imageadd")
+    @app_commands.default_permissions(administrator=True)
+    @checks.is_superuser()
+    @app_commands.describe(
+        url="Direct image URL to download (must start with http:// or https://)",
+        pathname="Short name to reference this image later in /cardmaker and /editcard (e.g. blue_stadium)",
+    )
+    async def imageadd(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        url: str,
+        pathname: str,
+    ):
+        """
+        Save a background image from a URL so you can reuse it by name in /cardmaker and /editcard.
+
+        Parameters
+        ----------
+        url: str
+            Direct link to the image (jpg, png, webp supported).
+        pathname: str
+            Short name you'll type in the background field of /cardmaker (e.g. blue_stadium).
+        """
+        url = url.strip()
+        pathname = pathname.strip().replace(" ", "_")
+
+        if not url.startswith(("http://", "https://")):
+            await ctx.send("❌ URL must start with `http://` or `https://`.", ephemeral=True)
+            return
+        if not pathname:
+            await ctx.send("❌ Pathname cannot be empty.", ephemeral=True)
+            return
+
+        await ctx.defer(ephemeral=True)
+
+        bg_dir = Path("admin_panel/media/backgrounds")
+        bg_dir.mkdir(parents=True, exist_ok=True)
+
+        # Detect extension from URL path
+        from urllib.parse import urlparse
+        url_path = urlparse(url).path.lower()
+        ext = ""
+        for candidate_ext in (".jpg", ".jpeg", ".png", ".webp"):
+            if url_path.endswith(candidate_ext):
+                ext = candidate_ext
+                break
+        if not ext:
+            ext = ".jpg"  # default fallback
+
+        save_path = bg_dir / f"{pathname}{ext}"
+
+        def _download() -> bool:
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": "CricStar-Bot/1.0"})
+                with urllib.request.urlopen(req, timeout=15) as resp:
+                    data = resp.read(20 * 1024 * 1024)  # 20 MB limit
+                with open(save_path, "wb") as f:
+                    f.write(data)
+                return True
+            except Exception:
+                return False
+
+        with ThreadPoolExecutor() as pool:
+            ok = await self.bot.loop.run_in_executor(pool, _download)
+
+        if not ok:
+            await ctx.send(
+                f"❌ Failed to download image from the URL. Check the link and try again.",
+                ephemeral=True,
+            )
+            return
+
+        # List current presets for reference
+        all_presets = _list_background_presets()
+        presets_display = ", ".join(f"`{p}`" for p in all_presets) if all_presets else "*none yet*"
+
+        await ctx.send(
+            f"✅ Background image saved as **`{pathname}`**.\n\n"
+            f"Use `{pathname}` in the `background` field of `/cardmaker` or `/editcard`.\n\n"
+            f"**All saved backgrounds:** {presets_display}",
             ephemeral=True,
         )
