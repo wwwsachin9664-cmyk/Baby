@@ -34,6 +34,7 @@ MEDIA_DIR = Path("./admin_panel/media")
 # }
 #
 EVENT_CONFIG_PATH = MEDIA_DIR / "event_config.json"
+NEON_COLORS_PATH = MEDIA_DIR / "neon_colors.json"
 
 WIDTH = 1500
 HEIGHT = 2000
@@ -139,6 +140,34 @@ def apply_neon_glow(
     card.paste(region, (cx, cy), mask=region)
     boosted.close()
     region.close()
+
+
+def load_neon_colors() -> dict:
+    """Load the per-player neon color map from disk."""
+    try:
+        if NEON_COLORS_PATH.exists():
+            return json.loads(NEON_COLORS_PATH.read_text())
+    except Exception:
+        pass
+    return {}
+
+
+def save_neon_color(country: str, color: "tuple | None") -> None:
+    """Persist a neon color for a player, or remove it if color is None."""
+    colors = load_neon_colors()
+    if color is None:
+        colors.pop(country, None)
+    else:
+        colors[country] = list(color)
+    NEON_COLORS_PATH.write_text(json.dumps(colors, indent=2))
+
+
+def get_neon_color(country: str) -> "tuple | None":
+    """Return the stored RGB tuple for a player, or None if not set."""
+    c = load_neon_colors().get(country)
+    if c and len(c) >= 3:
+        return (int(c[0]), int(c[1]), int(c[2]))
+    return None
 
 
 def draw_card(ball_instance: "BallInstance") -> tuple[Image.Image, dict[str, Any]]:
@@ -265,7 +294,9 @@ def draw_card(ball_instance: "BallInstance") -> tuple[Image.Image, dict[str, Any
     )
 
     artwork = Image.open(ball.collection_card).convert("RGBA")
-    apply_neon_glow(image, CORNERS[0][0], CORNERS[0][1], artwork_size[0], artwork_size[1])
+    neon = get_neon_color(ball.country)
+    if neon:
+        apply_neon_glow(image, CORNERS[0][0], CORNERS[0][1], artwork_size[0], artwork_size[1], color=neon)
     image.paste(ImageOps.fit(artwork, artwork_size), CORNERS[0])  # type: ignore
 
     if icon:
@@ -298,6 +329,7 @@ def draw_premade_card(
     ball_score: int,
     artwork_author: str,
     logo_path: "str | Path | None" = None,
+    neon_color: "tuple | None" = None,
 ) -> "tuple[Image.Image, dict[str, Any]]":
     """
     Generate a trading-card-style cricket card with Nulshock Bold font.
@@ -382,8 +414,9 @@ def draw_premade_card(
     fg = Image.open(str(foreground_path)).convert("RGBA")
     # Fit inside the landscape frame — minimal cropping for landscape images
     fg_fitted = ImageOps.fit(fg.convert("RGBA"), (FRAME_W, FRAME_H), Image.LANCZOS)
-    # Neon glow behind the foreground frame
-    apply_neon_glow(bg, FRAME_X, FRAME_Y, FRAME_W, FRAME_H)
+    # Neon glow behind the foreground frame — only when a color is set
+    if neon_color:
+        apply_neon_glow(bg, FRAME_X, FRAME_Y, FRAME_W, FRAME_H, color=neon_color)
     # Use alpha channel as mask so transparent PNGs composite correctly;
     # for opaque JPEGs the alpha is all-255 so this works in both cases.
     bg.paste(fg_fitted, (FRAME_X, FRAME_Y), mask=fg_fitted)

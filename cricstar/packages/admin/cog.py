@@ -15,7 +15,7 @@ from discord.ui import ActionRow, Button, Container, Section, TextDisplay
 
 from cricstar.core.bot import impersonations
 from cricstar.core.discord import LayoutView
-from cricstar.core.image_generator.image_gen import draw_premade_card
+from cricstar.core.image_generator.image_gen import draw_premade_card, get_neon_color, save_neon_color
 from cricstar.core.utils import checks
 from cricstar.core.utils.buttons import ConfirmChoiceView
 from cricstar.core.utils.menus import (
@@ -551,6 +551,7 @@ class Admin(commands.Cog):
                 return draw_premade_card(
                     bg_path, fg_path, card_name, codename, description,
                     rarity, bat_score, ball_score, artwork_author, logo_path,
+                    neon_color=get_neon_color(player_name),
                 )
 
             with ThreadPoolExecutor() as pool:
@@ -793,6 +794,7 @@ class Admin(commands.Cog):
                     return draw_premade_card(
                         bg_path, fg_path, _card_name, _codename, _description,
                         _rarity, _bat, _ball, _author, logo_path,
+                        neon_color=get_neon_color(player_name),
                     )
 
                 with ThreadPoolExecutor() as pool:
@@ -1354,3 +1356,80 @@ class Admin(commands.Cog):
                 f"To clear impersonation, run `{ctx.prefix}admin impersonate` again.",
                 ephemeral=True,
             )
+
+    # ── 15 neon colours available for /admincolorset ──────────────────────────
+    _NEON_COLOR_CHOICES = [
+        app_commands.Choice(name="⚡ Electric Blue",   value="0064FF"),
+        app_commands.Choice(name="💎 Neon Cyan",       value="00D2FF"),
+        app_commands.Choice(name="☘️ Neon Green",       value="00FF64"),
+        app_commands.Choice(name="⭐ Neon Yellow",      value="FFFF00"),
+        app_commands.Choice(name="🔥 Neon Orange",     value="FF8C00"),
+        app_commands.Choice(name="❤️ Neon Red",         value="FF0050"),
+        app_commands.Choice(name="🌸 Hot Pink",         value="FF1493"),
+        app_commands.Choice(name="🔮 Neon Purple",      value="B400FF"),
+        app_commands.Choice(name="💜 Neon Magenta",     value="FF00C8"),
+        app_commands.Choice(name="🌟 Electric Violet",  value="8A2BE2"),
+        app_commands.Choice(name="🍀 Neon Lime",        value="96FF00"),
+        app_commands.Choice(name="🌊 Neon Teal",        value="00FFC8"),
+        app_commands.Choice(name="🏆 Gold",             value="FFC800"),
+        app_commands.Choice(name="🌺 Neon Coral",       value="FF5050"),
+        app_commands.Choice(name="❄️ Ice Blue",          value="64C8FF"),
+    ]
+
+    @commands.hybrid_command(name="admincolorset")
+    @checks.is_superuser()
+    @app_commands.describe(
+        player_name="Select the cricketer to set the neon glow for",
+        neon_color="Choose one of 15 neon colours — applies as a glow around the card foreground",
+    )
+    @app_commands.autocomplete(player_name=_player_name_autocomplete)
+    @app_commands.choices(neon_color=_NEON_COLOR_CHOICES)
+    async def admincolorset(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        player_name: str,
+        neon_color: app_commands.Choice[str],
+    ):
+        """
+        Set a neon glow colour around a cricketer's card foreground.
+
+        The glow is sized automatically to match the foreground frame and is
+        applied the next time the card is regenerated via /editcard or /cardmaker.
+
+        Parameters
+        ----------
+        player_name: str
+            The cricketer's name (autocomplete from the database).
+        neon_color: app_commands.Choice[str]
+            One of 15 neon colours to apply as the foreground glow.
+        """
+        # Find the ball in the database
+        ball = None
+        for b in balls_cache.values():
+            if b.country.lower() == player_name.lower():
+                ball = b
+                break
+
+        if ball is None:
+            await ctx.send(
+                f"❌ No cricketer found with the name **{player_name}**. "
+                "Use the autocomplete to pick a valid name.",
+                ephemeral=True,
+            )
+            return
+
+        # Parse hex value → RGB tuple
+        hex_val = neon_color.value
+        r = int(hex_val[0:2], 16)
+        g = int(hex_val[2:4], 16)
+        b_val = int(hex_val[4:6], 16)
+        color = (r, g, b_val)
+
+        # Persist to disk
+        save_neon_color(ball.country, color)
+
+        await ctx.send(
+            f"✅ Neon colour **{neon_color.name}** set for **{ball.country}**.\n"
+            f"Run `/editcard` on this player to bake the glow into their premade card.",
+            ephemeral=True,
+        )
