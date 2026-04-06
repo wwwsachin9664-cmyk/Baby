@@ -437,7 +437,7 @@ class Admin(commands.Cog):
         rarity="Value shown on card badge (e.g. 50.0) — cosmetic only",
         spawn_chance="Spawn probability 0–100% — set to 0 to disable random spawning",
         artwork_author="Name of the artwork creator",
-        background="Preset name (e.g. base_background) or image URL",
+        background="Preset name (e.g. custom_bg) or image URL",
         foreground="Player image URL or preset name (saved by player name after first use)",
         logo_url="Optional team/event logo URL shown on the card",
         event="Assign card to a special event (always spawns with it)",
@@ -651,7 +651,7 @@ class Admin(commands.Cog):
     @app_commands.describe(
         player_name="Exact name of the cricketer to edit (use the name stored in DB)",
         display_name="Change the name shown on the card header (leave blank to keep existing)",
-        background="Preset name or URL (leave blank to keep / use base_background)",
+        background="Preset name or URL (leave blank to keep / use custom_bg)",
         foreground="Player image URL or preset name (leave blank to use saved preset)",
         codename="New codename shown on card (leave blank to keep existing)",
         description="New description text, max 256 characters (leave blank to keep existing)",
@@ -733,7 +733,7 @@ class Admin(commands.Cog):
         is_premade = wild_card_name.startswith("premade_")
         regen = want_image or is_premade
 
-        bg_source = background.strip() or "base_background"
+        bg_source = background.strip() or "custom_bg"
         fg_source = foreground.strip() or slug
 
         filename = f"premade_{slug}.png"
