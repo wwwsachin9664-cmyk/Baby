@@ -59,6 +59,7 @@ DEFAULT_PACKAGES = (
     ("info", "cricstar.packages.info"),
     ("players", "cricstar.packages.players"),
     ("trade", "cricstar.packages.trade"),
+    ("bet", "cricstar.packages.bet"),
     ("setspawn", "cricstar.packages.setspawn"),
     ("daily", "cricstar.packages.daily"),
     ("upgrade", "cricstar.packages.upgrade"),
