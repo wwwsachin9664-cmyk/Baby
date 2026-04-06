@@ -338,8 +338,7 @@ class Admin(commands.Cog):
                     ephemeral=True,
                 )
             return
-
-        entries: list[TextDisplay] = []
+            entries: list[TextDisplay] = []
         for guild in guilds:
             if config := await GuildConfig.objects.aget_or_none(guild_id=guild.id):
                 spawn_enabled = config.enabled and config.guild_id
@@ -562,7 +561,7 @@ class Admin(commands.Cog):
             image.close()
 
             ball = await Ball.objects.acreate(
-                country=card_name,
+                country=player_name,
                 health=bat_score,
                 attack=ball_score,
                 rarity=spawn_chance / 100,
@@ -615,7 +614,7 @@ class Admin(commands.Cog):
                     f"✅ **{player_name}** card created and saved as `{filename}`, "
                     f"but preview upload failed: {send_err}"
                 )
-
+                
     @commands.hybrid_command(name="editcard")
     @checks.is_superuser()
     @app_commands.describe(
@@ -838,7 +837,7 @@ class Admin(commands.Cog):
         if catch_name.strip():
             ball.catch_names = catch_name.strip().lower()
             changed_fields.append("catch_names")
-
+            
         if not changed_fields:
             await ctx.send(
                 "⚠️ Nothing to change — you didn't supply any new values.",
@@ -1182,7 +1181,7 @@ class Admin(commands.Cog):
             hidden=hidden,
             credits=credits.strip() or None,
         )
-
+            
         # Add to live cache so it's usable immediately without restart
         specials_cache[special.id] = special
 

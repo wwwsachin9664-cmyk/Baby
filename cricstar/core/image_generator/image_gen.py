@@ -334,10 +334,10 @@ def draw_premade_card(
     # Paste foreground image inside the frame
     fg = Image.open(str(foreground_path)).convert("RGBA")
     # Fit inside the landscape frame — minimal cropping for landscape images
-    fg_fitted = ImageOps.fit(fg, (FRAME_W, FRAME_H), Image.LANCZOS).convert("RGBA")
+    fg_fitted = ImageOps.fit(fg.convert("RGBA"), (FRAME_W, FRAME_H), Image.LANCZOS)
     # Use alpha channel as mask so transparent PNGs composite correctly;
     # for opaque JPEGs the alpha is all-255 so this works in both cases.
-    bg.paste(fg_fitted, (MARGIN, FRAME_Y), mask=fg_fitted.split()[3])
+    bg.paste(fg_fitted.convert('RGB'), (MARGIN, FRAME_Y))
     fg.close()
     fg_fitted.close()
 
@@ -374,17 +374,23 @@ def draw_premade_card(
     # ── 4c. Description ───────────────────────────────────────────────────────
     # 170px below codename (60px up from the previous 230px gap)
     desc_y = codename_y + 170
+    try:
+        desc_font = ImageFont.truetype(str(SOURCES_PATH / "Fontspring-DEMO-alergia_remix-bold-iF66c45d3230ef9.otf"), 65)
+    except Exception:
+        desc_font = nulshock_desc_font
+
     desc_lines: list[str] = []
-    for raw_line in description.splitlines():
-        desc_lines.extend(textwrap.wrap(raw_line, width=50))
+    words = description.split()
+    for j in range(0, len(words), 7):
+        desc_lines.append(" ".join(words[j:j + 7]))
 
     for i, line in enumerate(desc_lines[:8]):
         draw.text(
-            (MARGIN, desc_y + 52 * i),
+            (MARGIN, desc_y + 80 * i),
             line,
-            font=nulshock_desc_font,
+            font=desc_font,
             fill=(255, 255, 255, 255),
-            stroke_width=2,
+            stroke_width=1,
             stroke_fill=(0, 0, 0, 255),
         )
 
@@ -483,3 +489,4 @@ def draw_premade_card(
     )
 
     return bg, {"format": "PNG"}
+    

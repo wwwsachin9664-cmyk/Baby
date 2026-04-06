@@ -2,17 +2,13 @@ from __future__ import annotations
 
 import logging
 import random
-import re as _re
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
-from cricstar.core.image_generator.image_gen import draw_premade_card
 from bd_models.models import Ball
 from bd_models.models import balls as balls_cache
 
@@ -104,50 +100,5 @@ class Upgrade(commands.Cog):
         bowl_part = f"**Bowl** by **+{bowl_gain}**" if bowl_gain > 0 else "**Bowl** unchanged"
         msg = f"{ball_id_str} **{ball.country}** increased its {bat_part}! {bowl_part}!"
 
-        # Regenerate premade card if one exists
-        card_file: discord.File | None = None
-        wild_card_name = ball.wild_card.name if ball.wild_card else ""
-        is_premade = wild_card_name.startswith("premade_")
-
-        if is_premade:
-            media_dir = Path("admin_panel/media")
-            backgrounds_dir = media_dir / "backgrounds"
-            foregrounds_dir = media_dir / "foregrounds"
-            slug = _re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
-            fg_preset = foregrounds_dir / slug
-
-            bg_candidates = [
-                backgrounds_dir / "base_background.jpg",
-                backgrounds_dir / "base_background.png",
-            ]
-            bg_path_actual: Path | None = next((p for p in bg_candidates if p.exists()), None)
-
-            if bg_path_actual and fg_preset.exists():
-                try:
-                    def _regen():
-                        return draw_premade_card(
-                            player_name=ball.country,
-                            rarity=round(ball.rarity * 100, 2),
-                            codename=ball.capacity_name or "",
-                            description=ball.capacity_description or "",
-                            bat_score=ball.health,
-                            ball_score=ball.attack,
-                            artwork_author=ball.credits or "",
-                            background_path=bg_path_actual,
-                            foreground_path=fg_preset,
-                        )
-
-                    with ThreadPoolExecutor() as pool:
-                        image, img_kwargs = await self.bot.loop.run_in_executor(pool, _regen)
-
-                    card_path = media_dir / wild_card_name
-                    image.save(str(card_path), **img_kwargs)
-                    image.close()
-                    card_file = discord.File(str(card_path), filename=wild_card_name)
-                except Exception as exc:
-                    log.error(f"upgrade: card regen failed for {player_name}: {exc}")
-
-        if card_file:
-            await interaction.followup.send(content=msg, file=card_file)
-        else:
-            await interaction.followup.send(content=msg)
+        await interaction.followup.send(content=msg)
+        
