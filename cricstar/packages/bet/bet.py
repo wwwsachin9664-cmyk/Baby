@@ -469,12 +469,13 @@ class BetInstance(LayoutView):
 
     async def start(self, channel: discord.abc.Messageable) -> discord.Message:
         """Build the initial view and send it."""
-        await self._build_view()
-        msg = await channel.send(
+        # Send the mention as a plain message first (Components V2 doesn't allow content + view)
+        await channel.send(
             content=f"Hey {self.bettor2.user.mention}, "
-                    f"**{self.bettor1.user.display_name}** is proposing a CricStar Bet with you!",
-            view=self,
+                    f"**{self.bettor1.user.display_name}** is proposing a CricStar Bet with you!"
         )
+        await self._build_view()
+        msg = await channel.send(view=self)
         self.message = msg
         return msg
 
