@@ -443,7 +443,7 @@ def draw_premade_card(
         draw = ImageDraw.Draw(bg)
 
     # ── 4b. Codename ──────────────────────────────────────────────────────────
-    codename_y = INFO_Y + 22
+    codename_y = INFO_Y + 70  # +48px (~½ inch) lower than original INFO_Y + 22
     draw.text(
         (MARGIN, codename_y),
         f"CODENAME: {codename.upper()}",
