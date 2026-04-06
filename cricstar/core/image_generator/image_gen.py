@@ -380,6 +380,19 @@ def draw_premade_card(
     # ── 3. Player image: landscape frame ─────────────────────────────────────
     # Paste foreground image inside the frame
     fg = Image.open(str(foreground_path)).convert("RGBA")
+    # Auto-trim any black (or near-black) border the source PNG may have baked in.
+    # Build a grayscale version, threshold at 20 to catch pure black edges, then
+    # crop the original to that bounding box before fitting.
+    try:
+        gray = fg.convert("L")
+        bright_mask = gray.point(lambda px: 255 if px > 20 else 0)
+        bbox = bright_mask.getbbox()
+        if bbox:
+            fg = fg.crop(bbox)
+        gray.close()
+        bright_mask.close()
+    except Exception:
+        pass
     # Fit inside the landscape frame — minimal cropping for landscape images
     fg_fitted = ImageOps.fit(fg.convert("RGBA"), (FRAME_W, FRAME_H), Image.LANCZOS)
     # Neon glow behind the foreground frame
