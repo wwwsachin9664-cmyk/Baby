@@ -24,7 +24,7 @@ from cricstar.core.utils.transformers import (
 from bd_models.models import BallInstance, Player
 from settings.models import settings
 
-from .bet import BetInstance, BettingUser
+from .bet import BetInstance, BettingUser  # noqa: F401
 from .errors import BetError
 
 if TYPE_CHECKING:
@@ -220,9 +220,7 @@ class Bet(commands.GroupCog, name="bet"):
         self.bets[interaction.channel.id][user.id] = bet
 
         try:
-            await bet.bettor1.refresh_container()
-            await bet.bettor2.refresh_container()
-            bet.message = await interaction.channel.send(view=bet)  # type: ignore
+            await bet.start(interaction.channel)  # type: ignore
         except Exception:
             del self.bets[interaction.channel.id][interaction.user.id]
             del self.bets[interaction.channel.id][user.id]

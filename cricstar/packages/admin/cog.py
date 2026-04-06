@@ -155,6 +155,7 @@ class Admin(commands.Cog):
 
     @commands.hybrid_group()
     @app_commands.guilds(0)
+    @app_commands.default_permissions(administrator=True)
     @checks.is_staff()
     async def admin(self, ctx: commands.Context):
         """
@@ -398,6 +399,7 @@ class Admin(commands.Cog):
         await ctx.send(view=view, ephemeral=True)
 
     @commands.hybrid_command(name="cardmaker")
+    @app_commands.default_permissions(administrator=True)
     @checks.is_superuser()
     @app_commands.describe(
         player_name="Unique identifier name of the cricketer (used for DB/file lookup)",
@@ -618,6 +620,7 @@ class Admin(commands.Cog):
                 )
                 
     @commands.hybrid_command(name="editcard")
+    @app_commands.default_permissions(administrator=True)
     @checks.is_superuser()
     @app_commands.describe(
         player_name="Exact name of the cricketer to edit (use the name stored in DB)",
@@ -901,6 +904,7 @@ class Admin(commands.Cog):
         return matches[:25]
 
     @commands.hybrid_command(name="setspawnimg")
+    @app_commands.default_permissions(administrator=True)
     @checks.is_superuser()
     @app_commands.describe(
         player_name="Select the cricketer to update",
@@ -1074,6 +1078,7 @@ class Admin(commands.Cog):
             )
 
     @commands.hybrid_command(name="createevent")
+    @app_commands.default_permissions(administrator=True)
     @checks.is_superuser()
     @app_commands.describe(
         name="Event name (e.g. IPL 2026, T20 World Cup) — must be unique",
@@ -1216,6 +1221,7 @@ class Admin(commands.Cog):
         await ctx.send("\n".join(summary_lines), ephemeral=True)
 
     @commands.hybrid_command(name="removecard")
+    @app_commands.default_permissions(administrator=True)
     @commands.is_owner()
     @app_commands.describe(
         player_name="Name of the cricketer to permanently delete (autocomplete available)",
@@ -1378,6 +1384,7 @@ class Admin(commands.Cog):
     ]
 
     @commands.hybrid_command(name="admincolorset")
+    @app_commands.default_permissions(administrator=True)
     @checks.is_superuser()
     @app_commands.describe(
         player_name="Select the cricketer to set the neon glow for",
@@ -1436,6 +1443,7 @@ class Admin(commands.Cog):
         )
 
     @commands.hybrid_command(name="addemoji")
+    @app_commands.default_permissions(administrator=True)
     @checks.is_superuser()
     @app_commands.describe(
         emoji_id="Discord custom emoji ID (numbers only) or a single unicode emoji character",
