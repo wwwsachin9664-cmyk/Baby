@@ -332,242 +332,254 @@ def draw_premade_card(
     neon_color: "tuple | None" = None,
 ) -> "tuple[Image.Image, dict[str, Any]]":
     """
-    Generate a trading-card-style cricket card with Nulshock Bold font.
+    Generate a cricket trading card.
 
-    Layout (1500 × 2000):
-    ┌────────────────────────────────────────┐
-    │  PLAYER NAME (left)    RARITY (right)  │  ← 115 px
-    │ ┌──────────────────────────────────┐   │
-    │ │  landscape player image frame    │   │  ← 760 px
-    │ └──────────────────────────────────┘   │
-    │  CODENAME: …                           │
-    │  description text                      │
-    │                                        │
-    │  200 BAT              209 BALL          │
-    │  Created by El Laggron • Artwork: …    │
-    └────────────────────────────────────────┘
+    Layout (1428 × 2000 — portrait):
+    ┌─────────────────────────────────────────┐
+    │  PLAYER NAME (white, left)  RARITY (gold, right)  │  ← 130 px top bar
+    │ ┌─────────────────────────────────────┐ │
+    │ │       foreground player image       │ │  ← 710 px image frame
+    │ └─────────────────────────────────────┘ │
+    │  CODENAME: …   (white, 70px)            │
+    │  description…  (white, 76px)            │
+    │                                         │
+    │  Created by… / Artwork: …   [bat] 200  [ball] 200  │
+    └─────────────────────────────────────────┘
     """
 
-    # ── Layout constants ──────────────────────────────────────────────────────
-    MARGIN = 28                          # card edge → text/info margin
-    TOP_BAR_H = 160                      # name + rarity strip (tall enough for 120px font)
-    FRAME_Y = TOP_BAR_H + 18             # small gap between name bar and frame
-    FRAME_H = 680                        # frame height — Dembélé-style proportions
-    FRAME_W = WIDTH - 80                 # 40 px margin each side, like a picture frame
-    FRAME_X = 40                         # left margin
-    FRAME_BOTTOM = FRAME_Y + FRAME_H    # ≈ 858
-    INFO_Y = FRAME_BOTTOM + 18          # info panel starts here
-    # Bottom bar constants are defined inline in section 5
+    # ── Canvas & layout constants ─────────────────────────────────────────────
+    CARD_W   = 1428
+    CARD_H   = 2000
+    MARGIN   = 32                          # edge → content margin
 
-    # Smaller Nulshock font for the top name/rarity bar
+    TOP_BAR_H  = 130                       # height of name / rarity strip
+    FRAME_X    = MARGIN
+    FRAME_Y    = TOP_BAR_H + 12           # gap between bar and frame
+    FRAME_W    = CARD_W - 2 * MARGIN      # 1364 px
+    FRAME_H    = 716                       # frame height
+    FRAME_BOTTOM = FRAME_Y + FRAME_H      # ≈ 858
+
+    INFO_Y     = FRAME_BOTTOM + 36        # where text panel begins
+    CODENAME_Y = INFO_Y                   # codename text baseline (top)
+    DESC_Y     = CODENAME_Y + 108         # description text (below codename)
+
+    BAR_H  = 180                          # bottom stats bar height
+    BAR_Y  = CARD_H - BAR_H              # 1820
+
+    # ── Fonts (loaded locally so sizes are independent) ───────────────────────
+    nulshock = str(SOURCES_PATH / "Nulshock-Bold.otf")
+    fontspring = str(SOURCES_PATH / "Fontspring-DEMO-alergia_remix-bold-iF66c45d3230ef9_1775467503470.otf")
+    arial = str(SOURCES_PATH / "arial.ttf")
+
+    def _font(path: str, size: int, fallback_path: str | None = None) -> ImageFont.FreeTypeFont:
+        try:
+            return ImageFont.truetype(path, size)
+        except Exception:
+            if fallback_path:
+                return ImageFont.truetype(fallback_path, size)
+            return ImageFont.load_default()
+
+    bar_font     = _font(nulshock, 122)                          # name + rarity
+    codename_fnt = _font(nulshock, 70)                           # CODENAME: …
     try:
-        bar_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 118)
+        desc_fnt = _font(fontspring, 76)                         # description body
     except Exception:
-        bar_font = nulshock_title_font
+        desc_fnt = _font(nulshock, 76)
+    stat_fnt     = _font(nulshock, 132)                          # stat numbers (200 / 200)
+    cred_fnt     = _font(arial, 42, nulshock)                    # credits small text
 
-    # ── 1. Background (full card) ─────────────────────────────────────────────
+    # ── 1. Background: open + resize to card dimensions ───────────────────────
     bg = Image.open(str(background_path)).convert("RGBA")
-    bg = ImageOps.fit(bg, (WIDTH, HEIGHT), Image.LANCZOS)
-
+    bg = ImageOps.fit(bg, (CARD_W, CARD_H), Image.LANCZOS)
     draw = ImageDraw.Draw(bg)
 
-    # ── 2. Name + rarity drawn directly on background (no dark overlay) ───────
+    # ── 2. Top bar: player name (left, white) + rarity (right, gold) ─────────
     rarity_str = str(rarity)
+    name_text  = player_name.upper()
 
-    # Rarity — plain gold text, right-aligned, with strong black outline so it
-    # is readable on any background without a strip behind it
+    # Rarity — right-aligned, gold
     draw.text(
-        (WIDTH - MARGIN, TOP_BAR_H // 2),
+        (CARD_W - MARGIN, TOP_BAR_H // 2),
         rarity_str,
         font=bar_font,
-        fill=(255, 210, 0, 255),
+        fill=(255, 184, 0, 255),
         anchor="rm",
-        stroke_width=6,
-        stroke_fill=(0, 0, 0, 230),
+        stroke_width=5,
+        stroke_fill=(0, 0, 0, 240),
     )
 
-    # Player name — left-aligned, white, dynamically shrunk to fit beside rarity
-    name_text = player_name.upper()
-    rarity_w = int(bar_font.getlength(rarity_str)) + MARGIN + 24
-    avail_name_w = WIDTH - 2 * MARGIN - rarity_w
-    if bar_font.getlength(name_text) <= avail_name_w:
-        name_font = bar_font
+    # Player name — left-aligned, white; auto-shrink if it would overlap rarity
+    rarity_w = int(bar_font.getlength(rarity_str)) + MARGIN + 20
+    avail_w  = CARD_W - 2 * MARGIN - rarity_w
+    if bar_font.getlength(name_text) <= avail_w:
+        name_fnt = bar_font
     else:
-        scale = avail_name_w / bar_font.getlength(name_text)
-        scaled_size = max(48, int(118 * scale))
-        try:
-            name_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), scaled_size)
-        except Exception:
-            name_font = bar_font
+        scale    = avail_w / bar_font.getlength(name_text)
+        name_fnt = _font(nulshock, max(48, int(122 * scale)))
     draw.text(
         (MARGIN, TOP_BAR_H // 2),
         name_text,
-        font=name_font,
+        font=name_fnt,
         fill=(255, 255, 255, 255),
         anchor="lm",
-        stroke_width=6,
-        stroke_fill=(0, 0, 0, 230),
+        stroke_width=5,
+        stroke_fill=(0, 0, 0, 240),
     )
 
-    # ── 3. Player image: landscape frame ─────────────────────────────────────
-    # Paste foreground image inside the frame
+    # ── 3. Image frame — white border outline + foreground image ─────────────
+    BORDER = 5
+    # White rectangle border drawn BEFORE the image so it sits behind
+    draw.rectangle(
+        [(FRAME_X - BORDER, FRAME_Y - BORDER),
+         (FRAME_X + FRAME_W + BORDER, FRAME_BOTTOM + BORDER)],
+        outline=(255, 255, 255, 255),
+        width=BORDER,
+    )
+
     fg = Image.open(str(foreground_path)).convert("RGBA")
-    # Fit inside the landscape frame — minimal cropping for landscape images
-    fg_fitted = ImageOps.fit(fg.convert("RGBA"), (FRAME_W, FRAME_H), Image.LANCZOS)
-    # Neon glow behind the foreground frame — only when a color is set
+    fg_fitted = ImageOps.fit(fg, (FRAME_W, FRAME_H), Image.LANCZOS)
     if neon_color:
         apply_neon_glow(bg, FRAME_X, FRAME_Y, FRAME_W, FRAME_H, color=neon_color)
-    # Use alpha channel as mask so transparent PNGs composite correctly;
-    # for opaque JPEGs the alpha is all-255 so this works in both cases.
     bg.paste(fg_fitted, (FRAME_X, FRAME_Y), mask=fg_fitted)
     fg.close()
     fg_fitted.close()
 
-    # ── 4. Info section (drawn directly on background — NO dark overlay) ────────
+    # Re-acquire draw handle after paste operations
     draw = ImageDraw.Draw(bg)
 
-    # ── 4a. Logo (top-right of info panel, optional) ──────────────────────────
-    logo_x = WIDTH - MARGIN
+    # ── 4a. Logo (optional — top-right of info panel) ─────────────────────────
     if logo_path and os.path.exists(str(logo_path)):
         try:
-            logo = Image.open(str(logo_path)).convert("RGBA")
-            logo_size = 130
-            logo_fitted = ImageOps.fit(logo, (logo_size, logo_size))
-            logo_fitted = logo_fitted.convert("RGBA")
-            bg.paste(logo_fitted, (WIDTH - logo_size - MARGIN, INFO_Y + 16), mask=logo_fitted)
-            logo_x = WIDTH - logo_size - MARGIN - 10
+            logo      = Image.open(str(logo_path)).convert("RGBA")
+            logo_size = 120
+            logo_fit  = ImageOps.fit(logo, (logo_size, logo_size))
+            bg.paste(logo_fit, (CARD_W - logo_size - MARGIN, INFO_Y + 10), mask=logo_fit)
             logo.close()
-            logo_fitted.close()
+            logo_fit.close()
+            draw = ImageDraw.Draw(bg)
         except Exception:
             pass
-        draw = ImageDraw.Draw(bg)
 
-    # ── 4b. Codename ──────────────────────────────────────────────────────────
-    codename_y = INFO_Y + 70  # +48px (~½ inch) lower than original INFO_Y + 22
+    # ── 4b. Codename — white bold text ────────────────────────────────────────
     draw.text(
-        (MARGIN, codename_y),
+        (MARGIN, CODENAME_Y),
         f"CODENAME: {codename.upper()}",
-        font=nulshock_codename_font,
-        fill=(255, 210, 0, 255),
-        stroke_width=4,
+        font=codename_fnt,
+        fill=(255, 255, 255, 255),
+        stroke_width=3,
         stroke_fill=(0, 0, 0, 255),
     )
 
-    # ── 4c. Description ───────────────────────────────────────────────────────
-    # 170px below codename (60px up from the previous 230px gap)
-    desc_y = codename_y + 170
-    try:
-        desc_font = ImageFont.truetype(str(SOURCES_PATH / "Fontspring-DEMO-alergia_remix-bold-iF66c45d3230ef9_1775467503470.otf"), 65)
-    except Exception:
-        desc_font = nulshock_desc_font
-
+    # ── 4c. Description — slightly larger white text, word-wrapped ────────────
+    # Wrap by character width to fit the card at desc_fnt size
+    wrap_width = int((FRAME_W) / (desc_fnt.size * 0.58))
     desc_lines: list[str] = []
-    words = description.split()
-    for j in range(0, len(words), 5):
-        desc_lines.append(" ".join(words[j:j + 5]))
+    for raw_line in description.splitlines():
+        desc_lines.extend(textwrap.wrap(raw_line, width=max(10, wrap_width)) or [""])
 
-    for i, line in enumerate(desc_lines[:10]):
+    LINE_H = int(desc_fnt.size * 1.28)   # line spacing
+    for i, line in enumerate(desc_lines[:8]):
         draw.text(
-            (MARGIN, desc_y + 80 * i),
+            (MARGIN, DESC_Y + LINE_H * i),
             line,
-            font=desc_font,
+            font=desc_fnt,
             fill=(255, 255, 255, 255),
-            stroke_width=1,
+            stroke_width=2,
             stroke_fill=(0, 0, 0, 255),
         )
 
-    # ── 5. Bottom stats + credits bar (Dembele style) ─────────────────────────
-    # Solid darker strip at the very bottom of the card
-    BAR_H = 120
-    BAR_Y = HEIGHT - BAR_H
-    bottom_bar = Image.new("RGBA", (WIDTH, BAR_H), (6, 5, 18, 255))
-    bg.paste(bottom_bar, (0, BAR_Y), mask=bottom_bar)
-    bottom_bar.close()
+    # ── 5. Bottom stats bar ────────────────────────────────────────────────────
+    bar_img = Image.new("RGBA", (CARD_W, BAR_H), (8, 6, 20, 255))
+    bg.paste(bar_img, (0, BAR_Y), mask=bar_img)
+    bar_img.close()
     draw = ImageDraw.Draw(bg)
 
-    # Thin separator line above the bar
-    draw.rectangle([(0, BAR_Y), (WIDTH, BAR_Y + 3)], fill=(120, 90, 220, 180))
+    # Thin accent line above the bar
+    draw.rectangle([(0, BAR_Y), (CARD_W, BAR_Y + 3)], fill=(255, 255, 255, 60))
 
-    # Stat numbers font — smaller than before, matching Dembele proportions
-    try:
-        stat_font = ImageFont.truetype(str(SOURCES_PATH / "Nulshock-Bold.otf"), 88)
-    except Exception:
-        stat_font = nulshock_codename_font
+    # Vertically-centred row inside the bar
+    ICON_SZ = 70
+    STAT_CY  = BAR_Y + BAR_H // 2          # vertical centre of bar
+    ICON_TOP = STAT_CY - ICON_SZ // 2      # top of icons
 
-    ICON = 52          # icon square size
-    STAT_Y = BAR_Y + (BAR_H - ICON) // 2   # vertically centred in bar
-
-    # ── BAT stat: icon + number, left half of stats area ─────────────────────
-    # Bat positions (Dembele: ❤️342 sits around 40% from left)
-    bat_ix = 470
-    bat_iy = STAT_Y
-    # Bat blade
+    # ── Bat icon (drawn) ───────────────────────────────────────────────────────
+    bat_ix = 580
+    bat_iy = ICON_TOP
+    blade_w, blade_h = ICON_SZ - 10, ICON_SZ - 18
+    handle_w = 10
+    handle_h = 22
+    hx = bat_ix + (ICON_SZ - 10) // 2 - handle_w // 2
+    # Blade
     draw.rounded_rectangle(
-        [(bat_ix, bat_iy), (bat_ix + ICON, bat_iy + ICON - 14)],
-        radius=10,
-        fill=(200, 80, 60, 235),
-        outline=(237, 115, 101, 255),
+        [(bat_ix, bat_iy), (bat_ix + blade_w, bat_iy + blade_h)],
+        radius=12,
+        fill=(210, 90, 60, 240),
+        outline=(237, 120, 100, 255),
         width=3,
     )
-    # Bat handle
-    hx = bat_ix + ICON // 2 - 4
+    # Handle
     draw.rounded_rectangle(
-        [(hx, bat_iy + ICON - 16), (hx + 8, bat_iy + ICON + 8)],
-        radius=3,
-        fill=(160, 60, 40, 230),
-        outline=(237, 115, 101, 200),
+        [(hx, bat_iy + blade_h - 2), (hx + handle_w, bat_iy + blade_h + handle_h)],
+        radius=4,
+        fill=(160, 55, 35, 230),
+        outline=(220, 100, 75, 200),
         width=2,
     )
     draw.text(
-        (bat_ix + ICON + 10, STAT_Y - 4),
+        (bat_ix + ICON_SZ + 8, STAT_CY),
         str(bat_score),
-        font=stat_font,
+        font=stat_fnt,
         fill=(237, 115, 101, 255),
-        stroke_width=2,
+        anchor="lm",
+        stroke_width=3,
         stroke_fill=(0, 0, 0, 255),
     )
 
-    # ── BALL stat: icon + number, right half of stats area ───────────────────
-    ball_ix = 960
-    ball_iy = STAT_Y + 2
-    ball_cx = ball_ix + ICON // 2
-    ball_cy = ball_iy + ICON // 2
-    ball_r = ICON // 2
+    # ── Ball icon (drawn) ─────────────────────────────────────────────────────
+    ball_ix = 1000
+    ball_iy = ICON_TOP
+    ball_cx = ball_ix + ICON_SZ // 2
+    ball_cy = ball_iy + ICON_SZ // 2
+    ball_r  = ICON_SZ // 2
     draw.ellipse(
-        [(ball_ix, ball_iy), (ball_ix + ICON, ball_iy + ICON)],
-        fill=(180, 30, 30, 235),
-        outline=(252, 194, 76, 255),
+        [(ball_ix, ball_iy), (ball_ix + ICON_SZ, ball_iy + ICON_SZ)],
+        fill=(210, 210, 215, 240),
+        outline=(180, 180, 185, 255),
         width=3,
     )
+    # Seam lines
     draw.arc(
-        [(ball_cx - ball_r + 5, ball_cy - ball_r + 3), (ball_cx + 7, ball_cy + ball_r - 3)],
-        start=200, end=340, fill=(255, 255, 255, 200), width=3,
+        [(ball_cx - ball_r + 8, ball_cy - ball_r + 4),
+         (ball_cx + 6, ball_cy + ball_r - 4)],
+        start=200, end=340, fill=(160, 160, 165, 230), width=4,
     )
     draw.arc(
-        [(ball_cx - 7, ball_cy - ball_r + 3), (ball_cx + ball_r - 5, ball_cy + ball_r - 3)],
-        start=20, end=160, fill=(255, 255, 255, 200), width=3,
+        [(ball_cx - 6, ball_cy - ball_r + 4),
+         (ball_cx + ball_r - 8, ball_cy + ball_r - 4)],
+        start=20, end=160, fill=(160, 160, 165, 230), width=4,
     )
     draw.text(
-        (ball_ix + ICON + 10, STAT_Y - 2),
+        (ball_ix + ICON_SZ + 8, STAT_CY),
         str(ball_score),
-        font=stat_font,
+        font=stat_fnt,
         fill=(252, 194, 76, 255),
-        stroke_width=2,
+        anchor="lm",
+        stroke_width=3,
         stroke_fill=(0, 0, 0, 255),
     )
 
-    # ── Credits — two lines, bottom-left (Dembele style) ─────────────────────
+    # ── Credits — two lines, bottom-left ─────────────────────────────────────
     draw.text(
-        (MARGIN, BAR_Y + 14),
+        (MARGIN, BAR_Y + 16),
         "Created by El Laggron",
-        font=credits_font,
-        fill=(190, 190, 210, 255),
+        font=cred_fnt,
+        fill=(200, 200, 215, 255),
     )
     draw.text(
-        (MARGIN, BAR_Y + 60),
+        (MARGIN, BAR_Y + 16 + int(cred_fnt.size * 1.3)),
         f"Artwork: {artwork_author}",
-        font=credits_font,
-        fill=(190, 190, 210, 255),
+        font=cred_fnt,
+        fill=(200, 200, 215, 255),
     )
 
     return bg, {"format": "PNG"}
