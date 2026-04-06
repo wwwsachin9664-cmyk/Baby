@@ -4,7 +4,7 @@ import textwrap
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 from settings.models import settings
 
@@ -97,6 +97,48 @@ def get_credit_color(image: Image.Image, region: tuple) -> tuple:
     image = image.crop(region)
     brightness = sum(image.convert("L").getdata()) / image.width / image.height  # type: ignore
     return (0, 0, 0, 255) if brightness > 100 else (255, 255, 255, 255)
+
+
+def apply_neon_glow(
+    card: Image.Image,
+    x: int,
+    y: int,
+    w: int,
+    h: int,
+    color: tuple = (0, 210, 255),
+    pad: int = 45,
+    passes: int = 3,
+    blur_radius: int = 22,
+) -> None:
+    """Paste a soft neon glow halo behind a rectangular region on `card` (in-place).
+
+    A filled rectangle the size of the region is drawn on a transparent canvas,
+    then blurred multiple times to produce a smooth coloured halo.  The result is
+    alpha-composited onto `card` *before* the foreground image is pasted, so the
+    glow appears to emanate from behind the artwork.
+    """
+    canvas_w = w + pad * 2
+    canvas_h = h + pad * 2
+    glow = Image.new("RGBA", (canvas_w, canvas_h), (0, 0, 0, 0))
+    core = Image.new("RGBA", (w, h), (*color, 255))
+    glow.paste(core, (pad, pad))
+    core.close()
+    for _ in range(passes):
+        glow = glow.filter(ImageFilter.GaussianBlur(radius=blur_radius))
+    # Boost intensity by alpha-compositing a second copy on top
+    boosted = Image.alpha_composite(glow, glow)
+    glow.close()
+    paste_x = x - pad
+    paste_y = y - pad
+    # Clip to card boundaries
+    cx = max(paste_x, 0)
+    cy = max(paste_y, 0)
+    ox = cx - paste_x
+    oy = cy - paste_y
+    region = boosted.crop((ox, oy, ox + card.width - cx, oy + card.height - cy))
+    card.paste(region, (cx, cy), mask=region)
+    boosted.close()
+    region.close()
 
 
 def draw_card(ball_instance: "BallInstance") -> tuple[Image.Image, dict[str, Any]]:
@@ -223,6 +265,7 @@ def draw_card(ball_instance: "BallInstance") -> tuple[Image.Image, dict[str, Any
     )
 
     artwork = Image.open(ball.collection_card).convert("RGBA")
+    apply_neon_glow(image, CORNERS[0][0], CORNERS[0][1], artwork_size[0], artwork_size[1])
     image.paste(ImageOps.fit(artwork, artwork_size), CORNERS[0])  # type: ignore
 
     if icon:
@@ -338,6 +381,8 @@ def draw_premade_card(
     fg = Image.open(str(foreground_path)).convert("RGBA")
     # Fit inside the landscape frame — minimal cropping for landscape images
     fg_fitted = ImageOps.fit(fg.convert("RGBA"), (FRAME_W, FRAME_H), Image.LANCZOS)
+    # Neon glow behind the foreground frame
+    apply_neon_glow(bg, MARGIN, FRAME_Y, FRAME_W, FRAME_H)
     # Use alpha channel as mask so transparent PNGs composite correctly;
     # for opaque JPEGs the alpha is all-255 so this works in both cases.
     bg.paste(fg_fitted.convert('RGB'), (MARGIN, FRAME_Y))
