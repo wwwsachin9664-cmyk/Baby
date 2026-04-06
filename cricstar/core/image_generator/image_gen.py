@@ -319,12 +319,12 @@ def draw_premade_card(
     # ── Layout constants ──────────────────────────────────────────────────────
     MARGIN = 28                          # card edge → text/info margin
     TOP_BAR_H = 160                      # name + rarity strip (tall enough for 120px font)
-    FRAME_Y = TOP_BAR_H                  # frame starts immediately below name bar (no gap)
-    FRAME_H = 780                        # taller landscape frame — fills more of the card
-    FRAME_W = WIDTH                      # full card width — no side margins on the image
-    FRAME_X = 0                          # foreground image starts at left edge
-    FRAME_BOTTOM = FRAME_Y + FRAME_H    # ≈ 940
-    INFO_Y = FRAME_BOTTOM + 12          # info panel starts here
+    FRAME_Y = TOP_BAR_H + 18             # small gap between name bar and frame
+    FRAME_H = 680                        # frame height — Dembélé-style proportions
+    FRAME_W = WIDTH - 80                 # 40 px margin each side, like a picture frame
+    FRAME_X = 40                         # left margin
+    FRAME_BOTTOM = FRAME_Y + FRAME_H    # ≈ 858
+    INFO_Y = FRAME_BOTTOM + 18          # info panel starts here
     # Bottom bar constants are defined inline in section 5
 
     # Smaller Nulshock font for the top name/rarity bar
