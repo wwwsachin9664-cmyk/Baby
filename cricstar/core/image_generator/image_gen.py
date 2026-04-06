@@ -497,36 +497,53 @@ def draw_premade_card(
     # Thin accent line above the bar
     draw.rectangle([(0, BAR_Y), (CARD_W, BAR_Y + 3)], fill=(255, 255, 255, 60))
 
-    # Vertically-centred row inside the bar
-    ICON_SZ = 70
-    STAT_CY  = BAR_Y + BAR_H // 2          # vertical centre of bar
-    ICON_TOP = STAT_CY - ICON_SZ // 2      # top of icons
+    STAT_CY = BAR_Y + BAR_H // 2   # vertical centre of bar
 
-    # ── Bat icon (drawn) ───────────────────────────────────────────────────────
-    bat_ix = 580
-    bat_iy = ICON_TOP
-    blade_w, blade_h = ICON_SZ - 10, ICON_SZ - 18
-    handle_w = 10
-    handle_h = 22
-    hx = bat_ix + (ICON_SZ - 10) // 2 - handle_w // 2
-    # Blade
-    draw.rounded_rectangle(
-        [(bat_ix, bat_iy), (bat_ix + blade_w, bat_iy + blade_h)],
-        radius=12,
-        fill=(210, 90, 60, 240),
-        outline=(237, 120, 100, 255),
-        width=3,
-    )
-    # Handle
-    draw.rounded_rectangle(
-        [(hx, bat_iy + blade_h - 2), (hx + handle_w, bat_iy + blade_h + handle_h)],
-        radius=4,
-        fill=(160, 55, 35, 230),
-        outline=(220, 100, 75, 200),
-        width=2,
-    )
+    # ── Helper: paste a PNG icon scaled to target height, return actual width ─
+    def _paste_icon(img_path: str, target_h: int, x: int) -> int:
+        """Load img_path, scale to target_h, paste at (x, centred in bar).
+        Returns the rendered width so the caller can position text after it."""
+        try:
+            ico = Image.open(img_path).convert("RGBA")
+            w0, h0 = ico.size
+            target_w = int(target_h * w0 / h0)
+            ico = ico.resize((target_w, target_h), Image.LANCZOS)
+            iy = STAT_CY - target_h // 2
+            bg.paste(ico, (x, iy), mask=ico)
+            ico.close()
+            return target_w
+        except Exception:
+            return 0
+
+    ICON_H   = 120   # icon height inside the bar (180px bar has 30px padding each side)
+    GAP      = 14    # gap between icon and number text
+
+    bat_icon_path  = str(SOURCES_PATH / "bat_icon.png")
+    ball_icon_path = str(SOURCES_PATH / "ball_icon.png")
+
+    # ── Bat stat ──────────────────────────────────────────────────────────────
+    BAT_X = 530
+    bat_icon_w = _paste_icon(bat_icon_path, ICON_H, BAT_X)
+    draw = ImageDraw.Draw(bg)   # re-acquire after paste
+
+    if bat_icon_w == 0:
+        # Fallback: drawn bat shape
+        ICON_SZ = 70
+        bat_iy = STAT_CY - ICON_SZ // 2
+        blade_w, blade_h = ICON_SZ - 10, ICON_SZ - 18
+        hx = BAT_X + (ICON_SZ - 10) // 2 - 5
+        draw.rounded_rectangle(
+            [(BAT_X, bat_iy), (BAT_X + blade_w, bat_iy + blade_h)],
+            radius=12, fill=(210, 90, 60, 240), outline=(237, 120, 100, 255), width=3,
+        )
+        draw.rounded_rectangle(
+            [(hx, bat_iy + blade_h - 2), (hx + 10, bat_iy + blade_h + 22)],
+            radius=4, fill=(160, 55, 35, 230), outline=(220, 100, 75, 200), width=2,
+        )
+        bat_icon_w = ICON_SZ
+
     draw.text(
-        (bat_ix + ICON_SZ + 8, STAT_CY),
+        (BAT_X + bat_icon_w + GAP, STAT_CY),
         str(bat_score),
         font=stat_fnt,
         fill=(237, 115, 101, 255),
@@ -535,31 +552,30 @@ def draw_premade_card(
         stroke_fill=(0, 0, 0, 255),
     )
 
-    # ── Ball icon (drawn) ─────────────────────────────────────────────────────
-    ball_ix = 1000
-    ball_iy = ICON_TOP
-    ball_cx = ball_ix + ICON_SZ // 2
-    ball_cy = ball_iy + ICON_SZ // 2
-    ball_r  = ICON_SZ // 2
-    draw.ellipse(
-        [(ball_ix, ball_iy), (ball_ix + ICON_SZ, ball_iy + ICON_SZ)],
-        fill=(210, 210, 215, 240),
-        outline=(180, 180, 185, 255),
-        width=3,
-    )
-    # Seam lines
-    draw.arc(
-        [(ball_cx - ball_r + 8, ball_cy - ball_r + 4),
-         (ball_cx + 6, ball_cy + ball_r - 4)],
-        start=200, end=340, fill=(160, 160, 165, 230), width=4,
-    )
-    draw.arc(
-        [(ball_cx - 6, ball_cy - ball_r + 4),
-         (ball_cx + ball_r - 8, ball_cy + ball_r - 4)],
-        start=20, end=160, fill=(160, 160, 165, 230), width=4,
-    )
+    # ── Ball stat ─────────────────────────────────────────────────────────────
+    BALL_X = 980
+    ball_icon_w = _paste_icon(ball_icon_path, ICON_H, BALL_X)
+    draw = ImageDraw.Draw(bg)
+
+    if ball_icon_w == 0:
+        # Fallback: drawn ball circle
+        ICON_SZ = 70
+        ball_iy = STAT_CY - ICON_SZ // 2
+        ball_cx = BALL_X + ICON_SZ // 2
+        ball_cy = STAT_CY
+        ball_r  = ICON_SZ // 2
+        draw.ellipse(
+            [(BALL_X, ball_iy), (BALL_X + ICON_SZ, ball_iy + ICON_SZ)],
+            fill=(210, 210, 215, 240), outline=(180, 180, 185, 255), width=3,
+        )
+        draw.arc([(ball_cx - ball_r + 8, ball_cy - ball_r + 4), (ball_cx + 6, ball_cy + ball_r - 4)],
+                 start=200, end=340, fill=(160, 160, 165, 230), width=4)
+        draw.arc([(ball_cx - 6, ball_cy - ball_r + 4), (ball_cx + ball_r - 8, ball_cy + ball_r - 4)],
+                 start=20, end=160, fill=(160, 160, 165, 230), width=4)
+        ball_icon_w = ICON_SZ
+
     draw.text(
-        (ball_ix + ICON_SZ + 8, STAT_CY),
+        (BALL_X + ball_icon_w + GAP, STAT_CY),
         str(ball_score),
         font=stat_fnt,
         fill=(252, 194, 76, 255),
