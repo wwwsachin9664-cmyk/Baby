@@ -380,12 +380,12 @@ def draw_premade_card(
             return ImageFont.load_default()
 
     bar_font     = _font(nulshock, 122)                          # name + rarity
-    codename_fnt = _font(nulshock, 70)                           # CODENAME: …
+    codename_fnt = _font(nulshock, 50)                           # CODENAME: …
     try:
-        desc_fnt = _font(fontspring, 46)                         # description body
+        desc_fnt = _font(fontspring, 55)                         # description body
     except Exception:
-        desc_fnt = _font(nulshock, 46)
-    stat_fnt     = _font(nulshock, 132)                          # stat numbers (200 / 200)
+        desc_fnt = _font(nulshock, 55)
+    stat_fnt     = _font(nulshock, 107)                          # stat numbers (200 / 200)
     cred_fnt     = _font(arial, 42, nulshock)                    # credits small text
 
     # ── 1. Background: open + resize to card dimensions ───────────────────────
@@ -451,7 +451,7 @@ def draw_premade_card(
     if logo_path and os.path.exists(str(logo_path)):
         try:
             logo      = Image.open(str(logo_path)).convert("RGBA")
-            logo_size = 120
+            logo_size = 145
             logo_fit  = ImageOps.fit(logo, (logo_size, logo_size))
             bg.paste(logo_fit, (CARD_W - logo_size - MARGIN, INFO_Y + 10), mask=logo_fit)
             logo.close()
