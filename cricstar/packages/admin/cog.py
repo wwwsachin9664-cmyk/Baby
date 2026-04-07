@@ -616,6 +616,7 @@ class Admin(commands.Cog):
             image.save(str(card_path), **img_kwargs)
             image.close()
 
+            spawnable = (spawn_chance > 0)
             ball = await Ball.objects.acreate(
                 country=player_name,
                 health=bat_score,
@@ -630,7 +631,7 @@ class Admin(commands.Cog):
                 capacity_logic={},
                 regime=regime,
                 tradeable=tradeable,
-                spawnable=(spawn_chance > 0),
+                spawnable=spawnable,
                 catch_names=catch_name.strip().lower() or None,
             )
 
