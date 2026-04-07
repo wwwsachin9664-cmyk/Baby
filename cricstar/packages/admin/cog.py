@@ -577,15 +577,26 @@ class Admin(commands.Cog):
             if logo_url.strip():
                 logo_path = os.path.join(tmpdir, "logo.png")
                 try:
+                    _ssl_ctx = ssl.create_default_context()
+                    _ssl_ctx.check_hostname = False
+                    _ssl_ctx.verify_mode = ssl.CERT_NONE
                     req = urllib.request.Request(
                         logo_url.strip(),
-                        headers={"User-Agent": "CricStar-Bot/1.0"},
+                        headers={
+                            "User-Agent": (
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                                "Chrome/124.0.0.0 Safari/537.36"
+                            ),
+                            "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+                        },
                     )
-                    with urllib.request.urlopen(req, timeout=10) as resp:
-                        data = resp.read(2 * 1024 * 1024)  # max 2 MB
+                    with urllib.request.urlopen(req, timeout=20, context=_ssl_ctx) as resp:
+                        data = resp.read(2 * 1024 * 1024)
                     with open(logo_path, "wb") as f:
                         f.write(data)
-                except Exception:
+                except Exception as e:
+                    log.warning("Logo download failed: %s", e)
                     logo_path = None
 
             def _generate() -> tuple:
@@ -835,14 +846,26 @@ class Admin(commands.Cog):
                 if logo_url_clean:
                     logo_path = os.path.join(tmpdir, "logo.png")
                     try:
+                        _ssl_ctx = ssl.create_default_context()
+                        _ssl_ctx.check_hostname = False
+                        _ssl_ctx.verify_mode = ssl.CERT_NONE
                         req = urllib.request.Request(
-                            logo_url_clean, headers={"User-Agent": "CricStar-Bot/1.0"}
+                            logo_url_clean,
+                            headers={
+                                "User-Agent": (
+                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                                    "Chrome/124.0.0.0 Safari/537.36"
+                                ),
+                                "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+                            },
                         )
-                        with urllib.request.urlopen(req, timeout=10) as resp:
+                        with urllib.request.urlopen(req, timeout=20, context=_ssl_ctx) as resp:
                             data = resp.read(2 * 1024 * 1024)
                         with open(logo_path, "wb") as f:
                             f.write(data)
-                    except Exception:
+                    except Exception as e:
+                        log.warning("Logo download failed: %s", e)
                         logo_path = None
 
                 def _generate() -> tuple:

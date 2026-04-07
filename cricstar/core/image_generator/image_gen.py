@@ -354,14 +354,14 @@ def draw_premade_card(
 
     TOP_BAR_H  = 130                       # height of name / rarity strip
     FRAME_X    = MARGIN
-    FRAME_Y    = TOP_BAR_H + 12           # gap between bar and frame
+    FRAME_Y    = TOP_BAR_H + 23           # +11 px lower than before
     FRAME_W    = CARD_W - 2 * MARGIN      # 1364 px
     FRAME_H    = 716                       # frame height
-    FRAME_BOTTOM = FRAME_Y + FRAME_H      # ≈ 858
+    FRAME_BOTTOM = FRAME_Y + FRAME_H
 
     INFO_Y     = FRAME_BOTTOM + 36        # where text panel begins
-    CODENAME_Y = INFO_Y                   # codename text baseline (top)
-    DESC_Y     = CODENAME_Y + 108         # description text (below codename)
+    CODENAME_Y = INFO_Y + 6              # +6 px lower
+    DESC_Y     = CODENAME_Y + 126        # +18 px lower than before (108+18)
 
     BAR_H  = 180                          # bottom stats bar height
     BAR_Y  = CARD_H - BAR_H              # 1820
@@ -397,9 +397,11 @@ def draw_premade_card(
     rarity_str = str(rarity)
     name_text  = player_name.upper()
 
+    NAME_RARITY_Y = TOP_BAR_H // 2 + 5   # both name and rarity 5 px lower
+
     # Rarity — right-aligned, gold
     draw.text(
-        (CARD_W - MARGIN, TOP_BAR_H // 2),
+        (CARD_W - MARGIN, NAME_RARITY_Y),
         rarity_str,
         font=bar_font,
         fill=(255, 184, 0, 255),
@@ -417,7 +419,7 @@ def draw_premade_card(
         scale    = avail_w / bar_font.getlength(name_text)
         name_fnt = _font(nulshock, max(48, int(122 * scale)))
     draw.text(
-        (MARGIN, TOP_BAR_H // 2),
+        (MARGIN, NAME_RARITY_Y),
         name_text,
         font=name_fnt,
         fill=(255, 255, 255, 255),
@@ -438,8 +440,6 @@ def draw_premade_card(
 
     fg = Image.open(str(foreground_path)).convert("RGBA")
     fg_fitted = ImageOps.fit(fg, (FRAME_W, FRAME_H), Image.LANCZOS)
-    if neon_color:
-        apply_neon_glow(bg, FRAME_X, FRAME_Y, FRAME_W, FRAME_H, color=neon_color)
     bg.paste(fg_fitted, (FRAME_X, FRAME_Y), mask=fg_fitted)
     fg.close()
     fg_fitted.close()
@@ -447,13 +447,15 @@ def draw_premade_card(
     # Re-acquire draw handle after paste operations
     draw = ImageDraw.Draw(bg)
 
-    # ── 4a. Logo (optional — top-right of info panel) ─────────────────────────
+    # ── 4a. Logo — right-aligned, vertically centred with codename line ───────
     if logo_path and os.path.exists(str(logo_path)):
         try:
             logo      = Image.open(str(logo_path)).convert("RGBA")
             logo_size = 145
             logo_fit  = ImageOps.fit(logo, (logo_size, logo_size))
-            bg.paste(logo_fit, (CARD_W - logo_size - MARGIN, INFO_Y + 10), mask=logo_fit)
+            logo_x    = CARD_W - logo_size - MARGIN
+            logo_y    = CODENAME_Y                  # same row as codename
+            bg.paste(logo_fit, (logo_x, logo_y), mask=logo_fit)
             logo.close()
             logo_fit.close()
             draw = ImageDraw.Draw(bg)
@@ -491,7 +493,7 @@ def draw_premade_card(
     # ── 5. Bottom stats bar (no background fill — background shows through) ─────
     draw = ImageDraw.Draw(bg)
 
-    STAT_CY = BAR_Y + BAR_H // 2   # vertical centre of bar
+    STAT_CY = BAR_Y + BAR_H // 2 - 4   # 4 px higher
 
     # ── Helper: paste a PNG icon scaled to target height, return actual width ─
     def _paste_icon(img_path: str, target_h: int, x: int) -> int:
