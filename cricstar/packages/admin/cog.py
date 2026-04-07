@@ -6,6 +6,7 @@ import tempfile
 import urllib.request
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
@@ -29,7 +30,9 @@ from cricstar.core.utils.menus import (
     dynamic_chunks,
     iter_to_async,
 )
-from bd_models.models import Ball, BallInstance, GuildConfig, Regime, Special
+from django.db.models import Max
+
+from bd_models.models import Ball, BallInstance, GuildConfig, Regime, Special, TradeObject
 from bd_models.models import balls as balls_cache
 from bd_models.models import specials as specials_cache
 from settings.models import settings
@@ -1744,5 +1747,110 @@ class Admin(commands.Cog):
             "• **Daily** — everyone can claim again\n"
             "• **Weekly** — everyone can claim again\n"
             "• **Upgrade** — upgrade is available immediately",
+            ephemeral=True,
+        )
+
+    # ── /AdminSync ────────────────────────────────────────────────────────────
+    @app_commands.command(
+        name="adminsync",
+        description="[Owner] Force-sync all global slash commands.",
+    )
+    async def adminsync(self, interaction: discord.Interaction["CricStarBot"]):
+        if not await self.bot.is_owner(interaction.user):
+            await interaction.response.send_message(
+                "❌ Only the bot owner can use this command.", ephemeral=True
+            )
+            return
+
+        await interaction.response.defer(ephemeral=True)
+        try:
+            synced = await self.bot.tree.sync()
+            await interaction.followup.send(
+                f"✅ Synced **{len(synced)} global commands** successfully.",
+                ephemeral=True,
+            )
+        except Exception as e:
+            await interaction.followup.send(
+                f"❌ Sync failed: `{e}`", ephemeral=True
+            )
+
+    # ── /csrarity ─────────────────────────────────────────────────────────────
+    @app_commands.command(
+        name="csrarity",
+        description="Show all cricketers ranked by rarity (rarest first).",
+    )
+    async def csrarity(self, interaction: discord.Interaction["CricStarBot"]):
+        await interaction.response.defer()
+
+        balls_qs = Ball.objects.filter(enabled=True, rarity__gt=0).order_by("rarity")
+        all_balls = [b async for b in balls_qs]
+
+        if not all_balls:
+            await interaction.followup.send("No cricketers found.", ephemeral=True)
+            return
+
+        lines = []
+        for ball in all_balls:
+            rarity_str = f"{ball.rarity:.2f}".rstrip("0").rstrip(".")
+            lines.append(f"{rarity_str}  {ball.country}")
+
+        text = "\n".join(lines)
+
+        view = discord.ui.LayoutView()
+        text_display = discord.ui.TextDisplay("")
+        view.add_item(text_display)
+        menu = Menu(
+            self.bot, view,
+            TextSource(text, prefix="```\n", suffix="```"),
+            TextFormatter(text_display),
+        )
+        await menu.init()
+        await interaction.followup.send(view=view)
+
+    # ── /cscleanup ────────────────────────────────────────────────────────────
+    @app_commands.command(
+        name="cscleanup",
+        description="[Owner] Delete all card instances obtained via trade/bet older than 15 days.",
+    )
+    async def cscleanup(self, interaction: discord.Interaction["CricStarBot"]):
+        if not await self.bot.is_owner(interaction.user):
+            await interaction.response.send_message(
+                "❌ Only the bot owner can use this command.", ephemeral=True
+            )
+            return
+
+        await interaction.response.defer(ephemeral=True)
+
+        cutoff = datetime.now(tz=timezone.utc) - timedelta(days=15)
+
+        # Find BallInstance IDs whose most recent trade is older than 15 days
+        old_traded_ids = [
+            row async for row in (
+                TradeObject.objects
+                .values("ballinstance_id")
+                .annotate(latest_trade=Max("trade__date"))
+                .filter(latest_trade__lt=cutoff)
+                .values_list("ballinstance_id", flat=True)
+            )
+        ]
+
+        if not old_traded_ids:
+            await interaction.followup.send(
+                "✅ Nothing to clean up — no traded cards older than 15 days found.",
+                ephemeral=True,
+            )
+            return
+
+        # Soft-delete: only instances that were actually transferred (trade_player set)
+        deleted_count = await (
+            BallInstance.objects
+            .filter(id__in=old_traded_ids, trade_player__isnull=False, deleted=False)
+            .aupdate(deleted=True)
+        )
+
+        await interaction.followup.send(
+            f"✅ Cleanup complete!\n"
+            f"• **{deleted_count}** card instance(s) from trades older than **15 days** have been removed.\n"
+            f"-# Original cards caught by players are unaffected.",
             ephemeral=True,
         )
