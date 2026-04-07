@@ -596,4 +596,107 @@ def draw_premade_card(
         cred_y += int(cred_fnt.size * 1.3)
 
     return bg, {"format": "PNG"}
-    
+
+
+def patch_card_stats(
+    card_path: str,
+    background_path: str,
+    bat_score: int,
+    ball_score: int,
+    artwork_author: str,
+) -> None:
+    """
+    Open an existing card PNG and repaint ONLY the bottom stats bar
+    (bat icon, bat number, ball icon, ball number, credits).
+    Everything else (rarity, name, foreground, background effects) is untouched.
+    """
+    CARD_W, CARD_H = 1428, 2000
+    MARGIN = 32
+    BAR_H  = 180
+    BAR_Y  = CARD_H - BAR_H          # 1820
+    STAT_CY = BAR_Y + BAR_H // 2 - 18  # same as draw_premade_card
+
+    nulshock   = str(SOURCES_PATH / "Nulshock-Bold.otf")
+    arial      = str(SOURCES_PATH / "arial.ttf")
+    stat_fnt   = ImageFont.truetype(nulshock, 107)
+    cred_fnt   = ImageFont.truetype(arial, 42)
+
+    bat_icon_path  = str(SOURCES_PATH / "bat_icon.png")
+    ball_icon_path = str(SOURCES_PATH / "ball_icon.png")
+
+    # Open existing card
+    card = Image.open(card_path).convert("RGBA")
+
+    # Restore the clean background at the stats bar area (erases old numbers)
+    bg = Image.open(background_path).convert("RGBA")
+    bg = ImageOps.fit(bg, (CARD_W, CARD_H), Image.LANCZOS)
+    bg_bar_strip = bg.crop((0, BAR_Y, CARD_W, CARD_H))
+    card.paste(bg_bar_strip, (0, BAR_Y))
+    bg.close()
+    bg_bar_strip.close()
+
+    draw = ImageDraw.Draw(card)
+
+    ICON_H = 120
+    GAP    = 14
+
+    def _paste_icon_patch(img_path: str, target_h: int, x: int) -> int:
+        try:
+            ico = Image.open(img_path).convert("RGBA")
+            w0, h0 = ico.size
+            target_w = int(target_h * w0 / h0)
+            ico = ico.resize((target_w, target_h), Image.LANCZOS)
+            iy  = STAT_CY - target_h // 2
+            card.paste(ico, (x, iy), mask=ico)
+            ico.close()
+            return target_w
+        except Exception:
+            return 0
+
+    # Bat
+    BAT_X      = 530
+    bat_icon_w = _paste_icon_patch(bat_icon_path, ICON_H, BAT_X)
+    draw       = ImageDraw.Draw(card)
+    if bat_icon_w == 0:
+        bat_icon_w = 70
+    draw.text(
+        (BAT_X + bat_icon_w + GAP, STAT_CY),
+        str(bat_score),
+        font=stat_fnt,
+        fill=(237, 115, 101, 255),
+        anchor="lm",
+        stroke_width=3,
+        stroke_fill=(0, 0, 0, 255),
+    )
+
+    # Ball
+    BALL_X      = 980
+    ball_icon_w = _paste_icon_patch(ball_icon_path, ICON_H, BALL_X)
+    draw        = ImageDraw.Draw(card)
+    if ball_icon_w == 0:
+        ball_icon_w = 70
+    draw.text(
+        (BALL_X + ball_icon_w + GAP, STAT_CY),
+        str(ball_score),
+        font=stat_fnt,
+        fill=(252, 194, 76, 255),
+        anchor="lm",
+        stroke_width=3,
+        stroke_fill=(0, 0, 0, 255),
+    )
+
+    # Credits
+    cred_y = BAR_Y + 18
+    for cred_line in ("Created by El Laggron", f"Artwork: {artwork_author}"):
+        draw.text(
+            (MARGIN, cred_y),
+            cred_line,
+            font=cred_fnt,
+            fill=(230, 230, 240, 255),
+            stroke_width=3,
+            stroke_fill=(0, 0, 0, 255),
+        )
+        cred_y += int(cred_fnt.size * 1.3)
+
+    card.save(card_path, format="PNG")
+    card.close()

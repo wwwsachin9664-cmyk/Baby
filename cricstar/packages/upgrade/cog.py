@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import random
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
@@ -14,7 +13,7 @@ from discord.ext import commands
 
 from bd_models.models import Ball
 from bd_models.models import balls as balls_cache
-from cricstar.core.image_generator.image_gen import draw_premade_card, get_neon_color
+from cricstar.core.image_generator.image_gen import patch_card_stats
 
 if TYPE_CHECKING:
     from cricstar.core.bot import CricStarBot
@@ -32,8 +31,9 @@ def reset_upgrade_cooldown():
     global _last_upgrade_time
     _last_upgrade_time = None
 
-MEDIA_DIR      = Path("admin_panel/media")
-FOREGROUNDS_DIR = Path("admin_panel/media/foregrounds")
+
+MEDIA_DIR       = Path("admin_panel/media")
+BACKGROUNDS_DIR = Path("admin_panel/media/backgrounds")
 
 
 class Upgrade(commands.Cog):
@@ -93,12 +93,12 @@ class Upgrade(commands.Cog):
             )
             return
 
-        old_bat = ball.health
+        old_bat  = ball.health
         old_bowl = ball.attack
-        bat_gain = random.randint(0, 5)
+        bat_gain  = random.randint(0, 5)
         bowl_gain = random.randint(0, 5)
 
-        ball.health = old_bat + bat_gain
+        ball.health = old_bat  + bat_gain
         ball.attack = old_bowl + bowl_gain
         await ball.asave(update_fields=["health", "attack"])
         balls_cache[ball.id] = ball
@@ -106,54 +106,48 @@ class Upgrade(commands.Cog):
         # Mark global cooldown
         _last_upgrade_time = now
 
-        # ── Regenerate the card image with updated stats ───────────────────────
-        wild_card_name = str(ball.wild_card)   # e.g. "premade_rishav.png"
-        card_path = MEDIA_DIR / wild_card_name
+        # ── Patch ONLY the stats bar on the existing card image ────────────────
+        wild_card_name = str(ball.wild_card)
+        card_path      = MEDIA_DIR / wild_card_name
 
-        if wild_card_name.startswith("premade_") and card_path.exists():
+        if card_path.exists():
             try:
-                # Derive slug from the wild_card filename
-                slug = wild_card_name[len("premade_"):-len(".png")]
+                # Find the background file for this card's regime
+                regime     = ball.regime
+                bg_file    = str(regime.background) if regime and regime.background else ""
+                bg_path    = str(MEDIA_DIR / bg_file) if bg_file else ""
 
-                # Background: from the ball's regime
-                regime = ball.regime
-                bg_file = str(regime.background) if regime and regime.background else ""
-                bg_path = str(MEDIA_DIR / bg_file) if bg_file else ""
+                # Fall back to custom_bg if regime bg not found
+                if not bg_path or not Path(bg_path).exists():
+                    candidate = BACKGROUNDS_DIR / "custom_bg.png"
+                    if candidate.exists():
+                        bg_path = str(candidate)
 
-                # Foreground: saved preset during /cardmaker
-                fg_preset = FOREGROUNDS_DIR / slug
-                fg_path = str(fg_preset) if fg_preset.exists() else ""
-
-                if bg_path and os.path.exists(bg_path) and fg_path:
-                    card_name   = ball.short_name or ball.country
-                    codename    = ball.capacity_name or ""
-                    description = ball.capacity_description or ""
-                    rarity      = ball.rarity
+                if bg_path and Path(bg_path).exists():
                     credits_str = ball.credits or ""
-                    neon        = get_neon_color(ball.country)
 
-                    def _regen():
-                        return draw_premade_card(
-                            bg_path, fg_path, card_name, codename, description,
-                            rarity, ball.health, ball.attack, credits_str, None,
-                            neon_color=neon,
+                    def _patch():
+                        patch_card_stats(
+                            str(card_path), bg_path,
+                            ball.health, ball.attack, credits_str,
                         )
 
                     with ThreadPoolExecutor() as pool:
-                        image, img_kwargs = await self.bot.loop.run_in_executor(pool, _regen)
+                        await self.bot.loop.run_in_executor(pool, _patch)
 
-                    image.save(str(card_path), **img_kwargs)
-                    image.close()
-                    log.info("upgrade: regenerated card for %s (bat=%d bowl=%d)", ball.country, ball.health, ball.attack)
+                    log.info(
+                        "upgrade: patched stats for %s — bat %d→%d, bowl %d→%d",
+                        ball.country, old_bat, ball.health, old_bowl, ball.attack,
+                    )
                 else:
-                    log.warning("upgrade: could not find bg/fg for %s, skipping regen", ball.country)
+                    log.warning("upgrade: no background found for %s, skipping patch", ball.country)
             except Exception as e:
-                log.warning("upgrade: card regen failed for %s: %s", ball.country, e)
+                log.warning("upgrade: stat patch failed for %s: %s", ball.country, e)
 
         # Build result message
         ball_id_str = f"#{ball.id}"
-        bat_part  = f"**Bat** by **+{bat_gain}**"  if bat_gain  > 0 else "**Bat** unchanged"
-        bowl_part = f"**Bowl** by **+{bowl_gain}**" if bowl_gain > 0 else "**Bowl** unchanged"
+        bat_part    = f"**Bat** by **+{bat_gain}**"   if bat_gain  > 0 else "**Bat** unchanged"
+        bowl_part   = f"**Bowl** by **+{bowl_gain}**"  if bowl_gain > 0 else "**Bowl** unchanged"
         msg = f"{ball_id_str} **{ball.country}** increased its {bat_part}! {bowl_part}!"
 
         await interaction.followup.send(content=msg)
