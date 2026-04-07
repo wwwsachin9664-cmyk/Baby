@@ -360,8 +360,8 @@ def draw_premade_card(
     FRAME_BOTTOM = FRAME_Y + FRAME_H
 
     INFO_Y     = FRAME_BOTTOM + 36        # where text panel begins
-    CODENAME_Y = INFO_Y + 82             # -35 px
-    DESC_Y     = CODENAME_Y + 119       # -30 px
+    CODENAME_Y = INFO_Y + 72             # -10 px
+    DESC_Y     = CODENAME_Y + 104       # -15 px
 
     BAR_H  = 180                          # bottom stats bar height
     BAR_Y  = CARD_H - BAR_H              # 1820
@@ -454,7 +454,7 @@ def draw_premade_card(
             logo_size = 145
             logo_fit  = ImageOps.fit(logo, (logo_size, logo_size))
             logo_x    = CARD_W - logo_size - MARGIN
-            logo_y    = CODENAME_Y                  # same row as codename
+            logo_y    = CODENAME_Y - 20             # 20 px higher than codename
             bg.paste(logo_fit, (logo_x, logo_y), mask=logo_fit)
             logo.close()
             logo_fit.close()
