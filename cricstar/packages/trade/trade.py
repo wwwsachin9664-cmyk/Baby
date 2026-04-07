@@ -182,36 +182,50 @@ class TradingUser(Container):
         """
         self.clear_items()
 
-        section = Section(
-            TextDisplay(f"## {self.user.display_name}'s proposal"), accessory=Thumbnail(self.user.display_avatar.url)
-        )
         if self.view.cancelled:
             if self.cancelled:
                 self.accent_colour = discord.Colour.red()
-                section.add_item(TextDisplay("You have cancelled the trade."))
+                header_text = f"## ❌ {self.user.display_name}"
             else:
-                section.add_item(TextDisplay("The trade has been cancelled."))
+                self.accent_colour = discord.Colour.red()
+                header_text = f"## {self.user.display_name}"
         elif self.confirmed:
             self.accent_colour = discord.Colour.green()
-            section.add_item(TextDisplay("You have confirmed your trade proposal."))
+            header_text = f"## ✅ {self.user.display_name}"
         elif self.view.confirmation_phase:
             self.accent_colour = discord.Colour.gold()
-            section.add_item(TextDisplay("You have both locked your proposals, review and confirm the trade."))
+            header_text = f"## ⏳ {self.user.display_name}"
         elif self.locked:
             self.accent_colour = discord.Colour.yellow()
+            header_text = f"## 🔒 {self.user.display_name}"
+        else:
+            self.accent_colour = discord.Colour.blue()
+            header_text = f"## 🏏 {self.user.display_name}"
+
+        section = Section(
+            TextDisplay(header_text), accessory=Thumbnail(self.user.display_avatar.url)
+        )
+        if self.view.cancelled:
+            if self.cancelled:
+                section.add_item(TextDisplay("**You cancelled the trade.**"))
+            else:
+                section.add_item(TextDisplay("*The trade has been cancelled.*"))
+        elif self.confirmed:
+            section.add_item(TextDisplay("**Proposal confirmed** — waiting for the other player."))
+        elif self.view.confirmation_phase:
+            section.add_item(TextDisplay("Both proposals locked. **Review and confirm to complete the trade.**"))
+        elif self.locked:
             section.add_item(
                 TextDisplay(
-                    "You have locked your proposal. "
-                    "Wait for the other player to lock their proposal before finishing the trade."
+                    "**Proposal locked** — waiting for the other player to lock."
                 )
             )
         else:
-            self.accent_colour = discord.Colour.blue()
             add_cmd = self.cog.add.extras.get("mention", "`/trade add`")
             del_cmd = self.cog.remove.extras.get("mention", "`/trade remove`")
-            section.add_item(TextDisplay(f"You can edit your proposal with {add_cmd} and {del_cmd}."))
+            section.add_item(TextDisplay(f"Use {add_cmd} to add and {del_cmd} to remove cricketers."))
 
-        section.add_item(TextDisplay(f"-# {len(self.proposal)} {settings.plural_collectible_name} selected"))
+        section.add_item(TextDisplay(f"-# {len(self.proposal)} {settings.plural_collectible_name} in proposal"))
         self.add_item(section)
         self.add_item(Separator())
 
@@ -550,13 +564,17 @@ class TradeInstance(LayoutView):
         trade.trader1 = TradingUser(trade, *trader1)
         trade.trader2 = TradingUser(trade, *trader2)
         trade.clear_items()
-        trade.add_item(TextDisplay(f"Hey {trader2[1].mention}, {trader1[1].mention} is proposing a trade!"))
+        trade.add_item(TextDisplay(
+            f"## 🏏 CricStar Trade\n"
+            f"{trader2[1].mention} — **{trader1[1].mention}** is proposing a trade with you!\n"
+            f"-# Add cricketers with `/trade add`, then lock your proposal when ready."
+        ))
         trade.add_item(trade.trader1)
         trade.add_item(trade.trader2)
         trade.buttons.remove_item(trade.confirm_button)
         trade.add_item(trade.buttons)
         timeout = datetime.now() + timedelta(seconds=TRADE_TIMEOUT)
-        trade.add_item(TextDisplay(f"-# This trade will timeout {format_dt(timeout, style='R')}."))
+        trade.add_item(TextDisplay(f"-# ⏱️ This trade will expire {format_dt(timeout, style='R')}."))
         return trade
 
     @property
@@ -699,7 +717,12 @@ class TradeInstance(LayoutView):
         trade = await sync_to_async(self.perform_trade_operation)()
         self.stop()
         # edition of the message will be triggered by the caller
-        self.add_item(TextDisplay(f"## The trade has been completed!\n-# ID: `#{trade.pk:0X}`"))
+        self.add_item(TextDisplay(
+            f"## ✅ Trade Complete!\n"
+            f"The trade between **{self.trader1.user.display_name}** and **{self.trader2.user.display_name}** "
+            f"has been successfully completed.\n"
+            f"-# Trade ID: `#{trade.pk:0X}`"
+        ))
 
     async def _cleanup(self):
         self.stop()

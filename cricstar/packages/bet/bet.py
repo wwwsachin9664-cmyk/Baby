@@ -267,6 +267,8 @@ class BetInstance(LayoutView):
             b1_prefix = self._winner_prefix(b1)
         elif b1.cancelled:
             b1_prefix = "❌ "
+        elif b1.confirmed:
+            b1_prefix = "✅ "
         elif b1.locked:
             b1_prefix = "🔒 "
         else:
@@ -281,6 +283,8 @@ class BetInstance(LayoutView):
             b2_prefix = self._winner_prefix(b2)
         elif b2.cancelled:
             b2_prefix = "❌ "
+        elif b2.confirmed:
+            b2_prefix = "✅ "
         elif b2.locked:
             b2_prefix = "🔒 "
         else:

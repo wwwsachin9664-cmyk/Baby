@@ -86,9 +86,9 @@ class Trade(commands.GroupCog):
 
     @app_commands.command()
     @app_commands.checks.bot_has_permissions(send_messages=True)
-    async def start(self, interaction: Interaction, user: discord.User):
+    async def begin(self, interaction: Interaction, user: discord.User):
         """
-        Start trading with someone.
+        Begin a trade with another player.
 
         Parameters
         ----------

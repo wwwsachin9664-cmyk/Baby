@@ -103,6 +103,51 @@ class SyncView(LayoutView):
         log.info(f"Admin commands removed from guild {interaction.guild.id} by {interaction.user}")
 
 
+class MultiSpawnView(discord.ui.View):
+    """Select up to 20 cricketers and spawn them all at once in the configured spawn channel."""
+
+    def __init__(self, options: list[discord.SelectOption], channel: discord.TextChannel, bot: "CricStarBot"):
+        super().__init__(timeout=60)
+        self.channel = channel
+        self.bot = bot
+
+        self.select = discord.ui.Select(
+            placeholder="Choose cricketers to spawn (up to 20)…",
+            min_values=1,
+            max_values=min(20, len(options)),
+            options=options,
+        )
+        self.select.callback = self._on_select
+        self.add_item(self.select)
+
+    async def _on_select(self, interaction: discord.Interaction["CricStarBot"]):
+        await interaction.response.defer(ephemeral=True)
+        from cricstar.packages.cricketers.cricketer import BallSpawnView
+
+        spawned, failed = 0, 0
+        for val in interaction.data["values"]:  # type: ignore[index]
+            ball_pk = int(val)
+            ball_model = balls_cache.get(ball_pk)
+            if not ball_model:
+                try:
+                    ball_model = await Ball.objects.aget(pk=ball_pk)
+                except Ball.DoesNotExist:
+                    failed += 1
+                    continue
+            view = BallSpawnView(self.bot, ball_model)
+            success = await view.spawn(self.channel)
+            if success:
+                spawned += 1
+            else:
+                failed += 1
+
+        self.stop()
+        msg = f"✅ Spawned **{spawned}** cricketer(s) in {self.channel.mention}."
+        if failed:
+            msg += f"\n❌ **{failed}** failed to spawn."
+        await interaction.followup.send(msg, ephemeral=True)
+
+
 def _list_background_presets() -> list[str]:
     """Return all saved background preset names (without extension)."""
     bg_dir = Path("admin_panel/media/backgrounds")
@@ -1853,5 +1898,59 @@ class Admin(commands.Cog):
             f"✅ Cleanup complete!\n"
             f"• **{deleted_count}** card instance(s) from trades older than **15 days** have been removed.\n"
             f"-# Original cards caught by players are unaffected.",
+            ephemeral=True,
+        )
+
+    # ── /csmultispawn ──────────────────────────────────────────────────────────
+    @app_commands.command(
+        name="csmultispawn",
+        description="[Owner] Select up to 20 cricketers from a menu and spawn them all at once.",
+    )
+    async def csmultispawn(self, interaction: discord.Interaction["CricStarBot"]):
+        if not await self.bot.is_owner(interaction.user):
+            await interaction.response.send_message(
+                "❌ Only the bot owner can use this command.", ephemeral=True
+            )
+            return
+
+        assert interaction.guild
+
+        config = await GuildConfig.objects.aget_or_none(guild_id=interaction.guild_id)
+        if not config or not config.spawn_channel:
+            await interaction.response.send_message(
+                "❌ No spawn channel configured for this server. Use `/config channel` first.",
+                ephemeral=True,
+            )
+            return
+
+        channel = interaction.guild.get_channel(config.spawn_channel)
+        if not channel or not isinstance(channel, discord.TextChannel):
+            await interaction.response.send_message(
+                "❌ The configured spawn channel could not be found.", ephemeral=True
+            )
+            return
+
+        all_balls = [
+            b async for b in Ball.objects.filter(enabled=True, spawnable=True, rarity__gt=0).order_by("country")
+        ]
+        if not all_balls:
+            await interaction.response.send_message(
+                "❌ No spawnable cricketers found in the database.", ephemeral=True
+            )
+            return
+
+        options = [
+            discord.SelectOption(label=b.country[:100], value=str(b.pk))
+            for b in all_balls[:25]
+        ]
+
+        view = MultiSpawnView(options, channel, self.bot)
+        total = len(all_balls)
+        note = f" (showing first 25 of {total})" if total > 25 else ""
+        await interaction.response.send_message(
+            f"## 🏏 Admin Multi-Spawn\n"
+            f"Select up to **20 cricketers** to spawn in {channel.mention}.{note}\n"
+            f"-# They will appear one by one as catchable cards.",
+            view=view,
             ephemeral=True,
         )
