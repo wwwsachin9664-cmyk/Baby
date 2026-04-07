@@ -361,7 +361,7 @@ def draw_premade_card(
 
     INFO_Y     = FRAME_BOTTOM + 36        # where text panel begins
     CODENAME_Y = INFO_Y + 82             # -35 px
-    DESC_Y     = CODENAME_Y + 149       # -25 px
+    DESC_Y     = CODENAME_Y + 119       # -30 px
 
     BAR_H  = 180                          # bottom stats bar height
     BAR_Y  = CARD_H - BAR_H              # 1820
