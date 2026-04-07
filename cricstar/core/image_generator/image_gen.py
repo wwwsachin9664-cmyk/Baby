@@ -354,14 +354,14 @@ def draw_premade_card(
 
     TOP_BAR_H  = 130                       # height of name / rarity strip
     FRAME_X    = MARGIN
-    FRAME_Y    = TOP_BAR_H + 27           # 15 px below original gap
+    FRAME_Y    = TOP_BAR_H + 42           # 15 px lower
     FRAME_W    = CARD_W - 2 * MARGIN      # 1364 px
     FRAME_H    = 716                       # frame height
     FRAME_BOTTOM = FRAME_Y + FRAME_H
 
     INFO_Y     = FRAME_BOTTOM + 36        # where text panel begins
-    CODENAME_Y = INFO_Y + 12             # 6 px lower than INFO_Y
-    DESC_Y     = CODENAME_Y + 144        # 18 px lower than before (108+18+18)
+    CODENAME_Y = INFO_Y + 22             # 10 px lower
+    DESC_Y     = CODENAME_Y + 149        # 5 px lower
 
     BAR_H  = 180                          # bottom stats bar height
     BAR_Y  = CARD_H - BAR_H              # 1820
@@ -397,7 +397,7 @@ def draw_premade_card(
     rarity_str = str(rarity)
     name_text  = player_name.upper()
 
-    NAME_RARITY_Y = TOP_BAR_H // 2 + 10   # both name and rarity 5+5 px lower
+    NAME_RARITY_Y = TOP_BAR_H // 2 + 15   # name and rarity lower
 
     # Rarity — right-aligned, gold
     draw.text(
@@ -473,8 +473,10 @@ def draw_premade_card(
     )
 
     # ── 4c. Description — slightly larger white text, word-wrapped ────────────
-    # Wrap by character width to fit the card at desc_fnt size
-    wrap_width = int((FRAME_W) / (desc_fnt.size * 0.58))
+    # Leave room on the right for the logo (145px wide + margin gap)
+    logo_size = 145
+    text_avail_w = FRAME_W - logo_size - 20   # ~1199 px
+    wrap_width = int(text_avail_w / (desc_fnt.size * 0.58))
     desc_lines: list[str] = []
     for raw_line in description.splitlines():
         desc_lines.extend(textwrap.wrap(raw_line, width=max(10, wrap_width)) or [""])
