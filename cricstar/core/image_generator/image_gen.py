@@ -397,7 +397,7 @@ def draw_premade_card(
     rarity_str = str(rarity)
     name_text  = player_name.upper()
 
-    NAME_RARITY_Y = TOP_BAR_H // 2 + 90   # -20 px
+    NAME_RARITY_Y = TOP_BAR_H // 2 + 75   # -35 px (15px higher)
 
     # Rarity — right-aligned, gold
     draw.text(
