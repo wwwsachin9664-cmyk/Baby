@@ -354,14 +354,14 @@ def draw_premade_card(
 
     TOP_BAR_H  = 130                       # height of name / rarity strip
     FRAME_X    = MARGIN
-    FRAME_Y    = TOP_BAR_H + 42           # 15 px lower
+    FRAME_Y    = TOP_BAR_H + 72           # +30 px
     FRAME_W    = CARD_W - 2 * MARGIN      # 1364 px
     FRAME_H    = 716                       # frame height
     FRAME_BOTTOM = FRAME_Y + FRAME_H
 
     INFO_Y     = FRAME_BOTTOM + 36        # where text panel begins
-    CODENAME_Y = INFO_Y + 22             # 10 px lower
-    DESC_Y     = CODENAME_Y + 149        # 5 px lower
+    CODENAME_Y = INFO_Y + 52             # +30 px lower
+    DESC_Y     = CODENAME_Y + 184        # +35 px lower
 
     BAR_H  = 180                          # bottom stats bar height
     BAR_Y  = CARD_H - BAR_H              # 1820
@@ -397,7 +397,7 @@ def draw_premade_card(
     rarity_str = str(rarity)
     name_text  = player_name.upper()
 
-    NAME_RARITY_Y = TOP_BAR_H // 2 + 15   # name and rarity lower
+    NAME_RARITY_Y = TOP_BAR_H // 2 + 45   # +30 px lower
 
     # Rarity — right-aligned, gold
     draw.text(
@@ -495,7 +495,7 @@ def draw_premade_card(
     # ── 5. Bottom stats bar (no background fill — background shows through) ─────
     draw = ImageDraw.Draw(bg)
 
-    STAT_CY = BAR_Y + BAR_H // 2 - 8   # 4+4 px higher
+    STAT_CY = BAR_Y + BAR_H // 2 - 18   # +10 px higher
 
     # ── Helper: paste a PNG icon scaled to target height, return actual width ─
     def _paste_icon(img_path: str, target_h: int, x: int) -> int:
