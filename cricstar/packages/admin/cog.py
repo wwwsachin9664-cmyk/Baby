@@ -673,7 +673,7 @@ class Admin(commands.Cog):
                 credits=artwork_author,
                 capacity_name=codename,
                 capacity_description=description,
-                capacity_logic={},
+                capacity_logic={"badge_rarity": rarity},
                 regime=regime,
                 tradeable=tradeable,
                 spawnable=spawnable,
@@ -684,7 +684,7 @@ class Admin(commands.Cog):
             if event != "none":
                 try:
                     special = await Special.objects.aget(name=event)
-                    ball.capacity_logic = {"forced_special": special.id}
+                    ball.capacity_logic = {**ball.capacity_logic, "forced_special": special.id}
                     await ball.asave(update_fields=["capacity_logic"])
                     specials_cache[special.id] = special
                     event_text = f" | Event: **{event}**"
@@ -954,6 +954,10 @@ class Admin(commands.Cog):
         if spawn_chance is not None:
             ball.rarity = spawn_chance / 100
             changed_fields.append("rarity")
+        if rarity is not None:
+            ball.capacity_logic = {**ball.capacity_logic, "badge_rarity": rarity}
+            if "capacity_logic" not in changed_fields:
+                changed_fields.append("capacity_logic")
         if artwork_author.strip():
             ball.credits = artwork_author.strip()
             changed_fields.append("credits")
@@ -1837,7 +1841,9 @@ class Admin(commands.Cog):
 
         lines = []
         for ball in all_balls:
-            rarity_str = f"{ball.rarity:.2f}".rstrip("0").rstrip(".")
+            badge_rarity = ball.capacity_logic.get("badge_rarity") if ball.capacity_logic else None
+            display_rarity = badge_rarity if badge_rarity is not None else ball.rarity * 100
+            rarity_str = f"{display_rarity:.2f}".rstrip("0").rstrip(".")
             lines.append(f"{rarity_str}  {ball.country}")
 
         text = "\n".join(lines)
