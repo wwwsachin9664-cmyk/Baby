@@ -6,3 +6,9 @@ id = "NSYtH5SFEyDQ787cztJpA"
 uri = "file://CRICSTAR_AI_CONTEXT.md"
 type = "text"
 title = "CricStar Bot — AI Context File"
+
+[[outputs]]
+id = "2PE9iakEKi3deKh72QGDe"
+uri = "file://CricStar_Bot_Documentation.pdf"
+type = "pdf"
+title = "CricStar Bot — Complete Reference Guide"
