@@ -154,14 +154,21 @@ async def spawn(ctx: commands.Context[CricStarBot], *, flags: SpawnFlags):
     ball.special = flags.special
     ball.atk_bonus = flags.atk_bonus
     ball.hp_bonus = flags.hp_bonus
-    result = await ball.spawn(flags.channel or ctx.channel)  # type: ignore
+    target_channel = flags.channel or ctx.channel
+    result = await ball.spawn(target_channel)  # type: ignore
 
     if result:
         await ctx.send(f"{settings.collectible_name.title()} spawned.", ephemeral=True)
         log.info(
             f"{ctx.author} spawned {settings.collectible_name} {ball.name} "
-            f"in {flags.channel or ctx.channel}" + (f" ({', '.join(special_attrs)})." if special_attrs else "."),
+            f"in {target_channel}" + (f" ({', '.join(special_attrs)})." if special_attrs else "."),
             extra={"webhook": True},
+        )
+    else:
+        await ctx.send(
+            f"❌ Failed to spawn in {target_channel.mention}.\n"
+            "The bot may be missing **Send Messages** or **Attach Files** permissions in that channel.",
+            ephemeral=True,
         )
 
 
