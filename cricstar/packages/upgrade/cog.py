@@ -26,6 +26,12 @@ UPGRADE_COOLDOWN_HOURS = 15
 # Global cooldown — only ONE upgrade allowed every 15 hours across ALL users
 _last_upgrade_time: datetime | None = None
 
+
+def reset_upgrade_cooldown():
+    """Reset the global upgrade cooldown (called by /csresetcooldown)."""
+    global _last_upgrade_time
+    _last_upgrade_time = None
+
 MEDIA_DIR      = Path("admin_panel/media")
 FOREGROUNDS_DIR = Path("admin_panel/media/foregrounds")
 

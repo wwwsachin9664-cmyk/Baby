@@ -1,7 +1,7 @@
 import json
 import logging
 import random
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -17,10 +17,15 @@ if TYPE_CHECKING:
 
 log = logging.getLogger("cricstar.packages.daily")
 
-CLAIMS_FILE = Path(__file__).parent.parent.parent.parent / "data" / "claims.json"
+CLAIMS_FILE  = Path(__file__).parent.parent.parent.parent / "data" / "claims.json"
+MEDIA_DIR    = Path("admin_panel/media")
+WEEKLY_DAYS  = 7
 
-# Rarity -> weight mapping (only 1.0 to 20.0 allowed)
-RARITY_WEIGHTS = {
+
+# ── Rarity weight tables ──────────────────────────────────────────────────────
+
+# Daily weights (existing)
+DAILY_RARITY_WEIGHTS = {
     1.0:  4,
     1.5:  6,
     2.0:  7,
@@ -33,9 +38,39 @@ RARITY_WEIGHTS = {
     8.0:  20,
     9.0:  22,
 }
-# 10.0 to 15.0 = weight 60
-# 16.0 to 20.0 = weight 90
+# 10.0–15.0 → 60,  16.0–20.0 → 90
 
+# Weekly probabilities (as per rarity tiers)
+#   0.01, 0.05, 0.08 → 0 %
+#   0.1 – 0.4        → 0.3 %
+#   0.5 – 0.9        → 0.8 %
+#   1.0 – 2.0        → 8 %
+#   2.5 – 5.0        → 15 %
+#   5.5 – 10.0       → 45 %
+#   11.0 – 15.0      → 60 %
+#   16.0 – 20.0      → 95 %
+
+def _weekly_weight(rarity: float) -> float:
+    if rarity in (0.01, 0.05, 0.08):
+        return 0.0
+    if 0.1 <= rarity <= 0.4:
+        return 0.3
+    if 0.5 <= rarity <= 0.9:
+        return 0.8
+    if 1.0 <= rarity <= 2.0:
+        return 8.0
+    if 2.5 <= rarity <= 5.0:
+        return 15.0
+    if 5.5 <= rarity <= 10.0:
+        return 45.0
+    if 11.0 <= rarity <= 15.0:
+        return 60.0
+    if 16.0 <= rarity <= 20.0:
+        return 95.0
+    return 0.0
+
+
+# ── Claims file helpers ───────────────────────────────────────────────────────
 
 def load_claims() -> dict:
     if CLAIMS_FILE.exists():
@@ -51,9 +86,19 @@ def save_claims(data: dict):
     CLAIMS_FILE.write_text(json.dumps(data, indent=2))
 
 
-def get_rarity_weight(rarity: float) -> int:
-    if rarity in RARITY_WEIGHTS:
-        return RARITY_WEIGHTS[rarity]
+def reset_all_cooldowns():
+    """Clear every daily and weekly cooldown (used by /csresetcooldown)."""
+    claims = load_claims()
+    claims["daily"]  = {}
+    claims["weekly"] = {}
+    save_claims(claims)
+
+
+# ── Card pickers ─────────────────────────────────────────────────────────────
+
+def _get_daily_weight(rarity: float) -> int:
+    if rarity in DAILY_RARITY_WEIGHTS:
+        return DAILY_RARITY_WEIGHTS[rarity]
     if 10.0 <= rarity <= 15.0:
         return 60
     if 16.0 <= rarity <= 20.0:
@@ -62,23 +107,30 @@ def get_rarity_weight(rarity: float) -> int:
 
 
 def pick_daily_card() -> Ball | None:
-    # Only cards with rarity 1.0 to 20.0 (never below 1.0)
-    eligible = [
-        b for b in balls_cache.values()
-        if b.enabled and 1.0 <= b.rarity <= 20.0
-    ]
+    eligible = [b for b in balls_cache.values() if b.enabled and 1.0 <= b.rarity <= 20.0]
     if not eligible:
         return None
-
-    weights = [get_rarity_weight(b.rarity) for b in eligible]
-    # Filter out zero-weight cards
-    filtered = [(b, w) for b, w in zip(eligible, weights) if w > 0]
+    filtered = [(b, _get_daily_weight(b.rarity)) for b in eligible]
+    filtered = [(b, w) for b, w in filtered if w > 0]
     if not filtered:
         return None
-
     balls_list, weights_list = zip(*filtered)
     return random.choices(balls_list, weights=weights_list, k=1)[0]
 
+
+def pick_weekly_card() -> Ball | None:
+    eligible = [b for b in balls_cache.values() if b.enabled]
+    if not eligible:
+        return None
+    filtered = [(b, _weekly_weight(b.rarity)) for b in eligible]
+    filtered = [(b, w) for b, w in filtered if w > 0]
+    if not filtered:
+        return None
+    balls_list, weights_list = zip(*filtered)
+    return random.choices(balls_list, weights=weights_list, k=1)[0]
+
+
+# ── Special helper ────────────────────────────────────────────────────────────
 
 def get_random_special() -> Special | None:
     from django.utils import timezone as dj_tz
@@ -95,17 +147,73 @@ def get_random_special() -> Special | None:
     return random.choices(population + [None], weights=weights, k=1)[0]
 
 
+# ── Shared card-claim logic ───────────────────────────────────────────────────
+
+async def _give_card(
+    interaction: discord.Interaction,
+    card: Ball,
+    label: str,          # "daily" or "weekly"
+) -> discord.File | None:
+    """Create a BallInstance and return the card PNG as a discord.File."""
+    bonus_attack = random.randint(-settings.max_attack_bonus, settings.max_attack_bonus)
+    bonus_health = random.randint(-settings.max_health_bonus, settings.max_health_bonus)
+    special = get_random_special()
+
+    player, _ = await Player.objects.aget_or_create(discord_id=interaction.user.id)
+    is_new    = not await BallInstance.objects.filter(player=player, ball=card).aexists()
+
+    from django.utils import timezone as dj_tz
+    ball_instance = await BallInstance.objects.acreate(
+        ball=card,
+        player=player,
+        special=special,
+        attack_bonus=bonus_attack,
+        health_bonus=bonus_health,
+        server_id=interaction.guild_id,
+        catch_date=dj_tz.now(),
+    )
+
+    special_text = f"✨ *{special.catch_phrase}*\n\n" if special and special.catch_phrase else ""
+    new_badge    = "This is a **new cricketer** added to your collection!" if is_new else ""
+
+    message = (
+        f"{interaction.user.mention} You packed **{card.country}**! "
+        f"`#{ball_instance.pk:0X}, {bonus_attack:+}%, {bonus_health:+}%`\n\n"
+        f"{special_text}"
+        f"{new_badge}"
+    )
+
+    # Attach the card image
+    card_file: discord.File | None = None
+    card_path = MEDIA_DIR / str(card.collection_card)
+    if card_path.exists():
+        card_file = discord.File(str(card_path), filename=card_path.name)
+
+    await interaction.followup.send(content=message, file=card_file) if card_file else \
+        await interaction.followup.send(content=message)
+
+    log.info(
+        "%s claimed %s card: %s (rarity=%.2f, special=%s)",
+        interaction.user, label, card.country, card.rarity, special,
+    )
+
+    return card_file
+
+
+# ── Cog ───────────────────────────────────────────────────────────────────────
+
 class DailyCog(commands.Cog):
     def __init__(self, bot: "CricStarBot"):
         self.bot = bot
 
+    # ── /csdaily ─────────────────────────────────────────────────────────────
     @app_commands.command(name="csdaily", description="Claim your daily cricketer card!")
     @app_commands.guild_only()
     async def csdaily(self, interaction: discord.Interaction["CricStarBot"]):
         user_id = str(interaction.user.id)
-        today = date.today().isoformat()
+        today   = date.today().isoformat()
 
-        claims = load_claims()
+        claims       = load_claims()
         daily_claims = claims.get("daily", {})
 
         if daily_claims.get(user_id) == today:
@@ -120,51 +228,53 @@ class DailyCog(commands.Cog):
 
         card = pick_daily_card()
         if not card:
-            await interaction.followup.send(
-                "No cards available right now. Try again later!", ephemeral=True
-            )
+            await interaction.followup.send("No cards available right now. Try again later!", ephemeral=True)
             return
 
-        bonus_attack = random.randint(-settings.max_attack_bonus, settings.max_attack_bonus)
-        bonus_health = random.randint(-settings.max_health_bonus, settings.max_health_bonus)
-        special = get_random_special()
-
-        player, _ = await Player.objects.aget_or_create(discord_id=interaction.user.id)
-        is_new = not await BallInstance.objects.filter(player=player, ball=card).aexists()
-
-        from django.utils import timezone as dj_tz
-        ball_instance = await BallInstance.objects.acreate(
-            ball=card,
-            player=player,
-            special=special,
-            attack_bonus=bonus_attack,
-            health_bonus=bonus_health,
-            server_id=interaction.guild_id,
-            catch_date=dj_tz.now(),
-        )
-
-        daily_claims[user_id] = today
-        claims["daily"] = daily_claims
+        daily_claims[user_id]  = today
+        claims["daily"]        = daily_claims
         save_claims(claims)
 
-        special_text = f"✨ *{special.catch_phrase}*\n\n" if special and special.catch_phrase else ""
-        new_badge = "This is a **new cricketer** that has been added to your completion!" if is_new else ""
+        await _give_card(interaction, card, "daily")
 
-        message = (
-            f"{interaction.user.mention} You packed **{card.country}**! "
-            f"`#{ball_instance.pk:0X}, {bonus_attack:+}%, {bonus_health:+}%`\n\n"
-            f"{special_text}"
-            f"{new_badge}"
-        )
+    # ── /csweekly ────────────────────────────────────────────────────────────
+    @app_commands.command(name="csweekly", description="Claim your weekly cricketer card!")
+    @app_commands.guild_only()
+    async def csweekly(self, interaction: discord.Interaction["CricStarBot"]):
+        user_id = str(interaction.user.id)
+        now     = datetime.now(tz=timezone.utc)
 
-        await interaction.followup.send(message)
+        claims        = load_claims()
+        weekly_claims = claims.get("weekly", {})
 
-        log.info(
-            f"{interaction.user} claimed daily card: {card.country} "
-            f"(rarity={card.rarity}, special={special})"
-        )
+        last_str = weekly_claims.get(user_id)
+        if last_str:
+            last_dt  = datetime.fromisoformat(last_str)
+            next_dt  = last_dt + timedelta(days=WEEKLY_DAYS)
+            if now < next_dt:
+                remaining  = next_dt - now
+                days, secs = divmod(int(remaining.total_seconds()), 86400)
+                hours       = secs // 3600
+                await interaction.response.send_message(
+                    f"You've already claimed your weekly card, {interaction.user.mention}!\n"
+                    f"Come back in **{days}d {hours}h** for your next weekly card. 🏏",
+                    ephemeral=True,
+                )
+                return
+
+        await interaction.response.defer()
+
+        card = pick_weekly_card()
+        if not card:
+            await interaction.followup.send("No cards available right now. Try again later!", ephemeral=True)
+            return
+
+        weekly_claims[user_id] = now.isoformat()
+        claims["weekly"]       = weekly_claims
+        save_claims(claims)
+
+        await _give_card(interaction, card, "weekly")
 
 
 async def setup(bot):
     await bot.add_cog(DailyCog(bot))
-    

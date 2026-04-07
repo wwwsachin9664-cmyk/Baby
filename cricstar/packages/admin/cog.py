@@ -1669,3 +1669,80 @@ class Admin(commands.Cog):
             f"**All saved backgrounds:** {presets_display}",
             ephemeral=True,
         )
+
+    # ── /csdeletepath ─────────────────────────────────────────────────────────
+    @app_commands.command(
+        name="csdeletepath",
+        description="[Owner] Delete a saved background image file.",
+    )
+    @app_commands.describe(background="Background name to delete, or 'none' to cancel")
+    @app_commands.autocomplete(background=_background_autocomplete)
+    async def csdeletepath(
+        self,
+        interaction: discord.Interaction["CricStarBot"],
+        background: str = "none",
+    ):
+        if not await self.bot.is_owner(interaction.user):
+            await interaction.response.send_message(
+                "❌ Only the bot owner can use this command.", ephemeral=True
+            )
+            return
+
+        if background.strip().lower() in ("none", ""):
+            await interaction.response.send_message(
+                "Nothing to delete — you selected **none**.", ephemeral=True
+            )
+            return
+
+        bg_dir = Path("admin_panel/media/backgrounds")
+        # Match with or without extension
+        target: Path | None = None
+        for ext in (".png", ".jpg", ".jpeg", ".webp", ""):
+            candidate = bg_dir / f"{background}{ext}"
+            if candidate.exists():
+                target = candidate
+                break
+
+        if target is None:
+            all_presets = _list_background_presets()
+            presets_display = ", ".join(f"`{p}`" for p in all_presets) or "*none*"
+            await interaction.response.send_message(
+                f"❌ No background named **`{background}`** was found.\n\n"
+                f"**Available backgrounds:** {presets_display}",
+                ephemeral=True,
+            )
+            return
+
+        target.unlink()
+        await interaction.response.send_message(
+            f"✅ Background **`{target.name}`** has been deleted.",
+            ephemeral=True,
+        )
+
+    # ── /csresetcooldown ──────────────────────────────────────────────────────
+    @app_commands.command(
+        name="csresetcooldown",
+        description="[Owner] Reset all daily, weekly, and upgrade cooldowns.",
+    )
+    async def csresetcooldown(self, interaction: discord.Interaction["CricStarBot"]):
+        if not await self.bot.is_owner(interaction.user):
+            await interaction.response.send_message(
+                "❌ Only the bot owner can use this command.", ephemeral=True
+            )
+            return
+
+        # Reset daily + weekly claims
+        from cricstar.packages.daily.cog import reset_all_cooldowns
+        reset_all_cooldowns()
+
+        # Reset upgrade global cooldown
+        from cricstar.packages.upgrade.cog import reset_upgrade_cooldown
+        reset_upgrade_cooldown()
+
+        await interaction.response.send_message(
+            "✅ All cooldowns reset!\n"
+            "• **Daily** — everyone can claim again\n"
+            "• **Weekly** — everyone can claim again\n"
+            "• **Upgrade** — upgrade is available immediately",
+            ephemeral=True,
+        )
