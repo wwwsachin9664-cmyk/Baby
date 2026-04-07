@@ -214,10 +214,11 @@ class BallSpawnView(View):
         population = [
             x
             for x in specials.values()
-            # handle null start/end dates with infinity times
-            if (x.start_date or datetime.min.replace(tzinfo=timezone.get_current_timezone()))
-            <= timezone.now()
-            <= (x.end_date or datetime.max.replace(tzinfo=timezone.get_current_timezone()))
+            # Only include specials that have been explicitly started (start_date must be set and in the past)
+            # and have not yet ended (end_date is null meaning no expiry, or is in the future)
+            if x.start_date is not None
+            and x.start_date <= timezone.now()
+            and (x.end_date is None or x.end_date >= timezone.now())
         ]
 
         if not population:
