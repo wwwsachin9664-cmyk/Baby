@@ -361,7 +361,7 @@ def draw_premade_card(
 
     INFO_Y     = FRAME_BOTTOM + 36        # where text panel begins
     CODENAME_Y = INFO_Y + 82             # -35 px
-    DESC_Y     = CODENAME_Y + 174       # -50 px
+    DESC_Y     = CODENAME_Y + 149       # -25 px
 
     BAR_H  = 180                          # bottom stats bar height
     BAR_Y  = CARD_H - BAR_H              # 1820
@@ -520,7 +520,7 @@ def draw_premade_card(
     ball_icon_path = str(SOURCES_PATH / "ball_icon.png")
 
     # ── Bat stat ──────────────────────────────────────────────────────────────
-    BAT_X = 720   # moved right, close to ball cluster
+    BAT_X = 530
     bat_icon_w = _paste_icon(bat_icon_path, ICON_H, BAT_X)
     draw = ImageDraw.Draw(bg)   # re-acquire after paste
 
