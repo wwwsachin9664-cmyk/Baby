@@ -1347,6 +1347,117 @@ class Admin(commands.Cog):
 
         await ctx.send("\n".join(summary_lines), ephemeral=True)
 
+    async def _event_name_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        """Return up to 25 event names matching the current input."""
+        current_lower = current.lower()
+        matches = [
+            app_commands.Choice(name=special.name, value=special.name)
+            for special in specials_cache.values()
+            if current_lower in special.name.lower()
+        ]
+        return matches[:25]
+
+    @commands.hybrid_command(name="evmake")
+    @app_commands.default_permissions(administrator=True)
+    @checks.is_superuser()
+    @app_commands.describe(
+        event_name="Name of the event (must be unique)",
+        catch_phrase="Message shown when a player catches a card from this event (max 128 chars)",
+    )
+    async def evmake(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        event_name: str,
+        catch_phrase: str = "",
+    ):
+        """
+        Quickly create a normal event with a name and optional catch phrase.
+        """
+        await ctx.defer(ephemeral=True)
+
+        event_name = event_name.strip()
+        if not event_name:
+            await ctx.send("❌ Event name cannot be blank.", ephemeral=True)
+            return
+
+        if len(event_name) > 64:
+            await ctx.send(
+                f"❌ Event name is too long ({len(event_name)} chars). Maximum is 64 characters.",
+                ephemeral=True,
+            )
+            return
+
+        if catch_phrase and len(catch_phrase) > 128:
+            await ctx.send(
+                f"❌ Catch phrase is too long ({len(catch_phrase)} chars). Maximum is 128 characters.",
+                ephemeral=True,
+            )
+            return
+
+        if await Special.objects.filter(name=event_name).aexists():
+            await ctx.send(
+                f"❌ An event named **{event_name}** already exists. Choose a different name.",
+                ephemeral=True,
+            )
+            return
+
+        special = await Special.objects.acreate(
+            name=event_name,
+            rarity=0.1,
+            catch_phrase=catch_phrase.strip() or None,
+            tradeable=True,
+            hidden=False,
+        )
+
+        specials_cache[special.id] = special
+        log.info(f"evmake: '{event_name}' (id={special.id}) created by {ctx.author}")
+
+        lines = [
+            f"✅ **Event `{event_name}` created!** (ID: `{special.id}`)",
+            f"• **Catch phrase:** {catch_phrase.strip() or '*(none)*'}",
+            f"• **Rarity:** `0.1` (10% spawn weight)",
+            f"\nUse `/cardmaker` → event field to assign cards to **{event_name}**.",
+        ]
+        await ctx.send("\n".join(lines), ephemeral=True)
+
+    @commands.hybrid_command(name="evremover")
+    @app_commands.default_permissions(administrator=True)
+    @checks.is_superuser()
+    @app_commands.describe(
+        event_name="Name of the event to remove (autocomplete available)",
+    )
+    @app_commands.autocomplete(event_name=_event_name_autocomplete)
+    async def evremover(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        event_name: str,
+    ):
+        """
+        Remove an event by name. This deletes the event from the database and live cache.
+        """
+        await ctx.defer(ephemeral=True)
+
+        event_name = event_name.strip()
+        try:
+            special = await Special.objects.aget(name=event_name)
+        except Special.DoesNotExist:
+            await ctx.send(
+                f"❌ No event named **{event_name}** was found.", ephemeral=True
+            )
+            return
+
+        special_id = special.id
+        await special.adelete()
+        specials_cache.pop(special_id, None)
+
+        log.info(f"evremover: '{event_name}' (id={special_id}) removed by {ctx.author}")
+        await ctx.send(
+            f"✅ Event **{event_name}** (ID: `{special_id}`) has been removed.",
+            ephemeral=True,
+        )
+
     @commands.hybrid_command(name="removecard")
     @app_commands.default_permissions(administrator=True)
     @commands.is_owner()
