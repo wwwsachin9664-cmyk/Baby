@@ -492,6 +492,7 @@ class Admin(commands.Cog):
         event="Assign card to a special event (always spawns with it)",
         tradeable="Whether this card can be traded (default True)",
         catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
+        foreground_border="Whether to draw a white border around the foreground image (default True)",
     )
     @app_commands.autocomplete(event=_event_autocomplete, background=_background_autocomplete)
     async def cardmaker(
@@ -512,6 +513,7 @@ class Admin(commands.Cog):
         tradeable: bool = True,
         display_name: str = "",
         catch_name: str = "",
+        foreground_border: bool = True,
     ):
         """
         Generate a Dembele-style cricket card and add it to the database.
@@ -652,6 +654,7 @@ class Admin(commands.Cog):
                     bg_path, fg_path, card_name, codename, description,
                     rarity, bat_score, ball_score, artwork_author, logo_path,
                     neon_color=get_neon_color(player_name),
+                    foreground_border=foreground_border,
                 )
 
             with ThreadPoolExecutor() as pool:
@@ -1365,15 +1368,17 @@ class Admin(commands.Cog):
     @app_commands.describe(
         event_name="Name of the event (must be unique)",
         catch_phrase="Message shown when a player catches a card from this event (max 128 chars)",
+        emoji="An emoji or Discord emoji ID shown next to the event name",
     )
     async def evmake(
         self,
         ctx: commands.Context["CricStarBot"],
         event_name: str,
         catch_phrase: str = "",
+        emoji: str = "",
     ):
         """
-        Create an event with a name and optional catch phrase.
+        Create an event with a name, optional catch phrase, and optional emoji.
         """
         await ctx.defer(ephemeral=True)
 
@@ -1407,6 +1412,7 @@ class Admin(commands.Cog):
             name=event_name,
             rarity=0.1,
             catch_phrase=catch_phrase.strip() or None,
+            emoji=emoji.strip() or None,
             tradeable=True,
             hidden=False,
         )
@@ -1417,6 +1423,7 @@ class Admin(commands.Cog):
         lines = [
             f"✅ **Event `{event_name}` created!** (ID: `{special.id}`)",
             f"• **Catch phrase:** {catch_phrase.strip() or '*(none)*'}",
+            f"• **Emoji:** {emoji.strip() or '*(none)*'}",
             f"\nUse `/cardmaker` → event field to assign cards to **{event_name}**.",
         ]
         await ctx.send("\n".join(lines), ephemeral=True)

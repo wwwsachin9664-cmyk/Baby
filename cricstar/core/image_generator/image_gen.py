@@ -330,6 +330,7 @@ def draw_premade_card(
     artwork_author: str,
     logo_path: "str | Path | None" = None,
     neon_color: "tuple | None" = None,
+    foreground_border: bool = True,
 ) -> "tuple[Image.Image, dict[str, Any]]":
     """
     Generate a cricket trading card.
@@ -430,13 +431,13 @@ def draw_premade_card(
 
     # ── 3. Image frame — white border outline + foreground image ─────────────
     BORDER = 5
-    # White rectangle border drawn BEFORE the image so it sits behind
-    draw.rectangle(
-        [(FRAME_X - BORDER, FRAME_Y - BORDER),
-         (FRAME_X + FRAME_W + BORDER, FRAME_BOTTOM + BORDER)],
-        outline=(255, 255, 255, 255),
-        width=BORDER,
-    )
+    if foreground_border:
+        draw.rectangle(
+            [(FRAME_X - BORDER, FRAME_Y - BORDER),
+             (FRAME_X + FRAME_W + BORDER, FRAME_BOTTOM + BORDER)],
+            outline=(255, 255, 255, 255),
+            width=BORDER,
+        )
 
     fg = Image.open(str(foreground_path)).convert("RGBA")
     fg_fitted = ImageOps.fit(fg, (FRAME_W, FRAME_H), Image.LANCZOS)
