@@ -238,6 +238,13 @@ class BetInstance(LayoutView):
     async def _fill_container(self, container: Container):
         b1, b2 = self.bettor1, self.bettor2
 
+        # ── Intro mention (only shown before bet is resolved/cancelled) ──────
+        if not self._resolved and not self.cancelled:
+            container.add_item(TextDisplay(
+                f"Hey {b2.user.mention}, **{b1.user.display_name}** is proposing a CricStar Bet with you!"
+            ))
+            container.add_item(Separator())
+
         # ── Header ───────────────────────────────────────────────
         if self._resolved:
             # header is set later in finish_bet after we know the winner
@@ -475,12 +482,7 @@ class BetInstance(LayoutView):
         return bet
 
     async def start(self, channel: discord.abc.Messageable) -> discord.Message:
-        """Build the initial view and send it."""
-        # Send the mention as a plain message first (Components V2 doesn't allow content + view)
-        await channel.send(
-            content=f"Hey {self.bettor2.user.mention}, "
-                    f"**{self.bettor1.user.display_name}** is proposing a CricStar Bet with you!"
-        )
+        """Build the initial view and send it as a single message."""
         await self._build_view()
         msg = await channel.send(view=self)
         self.message = msg
@@ -588,7 +590,7 @@ class BetInstance(LayoutView):
         container.add_item(TextDisplay(f"**✅ {winner.user.display_name}**"))
         container.add_item(TextDisplay(await winner.card_list_text(self.cog.bot)))
         container.add_item(Separator())
-        container.add_item(TextDisplay(f"**❌ {loser.user.display_name}**"))
+        container.add_item(TextDisplay(f"**✅ {loser.user.display_name}**"))
         container.add_item(TextDisplay(await loser.card_list_text(self.cog.bot)))
 
         self.add_item(container)
