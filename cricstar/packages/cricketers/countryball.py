@@ -403,7 +403,7 @@ class BallSpawnView(View):
         text = ""
         if ball.specialcard and ball.specialcard.catch_phrase:
             text += f"*{ball.specialcard.catch_phrase}*\n"
-        if new_ball:
+        elif new_ball:
             text += f"This is a **new {settings.collectible_name}** that has been added to your completion!"
         if self.ballinstance:
             text += f"This {settings.collectible_name} was dropped by <@{self.og_id}>\n"
