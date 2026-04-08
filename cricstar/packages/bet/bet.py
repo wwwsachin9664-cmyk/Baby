@@ -243,19 +243,22 @@ class BetInstance(LayoutView):
             # header is set later in finish_bet after we know the winner
             header = self._result_header
         elif self.cancelled:
-            header = "## CricStar Betting\n❌ The bet has been cancelled."
+            header = "## CricStar Betting\nThe bet has been cancelled."
         elif self.confirmation_phase:
             header = (
                 "## CricStar Betting\n"
-                "Both users have locked their proposals.\n"
-                "**Please confirm to conclude the bet.**"
+                "Both users locked their propositions!\n"
+                "Now confirm to conclude this bet."
             )
         else:
             header = (
                 "## CricStar Betting\n"
-                f"Add or remove {settings.plural_collectible_name} to bet using "
-                f"`/bet add` and `/bet remove`.\n"
+                f"Add or remove {settings.plural_collectible_name} you want to propose to the other player using "
+                f"`/bet add` and `/bet remove` commands.\n"
                 "Once you're finished, click the lock button below to confirm your proposal.\n"
+                "You can also lock with nothing if it's an empty bet.\n"
+                "NOTE: This is a randomly selected 50/50 chance, it is NOT influenced by: "
+                "Past results, ticking times, send order or other factors.\n\n"
                 "*This bet will timeout in 30 minutes.*"
             )
 
@@ -572,7 +575,7 @@ class BetInstance(LayoutView):
         # Build result header
         self._result_header = (
             f"## CricStar Betting\n"
-            f"🎉 **The winner is {winner.user.display_name}!**"
+            f"The winner is **{winner.user.display_name}**!"
         )
 
         # Render final state (no buttons)
@@ -582,10 +585,10 @@ class BetInstance(LayoutView):
         container.add_item(TextDisplay(self._result_header))
         container.add_item(Separator())
 
-        container.add_item(TextDisplay(f"**✅ {winner.user.display_name}** *(winner — receives all)*"))
+        container.add_item(TextDisplay(f"**✅ {winner.user.display_name}**"))
         container.add_item(TextDisplay(await winner.card_list_text(self.cog.bot)))
         container.add_item(Separator())
-        container.add_item(TextDisplay(f"**❌ {loser.user.display_name}** *(loser)*"))
+        container.add_item(TextDisplay(f"**❌ {loser.user.display_name}**"))
         container.add_item(TextDisplay(await loser.card_list_text(self.cog.bot)))
 
         self.add_item(container)
