@@ -1,7 +1,5 @@
 """
-This file contains most of the logic behind trading. It is composed of two main classes: `TradingUser` and
-`TradeInstance`. They act as data models, contain API functions, and also work as components to be directly displayed
-on Discord.
+Trade logic for CricStar. Uses a single-container layout matching the CricDex reference style.
 """
 
 from __future__ import annotations
@@ -13,7 +11,7 @@ from typing import TYPE_CHECKING, cast
 
 import discord
 from asgiref.sync import sync_to_async
-from discord.ui import ActionRow, Button, Item, Section, Select, Separator, TextDisplay, TextInput, Thumbnail
+from discord.ui import ActionRow, Button, Item, Section, Separator, TextDisplay, TextInput
 from discord.utils import format_dt
 from django.db import transaction
 from django.utils import timezone
@@ -86,9 +84,9 @@ class SetMoneyModal(Modal, title="Set money offering"):
         await self.trading_user.view.edit_message(interaction)
 
 
-class TradingUser(Container):
+class TradingUser:
     """
-    Represent one user part of a trade.
+    Represent one user part of a trade. Plain data/logic class (not a UI element).
 
     Parameters
     ----------
@@ -98,23 +96,9 @@ class TradingUser(Container):
         The fetched player model of the user.
     user: discord.abc.User
         The Discord user model.
-
-    Attributes
-    ----------
-    proposal: set[int]
-        The set of cricketer IDs in the user's proposal.
-    locked: bool
-        `True` if the user locked their proposal.
-    cancelled: bool
-        `True` if the user cancelled the trade.
-    confirmed: bool
-        `True` if the user confirmed the trade.
-    menu: Menu[QuerySet[BallInstance]] | Menu[str]
-        The pagination menu for this user. This is a Select paginator before locking, and a Text source after locking.
     """
 
     def __init__(self, trade: TradeInstance, player: Player, user: discord.abc.User):
-        super().__init__()
         self.trade = trade
         self.cog = trade.cog
         self.player = player
@@ -125,166 +109,81 @@ class TradingUser(Container):
         self.cancelled: bool = False
         self.confirmed: bool = False
 
-        self.menu = Menu(
-            self.cog.bot, trade, ModelSource(self.get_queryset()), CountryballFormatter(self.select_menu, max_values=25)
-        )
+        self.proposal_list = TextDisplay("")
+        self.select_row: ActionRow | None = None
+        self.menu: Menu | None = None
 
-        self.view: TradeInstance
+        self.view: TradeInstance = trade
 
     def __repr__(self) -> str:
         return f"<TradingUser player_id={self.player.pk} discord_id={self.user.id}>"
 
-    async def interaction_check(self, interaction: Interaction) -> bool:
-        if interaction.user.id not in (self.trade.trader1.user.id, self.trade.trader2.user.id):
-            await interaction.response.send_message("You are not part of this trade!", ephemeral=True)
-            return False
-        return True
-
-    # ==== Utils ====
     def get_queryset(self) -> "QuerySet[BallInstance]":
-        """
-        Get a prepared queryset with the cricketers proposed by this user.
-        """
         if not self.proposal:
             return BallInstance.objects.none()
         return BallInstance.objects.filter(id__in=self.proposal)
 
-    # ==== Container items ====
-
-    proposal_list = TextDisplay("")
-    select_row = ActionRow()
-
-    async def set_currency(self, interaction: Interaction):
-        modal = SetMoneyModal(self)
-        await interaction.response.send_modal(modal)
-        await modal.wait()
-
-    @select_row.select(placeholder="Click to remove an item", min_values=1)
-    async def select_menu(self, interaction: Interaction, select: Select):
-        if not interaction.user.id == self.user.id:
-            await interaction.response.send_message(
-                "You are not allowed to do this, edit your own trade.", ephemeral=True
-            )
-            return
-        await interaction.response.defer()
-        try:
-            await self.remove_from_proposal(BallInstance.objects.filter(id__in=(int(x) for x in select.values)))
-        except TradeError as e:
-            await interaction.followup.send(e.error_message, ephemeral=True)
-        else:
-            await self.view.edit_message(interaction)
-
-    # ==== Display helpers ====
-
-    async def refresh_container(self):
-        """
-        Rebuild this container's items with the current state.
-        """
-        self.clear_items()
-
-        if self.view.cancelled:
-            if self.cancelled:
-                self.accent_colour = discord.Colour.red()
-                header_text = f"## ❌ {self.user.display_name}"
-            else:
-                self.accent_colour = discord.Colour.red()
-                header_text = f"## {self.user.display_name}"
-        elif self.confirmed:
-            self.accent_colour = discord.Colour.green()
-            header_text = f"## ✅ {self.user.display_name}"
-        elif self.view.confirmation_phase:
-            self.accent_colour = discord.Colour.gold()
-            header_text = f"## ⏳ {self.user.display_name}"
-        elif self.locked:
-            self.accent_colour = discord.Colour.yellow()
-            header_text = f"## 🔒 {self.user.display_name}"
-        else:
-            self.accent_colour = discord.Colour.blue()
-            header_text = f"## 🏏 {self.user.display_name}"
-
-        section = Section(
-            TextDisplay(header_text), accessory=Thumbnail(self.user.display_avatar.url)
-        )
-        if self.view.cancelled:
-            if self.cancelled:
-                section.add_item(TextDisplay("**You cancelled the trade.**"))
-            else:
-                section.add_item(TextDisplay("*The trade has been cancelled.*"))
-        elif self.confirmed:
-            section.add_item(TextDisplay("**Proposal confirmed** — waiting for the other player."))
-        elif self.view.confirmation_phase:
-            section.add_item(TextDisplay("Both proposals locked. **Review and confirm to complete the trade.**"))
-        elif self.locked:
-            section.add_item(
-                TextDisplay(
-                    "**Proposal locked** — waiting for the other player to lock."
-                )
-            )
-        else:
-            add_cmd = self.cog.add.extras.get("mention", "`/trade add`")
-            del_cmd = self.cog.remove.extras.get("mention", "`/trade remove`")
-            section.add_item(TextDisplay(f"Use {add_cmd} to add and {del_cmd} to remove cricketers."))
-
-        section.add_item(TextDisplay(f"-# {len(self.proposal)} {settings.plural_collectible_name} in proposal"))
-        self.add_item(section)
-        self.add_item(Separator())
-
-        # update disabled states
-        self.select_menu.disabled = self.locked or self.trade.cancelled
-
-        if settings.currency_enabled:
-            button = Button(label="Change", style=discord.ButtonStyle.primary)
-            button.callback = self.set_currency
-            currency_section = Section(
-                TextDisplay(f"{settings.currency_name} proposed: {format_currency(self.money)}"), accessory=button
-            )
-            self.add_item(currency_section)
-
+    async def render_proposal(self, container: Container):
+        """Add this trader's proposal section into the given container."""
         if not self.locked:
-            self.select_menu.options.clear()  # pyright: ignore[reportAttributeAccessIssue]
-            self.add_item(self.select_row)
-            # refresh the source data
+            assert self.select_row is not None
+            select = cast(discord.ui.Select, self.select_row.children[0])
+            select.options.clear()
+            container.add_item(self.select_row)
+
             if self.proposal:
-                cast(ModelSource, self.menu.source).queryset = self.get_queryset().order_by("locked")
-                # this will insert the controls right beneath the select menu
-                await self.menu.init(container=self)
+                if self.menu is None or not isinstance(self.menu.source, ModelSource):
+                    self.menu = Menu(
+                        self.cog.bot, self.view,
+                        ModelSource(self.get_queryset().order_by("locked")),
+                        CountryballFormatter(select, max_values=25),
+                    )
+                else:
+                    cast(ModelSource, self.menu.source).queryset = self.get_queryset().order_by("locked")
+                    cast(CountryballFormatter, self.menu.formatters[0]).item = select
+                await self.menu.init(container=container)
             else:
-                self.select_menu.add_option(label="Nothing yet")
-                self.select_menu.disabled = True
-                self.select_menu.max_values = 1
+                select.add_option(label="Nothing yet")
+                select.disabled = True
+                select.max_values = 1
+
+            if settings.currency_enabled:
+                button = Button(label="Change", style=discord.ButtonStyle.primary)
+                button.callback = self._set_currency_callback()
+                container.add_item(
+                    Section(
+                        TextDisplay(f"{settings.currency_name} proposed: {format_currency(self.money)}"),
+                        accessory=button,
+                    )
+                )
         else:
-            self.add_item(self.proposal_list)
-            if self.proposal:
-                await self.menu.init(container=self)
+            container.add_item(self.proposal_list)
+            if self.proposal and self.menu is not None:
+                await self.menu.init(container=container)
 
         if not self.view.active:
-            for item in self.walk_children():
-                if hasattr(item, "disabled"):
-                    item.disabled = True  # type: ignore
+            if self.select_row:
+                for child in self.select_row.children:
+                    if hasattr(child, "disabled"):
+                        child.disabled = True  # type: ignore
 
-    # ==== API functions ====
+    def _set_currency_callback(self):
+        trading_user = self
+
+        async def callback(interaction: Interaction):
+            modal = SetMoneyModal(trading_user)
+            await interaction.response.send_modal(modal)
+            await modal.wait()
+
+        return callback
 
     async def add_to_proposal(self, queryset: "QuerySet[BallInstance]"):
         """
         Add cricketers to a trader's proposal.
 
-        If an error is raised, the state of the given cricketers will not be edited.
-
-        Parameters
-        ----------
-        queryset: QuerySet[BallInstance]
-            The queryset of cricketers being added. This must not be a list of already fetched objects.
-
         Raises
         ------
-        LockedError
-            The proposal is locked
-        OwnershipError
-            One of the cricketers is not owned by the trading user
-        AlreadyLockedError
-            One of the cricketers is locked in a different trade
-        NotTradeableError
-            One of the cricketers is not tradeable
+        LockedError, OwnershipError, AlreadyLockedError, NotTradeableError
         """
         if self.locked:
             raise LockedError()
@@ -308,17 +207,9 @@ class TradingUser(Container):
         """
         Remove the given cricketer from the trader's proposal.
 
-        Parameters
-        ----------
-        queryset: QuerySet[BallInstance]
-            The queryset of cricketers being removed. This must not be a list of already fetched objects.
-
         Raises
         ------
-        LockedError
-            The proposal is locked
-        NotProposedError
-            One or more cricketers were not listed in this proposal
+        LockedError, NotProposedError
         """
         if self.locked:
             raise LockedError()
@@ -332,14 +223,11 @@ class TradingUser(Container):
 
     async def lock(self):
         """
-        Lock the proposal, preventing items from being added or removed.
+        Lock the proposal.
 
         Raises
         ------
-        LockedError
-            The trade is already locked
-        CancelledError
-            The trade is cancelled
+        LockedError, CancelledError
         """
         if self.locked:
             raise LockedError()
@@ -348,23 +236,25 @@ class TradingUser(Container):
         self.locked = True
 
         if not self.proposal:
-            self.proposal_list.content = "Nothing proposed"
+            self.proposal_list.content = "*Empty*"
             return
+
         if (
             (not self.view.trader1.proposal and not self.view.trader1.money)
             and (not self.view.trader2.proposal and not self.view.trader2.money)
             and self.view.confirmation_phase
         ):
             await self.view.cleanup()
-            self.view.add_item(
-                TextDisplay("Both of you have locked without proposing anything, the trade is cancelled.")
-            )
+            return
 
-        # replace the select menu with immutable text
         text = ""
         async for ball in self.get_queryset().prefetch_related("special"):
             text += f"- {ball.description(include_emoji=True, bot=self.cog.bot, is_trade=True)}\n"
-        self.menu = Menu(self.cog.bot, self.view, TextSource(text, page_length=1800), TextFormatter(self.proposal_list))
+        self.menu = Menu(
+            self.cog.bot, self.view,
+            TextSource(text, page_length=1800),
+            TextFormatter(self.proposal_list),
+        )
 
     async def clear(self):
         """
@@ -372,10 +262,7 @@ class TradingUser(Container):
 
         Raises
         ------
-        LockedError
-            The trade is already locked
-        CancelledError
-            The trade is cancelled
+        AlreadyLockedError, CancelledError
         """
         if self.locked:
             raise AlreadyLockedError()
@@ -385,29 +272,18 @@ class TradingUser(Container):
         self.proposal.clear()
 
     async def cancel(self):
-        """
-        Cancel the trade.
-        """
         self.cancelled = True
         self.view.stop()
         await self.view.cleanup()
 
     async def confirm(self):
         """
-        Confirm the trade for this user. If the other user confirmed, this triggers the end of the trade.
+        Confirm the trade for this user.
 
         Raises
         ------
-        SynchronizationError
-            The trade is already being finished or has finished. This happens when duplicated calls are received.
-        AssertError
-            The state does not allow the trade to be finished (cancelled, not locked on both sides). This should not
-            happen in a normal UI path.
-        IntegrityError
-            The trade is being finished, but a mutation has been detected and the trade will be cancelled. This usually
-            happens if a proposed cricketer is found out to not belong to the original user at this time.
+        SynchronizationError, AssertionError, IntegrityError
         """
-        # this should not be false, but it's safer to crash if that happens
         assert self.view.confirmation_phase is True
         self.confirmed = True
         if self.view.trader1.confirmed and self.view.trader2.confirmed:
@@ -416,17 +292,7 @@ class TradingUser(Container):
 
 class TradeInstance(LayoutView):
     """
-    A trade instance. This doubles as a [`LayoutView`][discord.ui.LayoutView].
-
-    Attributes
-    ----------
-    trader1: TradingUser
-        The first trading user, also a [`Container`][discord.ui.Container].
-    trader2: TradingUser
-        The second trading user, also a [`Container`][discord.ui.Container].
-    message: discord.Message
-        The message that was sent with this view. This must be set immediately after sending. Not compatible with a
-        webhook response.
+    A trade instance. Displays as a single container matching CricDex style.
     """
 
     def __init__(self, cog: "TradeCog"):
@@ -451,6 +317,7 @@ class TradeInstance(LayoutView):
         await self.cleanup()
         send = interaction.followup.send if interaction.response.is_done() else interaction.response.send_message
         await send("An error occured, the trade will be cancelled.", ephemeral=True)
+        self.clear_items()
         self.add_item(
             TextDisplay("An error occured and the trade has been cancelled! Contact support if this persists.")
         )
@@ -561,67 +428,127 @@ class TradeInstance(LayoutView):
         cls, cog: "TradeCog", trader1: tuple[Player, discord.abc.User], trader2: tuple[Player, discord.abc.User]
     ):
         trade = cls(cog)
+
+        select1 = discord.ui.Select(
+            placeholder="Click to remove an item",
+            min_values=1,
+            max_values=1,
+            custom_id=f"ts1_{id(trade)}",
+        )
+        select2 = discord.ui.Select(
+            placeholder="Click to remove an item",
+            min_values=1,
+            max_values=1,
+            custom_id=f"ts2_{id(trade)}",
+        )
+
+        async def remove1(interaction: Interaction):
+            t = trade.trader1
+            if interaction.user.id != t.user.id:
+                await interaction.response.send_message(
+                    "You are not allowed to do this, edit your own trade.", ephemeral=True
+                )
+                return
+            await interaction.response.defer()
+            try:
+                await t.remove_from_proposal(
+                    BallInstance.objects.filter(id__in=(int(x) for x in interaction.data.get("values", [])))  # type: ignore
+                )
+            except TradeError as e:
+                await interaction.followup.send(e.error_message, ephemeral=True)
+            else:
+                await trade.edit_message(interaction)
+
+        async def remove2(interaction: Interaction):
+            t = trade.trader2
+            if interaction.user.id != t.user.id:
+                await interaction.response.send_message(
+                    "You are not allowed to do this, edit your own trade.", ephemeral=True
+                )
+                return
+            await interaction.response.defer()
+            try:
+                await t.remove_from_proposal(
+                    BallInstance.objects.filter(id__in=(int(x) for x in interaction.data.get("values", [])))  # type: ignore
+                )
+            except TradeError as e:
+                await interaction.followup.send(e.error_message, ephemeral=True)
+            else:
+                await trade.edit_message(interaction)
+
+        select1.callback = remove1
+        select2.callback = remove2
+
+        select_row1 = ActionRow()
+        select_row1.add_item(select1)
+        select_row2 = ActionRow()
+        select_row2.add_item(select2)
+
         trade.trader1 = TradingUser(trade, *trader1)
+        trade.trader1.select_row = select_row1
         trade.trader2 = TradingUser(trade, *trader2)
-        trade.clear_items()
-        trade.add_item(TextDisplay(
-            f"## 🏏 CricStar Trade\n"
-            f"{trader2[1].mention} — **{trader1[1].mention}** is proposing a trade with you!\n"
-            f"-# Add cricketers with `/trade add`, then lock your proposal when ready."
-        ))
-        trade.add_item(trade.trader1)
-        trade.add_item(trade.trader2)
+        trade.trader2.select_row = select_row2
+
         trade.buttons.remove_item(trade.confirm_button)
-        trade.add_item(trade.buttons)
-        timeout = datetime.now() + timedelta(seconds=TRADE_TIMEOUT)
-        trade.add_item(TextDisplay(f"-# ⏱️ This trade will expire {format_dt(timeout, style='R')}."))
         return trade
 
-    @property
-    def cancelled(self):
-        """
-        `True` if any of the users cancelled.
-        """
-        return self.trader1.cancelled or self.trader2.cancelled
+    async def _rebuild_view(self):
+        """Rebuild the entire view as a single container, matching CricDex style."""
+        self.clear_items()
+        container = Container()
 
-    @property
-    def active(self):
-        """
-        `True` if the trade is still active and hasn't timed out.
-        """
-        return not self.is_finished() and not self.cancelled
+        t1, t2 = self.trader1, self.trader2
+        finished = self.is_finished() and not self.cancelled
 
-    @property
-    def confirmation_phase(self):
-        """
-        `True` if both users have locked and haven't cancelled.
-        """
-        return self.trader1.locked and self.trader2.locked and not self.cancelled
+        if finished:
+            container.accent_colour = discord.Colour.green()
+            header = "**Cricketers trading**\nTrade concluded!"
+            t1_prefix = "✅ "
+            t2_prefix = "✅ "
+            show_buttons = False
+        elif self.cancelled:
+            container.accent_colour = discord.Colour.red()
+            header = "**Cricketers trading**\nThe trade has been cancelled."
+            t1_prefix = ""
+            t2_prefix = ""
+            show_buttons = False
+        elif self.confirmation_phase:
+            container.accent_colour = discord.Colour.gold()
+            header = "**Cricketers trading**\nBoth users locked their propositions! Now confirm to conclude this trade."
+            t1_prefix = "🔒 "
+            t2_prefix = "🔒 "
+            show_buttons = True
+        else:
+            container.accent_colour = discord.Colour.blue()
+            add_cmd = self.cog.add.extras.get("mention", "`/trade add`")
+            del_cmd = self.cog.remove.extras.get("mention", "`/trade remove`")
+            header = (
+                f"**Cricketers trading**\n"
+                f"Add or remove cricketers you want to propose to the other player using the "
+                f"{add_cmd} and {del_cmd} commands. Once you're finished, click the lock button "
+                f"below to confirm your proposal. You can also lock with nothing if you're receiving a gift.\n\n"
+                f"*This trade will timeout in 30 minutes.*"
+            )
+            t1_prefix = "🔒 " if t1.locked else ""
+            t2_prefix = "🔒 " if t2.locked else ""
+            show_buttons = True
 
-    async def edit_message(self, interaction: Interaction | None):
-        """
-        A helper function to edit the main message while avoiding ratelimits.
+        container.add_item(TextDisplay(header))
+        container.add_item(Separator())
 
-        If an edit request is made while we're already waiting for an edit response, then the request
-        is queued for later. If another request comes shortly after, then the first request is discarded.
+        container.add_item(TextDisplay(f"**{t1_prefix}{t1.user.display_name}**"))
+        await t1.render_proposal(container)
 
-        This can also be represented as a LIFO queue of size 1.
+        container.add_item(Separator())
 
-        Example
-        -------
-        --> R1 (request 1) arrives
-        --> HTTP call for R1 is made
-        --> R2 arrives
-        --> R3 arrives
-        <-- R1 finished
-        --> HTTP call for R3 is made
-        In this example, request R2 has been discarded since we have received another edit request before R1 finished.
-        """
+        container.add_item(TextDisplay(f"**{t2_prefix}{t2.user.display_name}**"))
+        await t2.render_proposal(container)
 
-        async def refresh():
-            await self.trader1.refresh_container()
-            await self.trader2.refresh_container()
+        container.add_item(TextDisplay(
+            "-# This message is updated every 15 seconds, but you can keep on editing your proposal."
+        ))
 
+        if show_buttons:
             self.buttons.clear_items()
             if self.confirmation_phase:
                 self.buttons.add_item(self.confirm_button)
@@ -629,6 +556,32 @@ class TradeInstance(LayoutView):
                 self.buttons.add_item(self.lock_button)
                 self.buttons.add_item(self.clear_button)
             self.buttons.add_item(self.cancel_button)
+            container.add_item(self.buttons)
+
+        if not self.active:
+            for item in container._children:
+                if hasattr(item, "disabled"):
+                    item.disabled = True  # type: ignore
+
+        self.add_item(container)
+
+    @property
+    def cancelled(self):
+        return self.trader1.cancelled or self.trader2.cancelled
+
+    @property
+    def active(self):
+        return not self.is_finished() and not self.cancelled
+
+    @property
+    def confirmation_phase(self):
+        return self.trader1.locked and self.trader2.locked and not self.cancelled
+
+    async def edit_message(self, interaction: Interaction | None):
+        """Edit the main message, rate-limited."""
+
+        async def refresh():
+            await self._rebuild_view()
 
         if interaction is not None:
             self.next_edit_interaction = interaction
@@ -636,8 +589,6 @@ class TradeInstance(LayoutView):
             return
         async with self.edit_lock:
             if self.next_edit_interaction is None:
-                # this is a situation where we need to edit the message but without an interaction that owns it
-                # (when using slash commands instead of buttons), so we fall back on a different endpoint
                 await asyncio.sleep(0.5)
                 await refresh()
                 await self.message.edit(view=self)
@@ -647,19 +598,16 @@ class TradeInstance(LayoutView):
                 self.next_edit_interaction = None
                 await asyncio.sleep(0.5)
                 await refresh()
-                if self.is_finished():  # trade completed or timed out
-                    for children in self.walk_children():
-                        if hasattr(children, "disabled"):
-                            children.disabled = True  # type: ignore
+                if self.is_finished():
+                    for child in self.walk_children():
+                        if hasattr(child, "disabled"):
+                            child.disabled = True  # type: ignore
                 await inter.edit_original_response(view=self)
                 if self.is_finished():
                     break
 
     @transaction.atomic()
     def perform_trade_operation(self) -> Trade:
-        # this is synchronous to allow an atomic transaction
-        # https://code.djangoproject.com/ticket/33882
-
         assert self.confirmation_phase
         assert self.trader1.confirmed and self.trader2.confirmed
         trade_objects: list[TradeObject] = []
@@ -677,7 +625,6 @@ class TradeInstance(LayoutView):
 
         for cricketer in queryset_for_update(self.trader1):
             if cricketer.player.discord_id != self.trader1.player.discord_id:
-                # This is a invalid mutation, the player is not the owner of the cricketer
                 raise IntegrityError()
             cricketer.player = self.trader2.player
             cricketer.trade_player = self.trader1.player
@@ -688,7 +635,6 @@ class TradeInstance(LayoutView):
 
         for cricketer in queryset_for_update(self.trader2):
             if cricketer.player.discord_id != self.trader2.player.discord_id:
-                # This is a invalid mutation, the player is not the owner of the cricketer
                 raise IntegrityError()
             cricketer.player = self.trader1.player
             cricketer.trade_player = self.trader2.player
@@ -716,13 +662,6 @@ class TradeInstance(LayoutView):
         self.timeout_task.cancel()
         trade = await sync_to_async(self.perform_trade_operation)()
         self.stop()
-        # edition of the message will be triggered by the caller
-        self.add_item(TextDisplay(
-            f"## ✅ Trade Complete!\n"
-            f"The trade between **{self.trader1.user.display_name}** and **{self.trader2.user.display_name}** "
-            f"has been successfully completed.\n"
-            f"-# Trade ID: `#{trade.pk:0X}`"
-        ))
 
     async def _cleanup(self):
         self.stop()

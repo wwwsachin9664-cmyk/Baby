@@ -136,8 +136,10 @@ class Trade(commands.GroupCog):
         self.trades[interaction.channel.id][interaction.user.id] = trade
         self.trades[interaction.channel.id][user.id] = trade
         try:
-            await trade.trader1.refresh_container()
-            await trade.trader2.refresh_container()
+            await trade._rebuild_view()
+            await interaction.channel.send(  # type: ignore
+                content=f"Hey {user.mention}, **{interaction.user.display_name}** is proposing a trade with you!"
+            )
             trade.message = await interaction.channel.send(view=trade)  # type: ignore
         except Exception:
             # unregister the trade if something failed to avoid the 30 min timeout
