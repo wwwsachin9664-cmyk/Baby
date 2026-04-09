@@ -1385,7 +1385,6 @@ class Admin(commands.Cog):
 
         summary_lines = [
             f"✅ **Event `{name}` created!** (ID: `{special.id}`)\n",
-            f"• **Rarity:** `{rarity}` ({rarity * 100:.1f}% spawn weight)",
             f"• **Emoji:** {emoji.strip() or '*(none)*'}",
             f"• **Catch phrase:** {catch_phrase.strip() or '*(none)*'}",
             f"• **Starts:** {start_label}",
@@ -1393,8 +1392,6 @@ class Admin(commands.Cog):
             f"• **Tradeable:** {tradeable}",
             f"• **Status:** {status_label}",
         ]
-        if credits.strip():
-            summary_lines.append(f"• **Credits:** {credits.strip()}")
 
         summary_lines.append(
             f"\nThe event is now **live** in the bot cache. "
