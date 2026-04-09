@@ -24,49 +24,47 @@ WEEKLY_DAYS  = 7
 
 # ── Rarity weight tables ──────────────────────────────────────────────────────
 
-# Daily weights (existing)
-DAILY_RARITY_WEIGHTS = {
-    1.0:  4,
-    1.5:  6,
-    2.0:  7,
-    2.5:  9,
-    3.0:  12,
-    4.0:  13,
-    5.0:  15,
-    6.0:  18,
-    7.0:  19,
-    8.0:  20,
-    9.0:  22,
-}
-# 10.0–15.0 → 60,  16.0–20.0 → 90
-
-# Weekly probabilities (as per rarity tiers)
-#   0.01, 0.05, 0.08 → 0 %
-#   0.1 – 0.4        → 0.3 %
-#   0.5 – 0.9        → 0.8 %
-#   1.0 – 2.0        → 8 %
-#   2.5 – 5.0        → 15 %
-#   5.5 – 10.0       → 45 %
-#   11.0 – 15.0      → 60 %
-#   16.0 – 20.0      → 95 %
-
+# Weekly weights by rarity tier
+#   <= 0.08          → 0%  (never)
+#   0.1  – 0.4       → 8%
+#   0.5  – 0.9       → 20%
+#   1.0  – 2.0       → 30%
+#   2.5  – 5.0       → 90%
+#   > 5.0            → 0%  (not available for weekly)
 def _weekly_weight(rarity: float) -> float:
-    if rarity in (0.01, 0.05, 0.08):
+    if rarity <= 0.08:
         return 0.0
     if 0.1 <= rarity <= 0.4:
-        return 0.3
-    if 0.5 <= rarity <= 0.9:
-        return 0.8
-    if 1.0 <= rarity <= 2.0:
         return 8.0
+    if 0.5 <= rarity <= 0.9:
+        return 20.0
+    if 1.0 <= rarity <= 2.0:
+        return 30.0
     if 2.5 <= rarity <= 5.0:
-        return 15.0
-    if 5.5 <= rarity <= 10.0:
+        return 90.0
+    return 0.0
+
+
+# Daily weights by rarity tier
+#   <= 0.08          → 0%
+#   0.1  – 0.4       → 0.5%
+#   0.5  – 0.9       → 2%
+#   1.0  – 5.0       → 20%
+#   6.0  – 15.0      → 45%
+#   16.0 – 20.0      → 80%
+def _get_daily_weight(rarity: float) -> float:
+    if rarity <= 0.08:
+        return 0.0
+    if 0.1 <= rarity <= 0.4:
+        return 0.5
+    if 0.5 <= rarity <= 0.9:
+        return 2.0
+    if 1.0 <= rarity <= 5.0:
+        return 20.0
+    if 6.0 <= rarity <= 15.0:
         return 45.0
-    if 11.0 <= rarity <= 15.0:
-        return 60.0
     if 16.0 <= rarity <= 20.0:
-        return 95.0
+        return 80.0
     return 0.0
 
 
@@ -96,18 +94,8 @@ def reset_all_cooldowns():
 
 # ── Card pickers ─────────────────────────────────────────────────────────────
 
-def _get_daily_weight(rarity: float) -> int:
-    if rarity in DAILY_RARITY_WEIGHTS:
-        return DAILY_RARITY_WEIGHTS[rarity]
-    if 10.0 <= rarity <= 15.0:
-        return 60
-    if 16.0 <= rarity <= 20.0:
-        return 90
-    return 0
-
-
 def pick_daily_card() -> Ball | None:
-    eligible = [b for b in balls_cache.values() if b.enabled and 1.0 <= b.rarity <= 20.0]
+    eligible = [b for b in balls_cache.values() if b.enabled]
     if not eligible:
         return None
     filtered = [(b, _get_daily_weight(b.rarity)) for b in eligible]
@@ -153,11 +141,12 @@ async def _give_card(
     interaction: discord.Interaction,
     card: Ball,
     label: str,          # "daily" or "weekly"
+    include_special: bool = True,
 ) -> discord.File | None:
     """Create a BallInstance and return the card PNG as a discord.File."""
     bonus_attack = random.randint(-settings.max_attack_bonus, settings.max_attack_bonus)
     bonus_health = random.randint(-settings.max_health_bonus, settings.max_health_bonus)
-    special = get_random_special()
+    special = get_random_special() if include_special else None
 
     player, _ = await Player.objects.aget_or_create(discord_id=interaction.user.id)
     is_new    = not await BallInstance.objects.filter(player=player, ball=card).aexists()
@@ -235,7 +224,7 @@ class DailyCog(commands.Cog):
         claims["daily"]        = daily_claims
         save_claims(claims)
 
-        await _give_card(interaction, card, "daily")
+        await _give_card(interaction, card, "daily", include_special=True)
 
     # ── /csweekly ────────────────────────────────────────────────────────────
     @app_commands.command(name="csweekly", description="Claim your weekly cricketer card!")
@@ -273,7 +262,7 @@ class DailyCog(commands.Cog):
         claims["weekly"]       = weekly_claims
         save_claims(claims)
 
-        await _give_card(interaction, card, "weekly")
+        await _give_card(interaction, card, "weekly", include_special=False)
 
 
 async def setup(bot):
