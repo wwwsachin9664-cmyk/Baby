@@ -2040,12 +2040,24 @@ class Admin(commands.Cog):
 
         all_balls.sort(key=_badge_rarity)
 
+        # Standard rarity tiers — map each card's value to the nearest one
+        _TIERS = [0.08, 0.1, 1.0, 5.0, 10.0, 20.0]
+
+        def _snap_to_tier(value: float) -> float:
+            return min(_TIERS, key=lambda t: abs(t - value))
+
+        def _fmt_tier(value: float) -> str:
+            # Display with minimal trailing zeros but always keep decimals for <1 values
+            if value < 1:
+                return f"{value}"
+            return f"{value:g}"
+
         lines = []
         for ball in all_balls:
             badge_rarity = (ball.capacity_logic or {}).get("badge_rarity")
-            display_rarity = badge_rarity if badge_rarity is not None else ball.rarity
-            rarity_str = f"{float(display_rarity):.2f}".rstrip("0").rstrip(".")
-            lines.append(f"{rarity_str}  {ball.country}")
+            raw = float(badge_rarity) if badge_rarity is not None else float(ball.rarity)
+            tier = _snap_to_tier(raw)
+            lines.append(f"{_fmt_tier(tier)}  {ball.country}")
 
         text = "\n".join(lines)
 
