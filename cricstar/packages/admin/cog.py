@@ -495,6 +495,7 @@ class Admin(commands.Cog):
         catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
         foreground_border="Whether to draw a white border around the foreground image (default True)",
         credit_stroke="Whether to draw a stroke/outline on the credit and artwork author text (default True)",
+        only_spawn_in_event="If True, this card only spawns while its assigned event is active. Once the event ends, it stops spawning.",
     )
     @app_commands.autocomplete(event=_event_autocomplete, background=_background_autocomplete)
     async def cardmaker(
@@ -517,6 +518,7 @@ class Admin(commands.Cog):
         catch_name: str = "",
         foreground_border: bool = True,
         credit_stroke: bool = True,
+        only_spawn_in_event: bool = False,
     ):
         """
         Generate a Dembele-style cricket card and add it to the database.
@@ -685,6 +687,7 @@ class Admin(commands.Cog):
                     "bg_preset": background.strip(),
                     "foreground_border": foreground_border,
                     "credit_stroke": credit_stroke,
+                    "only_spawn_in_event": only_spawn_in_event,
                 },
                 regime=regime,
                 tradeable=tradeable,
@@ -769,6 +772,7 @@ class Admin(commands.Cog):
         logo_url="New team/event logo URL (leave blank to keep existing)",
         tradeable="Change tradeability (leave blank to keep existing)",
         catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
+        only_spawn_in_event="If True, card only spawns while its event is active. Set False to allow spawning anytime.",
     )
     @app_commands.autocomplete(background=_background_autocomplete)
     async def editcard(
@@ -788,6 +792,7 @@ class Admin(commands.Cog):
         logo_url: str = "",
         tradeable: bool | None = None,
         catch_name: str = "",
+        only_spawn_in_event: bool | None = None,
     ):
         """
         Edit an existing cricket card. Only supply the fields you want to change.
@@ -1022,7 +1027,11 @@ class Admin(commands.Cog):
         if catch_name.strip():
             ball.catch_names = catch_name.strip().lower()
             changed_fields.append("catch_names")
-            
+        if only_spawn_in_event is not None:
+            ball.capacity_logic = {**(ball.capacity_logic or {}), "only_spawn_in_event": only_spawn_in_event}
+            if "capacity_logic" not in changed_fields:
+                changed_fields.append("capacity_logic")
+
         if not changed_fields:
             await ctx.send(
                 "⚠️ Nothing to change — you didn't supply any new values.",
@@ -1261,7 +1270,6 @@ class Admin(commands.Cog):
     @checks.is_superuser()
     @app_commands.describe(
         name="Event name (e.g. IPL 2026, T20 World Cup) — must be unique",
-        rarity="Spawn weight 0.0–1.0 — how often this event's background appears (e.g. 0.05 = 5%)",
         emoji="An emoji or Discord emoji ID shown next to the event name",
         catch_phrase="Message shown when catching a card with this event (max 128 chars)",
         start_date="When the event starts (YYYY-MM-DD or YYYY-MM-DD HH:MM). Leave blank to start immediately",
@@ -1274,7 +1282,6 @@ class Admin(commands.Cog):
         self,
         ctx: commands.Context["CricStarBot"],
         name: str,
-        rarity: app_commands.Range[float, 0.0, 1.0],
         emoji: str = "",
         catch_phrase: str = "",
         start_date: str = "",
@@ -1284,9 +1291,9 @@ class Admin(commands.Cog):
         credits: str = "",
     ):
         """
-        Create a new special event. Events appear as coloured backgrounds on cards when they spawn.
-        rarity: 0.0–1.0 weight (0.05 = 5% chance the event background activates during a spawn).
-        Dates are optional — leave blank to start immediately / never expire.
+        Create a new special event. Cards assigned to this event via /cardmaker can be set to
+        only spawn during the event's active period. Dates are optional — leave blank to
+        start immediately / never expire.
         """
         import datetime
         from django.utils import timezone as tz
@@ -1359,7 +1366,7 @@ class Admin(commands.Cog):
 
         special = await Special.objects.acreate(
             name=name,
-            rarity=rarity,
+            rarity=0.0,
             emoji=emoji.strip() or None,
             catch_phrase=catch_phrase.strip() or None,
             start_date=parsed_start,

@@ -186,8 +186,28 @@ class BallSpawnView(View):
         Spawn weight rules:
           - rarity <= 1.0  → weight = rarity  (0.01 = 1%, 0.5 = 50%, 1.0 = 100%)
           - rarity >  1.0  → weight = rarity + 25  (1.0→26, 2.0→27, 20.0→45)
+
+        Cards with only_spawn_in_event=True are excluded when their event is not active.
         """
-        cricketers = list(filter(lambda m: m.enabled, balls.values()))
+        now = timezone.now()
+
+        def _is_event_active(ball: "Ball") -> bool:
+            logic = ball.capacity_logic or {}
+            if not logic.get("only_spawn_in_event"):
+                return True
+            forced_id = logic.get("forced_special")
+            if not forced_id:
+                return True
+            special = specials.get(int(forced_id))
+            if not special:
+                return False
+            if special.start_date and special.start_date > now:
+                return False
+            if special.end_date and special.end_date < now:
+                return False
+            return True
+
+        cricketers = list(filter(lambda m: m.enabled and _is_event_active(m), balls.values()))
         if not cricketers:
             raise RuntimeError("No ball to spawn")
 
