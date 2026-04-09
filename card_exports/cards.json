@@ -1,0 +1,19 @@
+{
+  "Naseem Shah": {
+    "player_name": "Naseem Shah",
+    "card_name": "Naseem",
+    "slug": "naseem_shah",
+    "codename": "Express",
+    "description": "Naseem Shah is a Pakistani international cricketer known for his high speed  right arm fast bowling  He is recognized as a key part of Pakistans bowling lineup across formats",
+    "bat_score": 55,
+    "ball_score": 55,
+    "rarity": 19.0,
+    "spawn_chance": 85.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "naseem shah",
+    "event_id": null,
+    "filename": "premade_naseem_shah.png"
+  }
+}
