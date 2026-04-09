@@ -331,6 +331,7 @@ def draw_premade_card(
     logo_path: "str | Path | None" = None,
     neon_color: "tuple | None" = None,
     foreground_border: bool = True,
+    credit_stroke: bool = True,
 ) -> "tuple[Image.Image, dict[str, Any]]":
     """
     Generate a cricket trading card.
@@ -591,7 +592,7 @@ def draw_premade_card(
             cred_line,
             font=cred_fnt,
             fill=(230, 230, 240, 255),
-            stroke_width=3,
+            stroke_width=3 if credit_stroke else 0,
             stroke_fill=(0, 0, 0, 255),
         )
         cred_y += int(cred_fnt.size * 1.3)

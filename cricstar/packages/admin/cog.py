@@ -493,6 +493,7 @@ class Admin(commands.Cog):
         tradeable="Whether this card can be traded (default True)",
         catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
         foreground_border="Whether to draw a white border around the foreground image (default True)",
+        credit_stroke="Whether to draw a stroke/outline on the credit and artwork author text (default True)",
     )
     @app_commands.autocomplete(event=_event_autocomplete, background=_background_autocomplete)
     async def cardmaker(
@@ -514,6 +515,7 @@ class Admin(commands.Cog):
         display_name: str = "",
         catch_name: str = "",
         foreground_border: bool = True,
+        credit_stroke: bool = True,
     ):
         """
         Generate a Dembele-style cricket card and add it to the database.
@@ -655,6 +657,7 @@ class Admin(commands.Cog):
                     rarity, bat_score, ball_score, artwork_author, logo_path,
                     neon_color=get_neon_color(player_name),
                     foreground_border=foreground_border,
+                    credit_stroke=credit_stroke,
                 )
 
             with ThreadPoolExecutor() as pool:
