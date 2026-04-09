@@ -1275,8 +1275,7 @@ class Admin(commands.Cog):
         start_date="When the event starts (YYYY-MM-DD or YYYY-MM-DD HH:MM). Leave blank to start immediately",
         end_date="When the event ends (YYYY-MM-DD or YYYY-MM-DD HH:MM). Leave blank to never expire",
         tradeable="Whether cards with this event can be traded (default True)",
-        hidden="If True, hides this event from user-facing commands like /cricketers list",
-        credits="Author/credit for this event's artwork",
+        hidden="If True, hides this event from player-facing commands. False means everyone can see it.",
     )
     async def createevent(
         self,
@@ -1288,7 +1287,6 @@ class Admin(commands.Cog):
         end_date: str = "",
         tradeable: bool = True,
         hidden: bool = False,
-        credits: str = "",
     ):
         """
         Create a new special event. Cards assigned to this event via /cardmaker can be set to
@@ -1373,7 +1371,6 @@ class Admin(commands.Cog):
             end_date=parsed_end,
             tradeable=tradeable,
             hidden=hidden,
-            credits=credits.strip() or None,
         )
             
         # Add to live cache so it's usable immediately without restart
