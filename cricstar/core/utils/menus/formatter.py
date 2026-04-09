@@ -5,7 +5,7 @@ import discord.ui
 from django.db.models import QuerySet
 
 from bd_models.models import BallInstance
-from cricstar.core.utils.emojis import get_player_emoji
+from cricstar.core.utils.emojis import get_player_emoji_id
 from settings.models import settings
 
 if TYPE_CHECKING:
@@ -108,13 +108,19 @@ class CountryballFormatter(Formatter[QuerySet[BallInstance], discord.ui.Select])
     async def format_page(self, page):
         self.item.options = []
         async for ball in page:
-            emoji = self.menu.bot.get_emoji(int(ball.cricketer.emoji_id))
             favorite = f"{settings.favorited_collectible_emoji} " if ball.favorite else ""
             raw_special = ball.specialcard.emoji if ball.specialcard else ""
             special = raw_special if raw_special and not str(raw_special).strip().isdigit() else ""
-            player_emoji = get_player_emoji(ball.cricketer.country)
+            # Resolve which emoji to show: player-linked emoji takes priority over bot emoji
+            player_emoji_id = get_player_emoji_id(ball.cricketer.country)
+            if player_emoji_id and player_emoji_id.isdigit():
+                emoji = discord.PartialEmoji(name="e", id=int(player_emoji_id))
+            elif player_emoji_id:
+                emoji = discord.PartialEmoji(name=player_emoji_id)
+            else:
+                emoji = self.menu.bot.get_emoji(int(ball.cricketer.emoji_id))
             self.item.add_option(
-                label=f"{favorite}{special}#{ball.pk:0X} {player_emoji}{ball.cricketer.country}",
+                label=f"{favorite}{special}#{ball.pk:0X} {ball.cricketer.country}",
                 description=(
                     f"ATK: {ball.attack}({ball.attack_bonus:+d}%) "
                     f"• HP: {ball.health}({ball.health_bonus:+d}%) • "

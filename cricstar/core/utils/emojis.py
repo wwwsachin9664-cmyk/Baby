@@ -81,6 +81,8 @@ def get_player_emoji(player_name: str) -> str:
     """
     Return the formatted emoji string for a specific player, or empty string.
     Lookup is case-insensitive.
+    Only returns unicode / text emojis safely. For Discord custom emoji IDs use
+    get_player_emoji_id() instead.
     """
     name_lower = player_name.strip().lower()
     if not name_lower:
@@ -88,8 +90,27 @@ def get_player_emoji(player_name: str) -> str:
     for entry in _load():
         p = entry.get("player", "").strip().lower()
         if p and p == name_lower:
-            return _fmt_id(entry["id"])
+            eid = entry["id"]
+            if eid.isdigit():
+                return f"<:e:{eid}> "
+            return f"{eid} "
     return ""
+
+
+def get_player_emoji_id(player_name: str) -> str | None:
+    """
+    Return the raw emoji ID string for a player's linked emoji, or None.
+    Returns the numeric ID string if it is a custom Discord emoji, else the
+    unicode character, else None.
+    """
+    name_lower = player_name.strip().lower()
+    if not name_lower:
+        return None
+    for entry in _load():
+        p = entry.get("player", "").strip().lower()
+        if p and p == name_lower:
+            return entry["id"]
+    return None
 
 
 def get_random_bet_emoji() -> str:
