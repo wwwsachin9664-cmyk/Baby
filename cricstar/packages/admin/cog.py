@@ -15,6 +15,7 @@ from discord import app_commands
 from discord.ext import commands
 from discord.ui import ActionRow, Button, Container, Section, TextDisplay
 
+from cricstar.card_sync import export_card as _export_card
 from cricstar.core.bot import impersonations
 from cricstar.core.discord import LayoutView
 from cricstar.core.image_generator.image_gen import draw_premade_card, get_neon_color, save_neon_color
@@ -706,6 +707,28 @@ class Admin(commands.Cog):
                     return
 
             balls_cache[ball.id] = ball
+
+            event_id = ball.capacity_logic.get("forced_special") if event != "none" else None
+            try:
+                _export_card(
+                    player_name=player_name,
+                    card_name=card_name,
+                    slug=slug,
+                    codename=codename,
+                    description=description,
+                    bat_score=bat_score,
+                    ball_score=ball_score,
+                    rarity=rarity,
+                    spawn_chance=spawn_chance,
+                    artwork_author=artwork_author,
+                    tradeable=tradeable,
+                    spawnable=spawnable,
+                    catch_name=catch_name.strip().lower() or None,
+                    event_id=event_id,
+                    filename=filename,
+                )
+            except Exception as export_err:
+                log.warning("card_sync export failed (non-critical): %s", export_err)
 
             preview_file = discord.File(str(card_path), filename=filename)
             try:

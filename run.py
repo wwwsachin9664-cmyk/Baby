@@ -71,7 +71,33 @@ if result.returncode != 0:
     print("Settings initialization failed!")
     sys.exit(1)
 
-# Step 3: Ensure required special events exist
+# Step 3: Restore any cards saved in card_exports/ (for remixed/forked projects)
+print("=" * 50)
+print("Restoring cards from card_exports/ (if any)...")
+print("=" * 50)
+restore_script = f"""
+import os, sys
+sys.path.insert(0, r"{ADMIN_PANEL_DIR}")
+sys.path.insert(0, r"{BASE_DIR}")
+os.environ["DJANGO_SETTINGS_MODULE"] = "admin_panel.settings.cricstar"
+import django
+django.setup()
+from cricstar.card_sync import import_all_cards
+count = import_all_cards()
+if count:
+    print(f"Restored {{count}} card(s) from card_exports/.")
+else:
+    print("No new cards to restore.")
+"""
+result = subprocess.run(
+    [sys.executable, "-c", restore_script],
+    env=env,
+    cwd=BASE_DIR,
+)
+if result.returncode != 0:
+    print("Card restore step failed (non-critical, continuing).")
+
+# Step 4: Ensure required special events exist
 print("Setting up special events...")
 result = subprocess.run(
     [sys.executable, MANAGE_PY, "setup_specials"],
@@ -81,7 +107,7 @@ result = subprocess.run(
 if result.returncode != 0:
     print("setup_specials failed (non-critical, continuing).")
 
-# Step 4: Start the bot
+# Step 5: Start the bot
 print("=" * 50)
 print("Starting CricStar bot...")
 print("=" * 50)
