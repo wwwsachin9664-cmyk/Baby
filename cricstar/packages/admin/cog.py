@@ -485,7 +485,7 @@ class Admin(commands.Cog):
         bat_score="Bat / health score shown on left (e.g. 342)",
         ball_score="Ball / attack score shown on right (e.g. 327)",
         rarity="Value shown on card badge (e.g. 50.0) — cosmetic only",
-        spawn_chance="Spawn rarity points (e.g. 0.1, 0.5, 1.0, 5.0) — set to 0 to disable spawning",
+        spawn_chance="Spawn chance as % (e.g. 1 = 1%, 5 = 5%) — set to 0 to disable spawning",
         artwork_author="Name of the artwork creator",
         background="Preset name (e.g. custom_bg) or image URL",
         foreground="Player image URL or preset name (saved by player name after first use)",
@@ -521,7 +521,7 @@ class Admin(commands.Cog):
         """
         Generate a Dembele-style cricket card and add it to the database.
         rarity: badge display value (any number, e.g. 50.0).
-        spawn_chance: rarity points (e.g. 0.1, 0.5, 1.0). Set to 0 to disable spawning.
+        spawn_chance: spawn chance as % (e.g. 1 = 1%, 5 = 5%). Set to 0 to disable spawning.
         background: preset name or URL. foreground: URL or saved preset name.
         """
         await ctx.defer()
@@ -734,7 +734,7 @@ class Admin(commands.Cog):
             try:
                 await ctx.send(
                     f"✅ **{player_name}** card created!{event_text}\n"
-                    f"`{filename}` | Badge Rarity: `{rarity}` | Spawn Points: `{spawn_chance}` | Tradeable: `{tradeable}` | Spawnable: `{spawnable}`\n"
+                    f"`{filename}` | Badge Rarity: `{rarity}` | Spawn Chance: `{spawn_chance}%` | Tradeable: `{tradeable}` | Spawnable: `{spawnable}`\n"
                     f"BAT: `{bat_score}` | BALL: `{ball_score}` | Artwork: {artwork_author}\n"
                     f"Foreground saved as preset `{slug}` for future reuse.",
                     file=preview_file,
@@ -759,7 +759,7 @@ class Admin(commands.Cog):
         bat_score="New bat / health score (leave blank to keep existing)",
         ball_score="New ball / attack score (leave blank to keep existing)",
         rarity="New badge display value — cosmetic only (leave blank to keep existing)",
-        spawn_chance="New spawn rarity points (e.g. 0.1, 0.5, 1.0) — set to 0 to disable spawning",
+        spawn_chance="New spawn chance as % (e.g. 1 = 1%, 5 = 5%) — set to 0 to disable spawning",
         artwork_author="New artwork author name (leave blank to keep existing)",
         logo_url="New team/event logo URL (leave blank to keep existing)",
         tradeable="Change tradeability (leave blank to keep existing)",

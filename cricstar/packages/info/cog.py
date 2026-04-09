@@ -134,13 +134,6 @@ class Info(commands.Cog):
         )
 
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
-        embed.set_image(
-            url=(
-                "https://cdn.discordapp.com/attachments/1397215804717531239"
-                "/1484131710873501717/Picsart_26-03-19_11-53-55-540.jpg"
-                "?ex=69c30b9d&is=69c1ba1d&hm=24fd5bb1db13579bf2c77513f1bd6981312f5f28e114d52db26ac230b0c28c24&"
-            )
-        )
         v = sys.version_info
         python = "Python"
         if v.major == 3 and v.minor == 14 and random.random() < 0.1:

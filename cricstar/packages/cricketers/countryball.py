@@ -403,7 +403,10 @@ class BallSpawnView(View):
         """
         text = ""
         if ball.specialcard and ball.specialcard.catch_phrase:
-            text += f"*{ball.specialcard.catch_phrase}*\n"
+            if new_ball:
+                text += f"**New** {ball.specialcard.catch_phrase}\n"
+            else:
+                text += f"{ball.specialcard.catch_phrase}\n"
         elif new_ball:
             text += f"This is a **new {settings.collectible_name}** that has been added to your completion!"
         if self.ballinstance:
