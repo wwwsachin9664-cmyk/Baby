@@ -13,6 +13,7 @@ from django.utils import timezone
 
 from cricstar.core.discord import Modal, View
 from cricstar.core.metrics import caught_balls
+from cricstar.core.utils.emojis import get_player_emoji
 from cricstar.core.utils.utils import can_mention
 from bd_models.models import Ball, BallInstance, Player, Special, Trade, TradeObject, balls, specials
 from settings.models import PromptMessage, settings
@@ -426,11 +427,12 @@ class BallSpawnView(View):
         if self.ballinstance:
             text += f"This {settings.collectible_name} was dropped by <@{self.og_id}>\n"
 
+        player_emoji = get_player_emoji(self.model.country)
         caught_message = (
             settings.get_random_message(PromptMessage.PromptType.CATCH).format(
                 user=mention,
                 collectible=settings.collectible_name,
-                ball=self.name,
+                ball=f"{player_emoji}{self.name}".strip(),
                 collectibles=settings.plural_collectible_name,
                 emoji=self.bot.get_emoji(self.model.emoji_id),
             )

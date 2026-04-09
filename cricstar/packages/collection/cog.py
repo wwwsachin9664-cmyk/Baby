@@ -10,6 +10,7 @@ from django.db.models import Count, Exists, F, OuterRef, Q
 
 from cricstar.core.discord import View
 from cricstar.core.utils.buttons import ConfirmChoiceView
+from cricstar.core.utils.emojis import get_player_emoji
 from cricstar.core.utils.menus import ChunkedListSource, Menu, SelectFormatter, TextFormatter, TextSource
 from cricstar.core.utils.sorting import FilteringChoices, SortingChoices, filter_balls, sort_balls
 from cricstar.core.utils.transformers import (
@@ -489,8 +490,9 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
             cricketer.favorite = True  # type: ignore
             await cricketer.asave()
             emoji = self.bot.get_emoji(cricketer.cricketer.emoji_id) or ""
+            player_emoji = get_player_emoji(cricketer.cricketer.country)
             await interaction.response.send_message(
-                f"{emoji} `#{cricketer.pk:0X}` {cricketer.cricketer.country} "
+                f"{emoji} `#{cricketer.pk:0X}` {player_emoji}{cricketer.cricketer.country} "
                 f"is now a favorite {settings.collectible_name}!",
                 ephemeral=True,
             )
@@ -499,8 +501,9 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
             cricketer.favorite = False  # type: ignore
             await cricketer.asave()
             emoji = self.bot.get_emoji(cricketer.cricketer.emoji_id) or ""
+            player_emoji = get_player_emoji(cricketer.cricketer.country)
             await interaction.response.send_message(
-                f"{emoji} `#{cricketer.pk:0X}` {cricketer.cricketer.country} "
+                f"{emoji} `#{cricketer.pk:0X}` {player_emoji}{cricketer.cricketer.country} "
                 f"isn't a favorite {settings.collectible_name} anymore.",
                 ephemeral=True,
             )

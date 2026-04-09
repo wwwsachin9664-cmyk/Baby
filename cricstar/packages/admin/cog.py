@@ -18,7 +18,7 @@ from discord.ui import ActionRow, Button, Container, Section, TextDisplay
 from cricstar.core.bot import impersonations
 from cricstar.core.discord import LayoutView
 from cricstar.core.image_generator.image_gen import draw_premade_card, get_neon_color, save_neon_color
-from cricstar.core.utils.emojis import add_emoji, format_emoji, list_emojis, remove_emoji
+from cricstar.core.utils.emojis import add_emoji, format_emoji, get_player_emoji, list_emojis, remove_emoji
 from cricstar.core.utils import checks
 from cricstar.core.utils.buttons import ConfirmChoiceView
 from cricstar.core.utils.menus import (
@@ -1690,46 +1690,39 @@ class Admin(commands.Cog):
     @checks.is_superuser()
     @app_commands.describe(
         emoji_id="Discord custom emoji ID (numbers only) or a single unicode emoji character",
-        show_in_list="Show this emoji randomly in /list output",
-        show_in_bet="Show this emoji randomly in bet proposals",
-        remove="Remove this emoji from the registry instead of adding it",
+        player_name=":Playername — tie this emoji to a specific player (shows everywhere their card appears)",
+        show_in_list="Also show this emoji randomly in /list output (default True)",
+        show_in_bet="Also show this emoji randomly in bet proposals (default True)",
     )
     async def addemoji(
         self,
         ctx: commands.Context["CricStarBot"],
         emoji_id: str,
+        player_name: str = "",
         show_in_list: bool = True,
         show_in_bet: bool = True,
-        remove: bool = False,
     ):
         """
-        Add, update, or remove a decorative emoji that appears in the list and bet display.
+        Register an emoji, optionally tied to a specific player.
 
         Parameters
         ----------
         emoji_id: str
             Discord custom emoji ID (numbers only) or a raw unicode emoji character.
+        player_name: str
+            Exact player name (e.g. Virat Kohli). The emoji will show next to that
+            player everywhere their card appears (list, trade, bet, catch, give).
         show_in_list: bool
-            If True, this emoji may appear randomly in /list output. Default True.
+            If True, this emoji may also appear randomly in /list output. Default True.
         show_in_bet: bool
-            If True, this emoji may appear randomly next to cards in bet proposals. Default True.
-        remove: bool
-            If True, removes the emoji from the registry. Default False.
+            If True, this emoji may also appear randomly next to cards in bet proposals. Default True.
         """
         emoji_id = emoji_id.strip()
         if not emoji_id:
             await ctx.send("❌ Please provide a valid emoji ID or character.", ephemeral=True)
             return
 
-        if remove:
-            found = remove_emoji(emoji_id)
-            if found:
-                await ctx.send(f"✅ Emoji `{emoji_id}` removed from the registry.", ephemeral=True)
-            else:
-                await ctx.send(f"❌ Emoji `{emoji_id}` was not found in the registry.", ephemeral=True)
-            return
-
-        add_emoji(emoji_id, show_in_list=show_in_list, show_in_bet=show_in_bet)
+        add_emoji(emoji_id, show_in_list=show_in_list, show_in_bet=show_in_bet, player_name=player_name.strip())
 
         flags = []
         if show_in_list:
@@ -1738,23 +1731,61 @@ class Admin(commands.Cog):
             flags.append("bet")
         flags_str = " + ".join(flags) if flags else "none"
 
-        # Show a preview of the emoji if it's a numeric ID
         if emoji_id.isdigit():
             display = f"<:e:{emoji_id}>"
         else:
             display = emoji_id
 
+        player_line = f"\nLinked to player: **{player_name.strip()}**" if player_name.strip() else ""
+
         await ctx.send(
-            f"✅ Emoji {display} (`{emoji_id}`) registered.\n"
-            f"Enabled for: **{flags_str}**\n\n"
+            f"✅ Emoji {display} (`{emoji_id}`) registered.{player_line}\n"
+            f"Also shown in: **{flags_str}**\n\n"
             f"**Current emoji registry ({len(list_emojis())} total):**\n"
             + "\n".join(
-                f"• {format_emoji(e)} — list: {'✅' if e.get('list') else '❌'} "
-                f"| bet: {'✅' if e.get('bet') else '❌'}"
+                f"• {format_emoji(e)} `{e['id']}`"
+                + (f" → **{e['player']}**" if e.get("player") else "")
+                + f" — list: {'✅' if e.get('list') else '❌'} | bet: {'✅' if e.get('bet') else '❌'}"
                 for e in list_emojis()
             ),
             ephemeral=True,
         )
+
+    @app_commands.command(name="removeemoji")
+    @app_commands.default_permissions(administrator=True)
+    @checks.is_superuser()
+    @app_commands.describe(
+        id="The emoji ID (numbers) or unicode character to remove from the registry",
+    )
+    async def removeemoji(
+        self,
+        interaction: discord.Interaction["CricStarBot"],
+        id: str,
+    ):
+        """Remove a registered emoji from the registry by its ID."""
+        emoji_id = id.strip()
+        if not emoji_id:
+            await interaction.response.send_message("❌ Please provide a valid emoji ID or character.", ephemeral=True)
+            return
+
+        found = remove_emoji(emoji_id)
+        if found:
+            await interaction.response.send_message(
+                f"✅ Emoji `{emoji_id}` removed from the registry.\n\n"
+                f"**Remaining registry ({len(list_emojis())} total):**\n"
+                + (
+                    "\n".join(
+                        f"• {format_emoji(e)} `{e['id']}`"
+                        + (f" → **{e['player']}**" if e.get("player") else "")
+                        for e in list_emojis()
+                    ) or "*Empty*"
+                ),
+                ephemeral=True,
+            )
+        else:
+            await interaction.response.send_message(
+                f"❌ Emoji `{emoji_id}` was not found in the registry.", ephemeral=True
+            )
 
     @commands.hybrid_command(name="imageadd")
     @app_commands.default_permissions(administrator=True)

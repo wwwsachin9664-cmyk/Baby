@@ -21,6 +21,7 @@ from django.utils.timezone import now
 
 from cricstar.core.discord import View
 from cricstar.core.image_generator.image_gen import draw_card
+from cricstar.core.utils.emojis import get_player_emoji
 from settings.models import settings
 
 from .enums import DonationPolicy, FriendPolicy, MentionPolicy, PrivacyPolicy, TradeCooldownPolicy
@@ -468,6 +469,9 @@ class BallInstance(models.Model):
                 emoji = bot.get_emoji(self.cricketer.emoji_id)
                 if emoji:
                     text = f"{emoji} {text}"
+        player_emoji = get_player_emoji(self.cricketer.country)
+        if player_emoji:
+            text = text.replace(self.cricketer.country, f"{player_emoji.strip()} {self.cricketer.country}", 1)
         return text
 
     def draw_card(self) -> BytesIO:

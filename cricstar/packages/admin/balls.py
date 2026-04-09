@@ -13,6 +13,7 @@ from django.urls import reverse
 from cricstar.core.bot import CricStarBot
 from cricstar.core.utils import checks
 from cricstar.core.utils.buttons import ConfirmChoiceView
+from cricstar.core.utils.emojis import get_player_emoji
 from bd_models.models import Ball, BallInstance, Player, Special, Trade, TradeObject
 from settings.models import settings
 
@@ -201,8 +202,9 @@ async def give(ctx: commands.Context[CricStarBot], user: discord.User, *, flags:
         ),
         special=flags.special,
     )
+    player_emoji = get_player_emoji(flags.cricketer.country)
     await ctx.send(
-        f"`{flags.cricketer.country}` (`{instance.pk:0X}`) "
+        f"{player_emoji}`{flags.cricketer.country}` (`{instance.pk:0X}`) "
         f"{settings.collectible_name} was successfully given to "
         f"`{user}`.\nSpecial: `{flags.special.name if flags.special else None}` • ATK: "
         f"`{instance.attack_bonus:+d}` • HP:`{instance.health_bonus:+d}` "
