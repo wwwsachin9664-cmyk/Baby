@@ -1368,17 +1368,15 @@ class Admin(commands.Cog):
     @app_commands.describe(
         event_name="Name of the event (must be unique)",
         catch_phrase="Message shown when a player catches a card from this event (max 128 chars)",
-        emoji="An emoji or Discord emoji ID shown next to the event name",
     )
     async def evmake(
         self,
         ctx: commands.Context["CricStarBot"],
         event_name: str,
         catch_phrase: str = "",
-        emoji: str = "",
     ):
         """
-        Create an event with a name, optional catch phrase, and optional emoji.
+        Create an event with a name and optional catch phrase.
         """
         await ctx.defer(ephemeral=True)
 
@@ -1412,7 +1410,6 @@ class Admin(commands.Cog):
             name=event_name,
             rarity=0.1,
             catch_phrase=catch_phrase.strip() or None,
-            emoji=emoji.strip() or None,
             tradeable=True,
             hidden=False,
         )
@@ -1423,7 +1420,6 @@ class Admin(commands.Cog):
         lines = [
             f"✅ **Event `{event_name}` created!** (ID: `{special.id}`)",
             f"• **Catch phrase:** {catch_phrase.strip() or '*(none)*'}",
-            f"• **Emoji:** {emoji.strip() or '*(none)*'}",
             f"\nUse `/cardmaker` → event field to assign cards to **{event_name}**.",
         ]
         await ctx.send("\n".join(lines), ephemeral=True)

@@ -109,7 +109,8 @@ class CountryballFormatter(Formatter[QuerySet[BallInstance], discord.ui.Select])
         async for ball in page:
             emoji = self.menu.bot.get_emoji(int(ball.cricketer.emoji_id))
             favorite = f"{settings.favorited_collectible_emoji} " if ball.favorite else ""
-            special = ball.specialcard.emoji if ball.specialcard else ""
+            raw_special = ball.specialcard.emoji if ball.specialcard else ""
+            special = raw_special if raw_special and not str(raw_special).strip().isdigit() else ""
             self.item.add_option(
                 label=f"{favorite}{special}#{ball.pk:0X} {ball.cricketer.country}",
                 description=(
