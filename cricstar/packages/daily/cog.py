@@ -24,47 +24,41 @@ WEEKLY_DAYS  = 7
 
 # ── Rarity weight tables ──────────────────────────────────────────────────────
 
-# Weekly weights by rarity tier
-#   <= 0.08          → 0%  (never)
-#   0.1  – 0.4       → 8%
-#   0.5  – 0.9       → 20%
-#   1.0  – 2.0       → 30%
-#   2.5  – 5.0       → 90%
-#   > 5.0            → 0%  (not available for weekly)
+# Weekly weights by spawn_chance tier
+#   < 1%             → 0   (never — too rare to appear in weekly)
+#   1  – 5%          → 8   (rare cards, small but real chance)
+#   6  – 15%         → 30  (medium-rare, decent weekly reward)
+#   16 – 35%         → 60  (common-ish, most frequent weekly pick)
+#   > 35%            → 0   (excluded — too common for a weekly reward)
 def _weekly_weight(rarity: float) -> float:
-    if rarity <= 0.08:
+    if rarity < 1.0:
         return 0.0
-    if 0.1 <= rarity <= 0.4:
+    if 1.0 <= rarity <= 5.0:
         return 8.0
-    if 0.5 <= rarity <= 0.9:
-        return 20.0
-    if 1.0 <= rarity <= 2.0:
+    if 6.0 <= rarity <= 15.0:
         return 30.0
-    if 2.5 <= rarity <= 5.0:
-        return 90.0
+    if 16.0 <= rarity <= 35.0:
+        return 60.0
     return 0.0
 
 
-# Daily weights by rarity tier
-#   <= 0.08          → 0%
-#   0.1  – 0.4       → 0.5%
-#   0.5  – 0.9       → 2%
-#   1.0  – 5.0       → 20%
-#   6.0  – 15.0      → 45%
-#   16.0 – 20.0      → 80%
+# Daily weights by spawn_chance tier
+#   < 1%             → 0   (never — too rare for daily)
+#   1  – 5%          → 2   (rare cards, very small daily chance)
+#   6  – 15%         → 15  (medium-rare, occasional)
+#   16 – 35%         → 50  (common, frequently given in daily)
+#   36 – 100%        → 85  (very common, most frequent daily reward)
 def _get_daily_weight(rarity: float) -> float:
-    if rarity <= 0.08:
+    if rarity < 1.0:
         return 0.0
-    if 0.1 <= rarity <= 0.4:
-        return 0.5
-    if 0.5 <= rarity <= 0.9:
-        return 2.0
     if 1.0 <= rarity <= 5.0:
-        return 20.0
+        return 2.0
     if 6.0 <= rarity <= 15.0:
-        return 45.0
-    if 16.0 <= rarity <= 20.0:
-        return 80.0
+        return 15.0
+    if 16.0 <= rarity <= 35.0:
+        return 50.0
+    if rarity > 35.0:
+        return 85.0
     return 0.0
 
 
