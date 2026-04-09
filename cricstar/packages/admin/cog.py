@@ -680,7 +680,12 @@ class Admin(commands.Cog):
                 credits=artwork_author,
                 capacity_name=codename,
                 capacity_description=description,
-                capacity_logic={"badge_rarity": rarity},
+                capacity_logic={
+                    "badge_rarity": rarity,
+                    "bg_preset": background.strip(),
+                    "foreground_border": foreground_border,
+                    "credit_stroke": credit_stroke,
+                },
                 regime=regime,
                 tradeable=tradeable,
                 spawnable=spawnable,
@@ -828,14 +833,26 @@ class Admin(commands.Cog):
             return
 
         # --- Determine whether to regenerate the card image ---
-        want_image = bool(background.strip() or foreground.strip())
-        # Also regenerate if the card is already a premade card (keeps it up-to-date)
+        # Regenerate when background/foreground is explicitly given, OR when any
+        # visual field (things drawn on the card image) is changing.
+        _visual_fields_changing = bool(
+            codename.strip() or description.strip() or display_name.strip()
+            or bat_score is not None or ball_score is not None
+            or rarity is not None or artwork_author.strip() or logo_url.strip()
+        )
         wild_card_name = ball.wild_card.name if ball.wild_card else ""
         is_premade = wild_card_name.startswith("premade_")
-        regen = want_image or is_premade
+        regen = bool(background.strip() or foreground.strip()) or (is_premade and _visual_fields_changing)
 
-        bg_source = background.strip() or "custom_bg"
+        # Use the stored background preset from when the card was created (via cardmaker),
+        # so changing only codename/text never accidentally swaps the background.
+        _stored_bg = (ball.capacity_logic or {}).get("bg_preset", "custom_bg") or "custom_bg"
+        bg_source = background.strip() or _stored_bg
         fg_source = foreground.strip() or slug
+
+        # Retrieve stored foreground_border / credit_stroke so they are preserved on regen
+        _stored_fg_border = (ball.capacity_logic or {}).get("foreground_border", True)
+        _stored_credit_stroke = (ball.capacity_logic or {}).get("credit_stroke", True)
 
         filename = f"premade_{slug}.png"
         changed_fields: list[str] = []
@@ -951,6 +968,8 @@ class Admin(commands.Cog):
                         bg_path, fg_path, _card_name, _codename, _description,
                         _rarity, _bat, _ball, _author, logo_path,
                         neon_color=get_neon_color(player_name),
+                        foreground_border=_stored_fg_border,
+                        credit_stroke=_stored_credit_stroke,
                     )
 
                 with ThreadPoolExecutor() as pool:
@@ -985,6 +1004,10 @@ class Admin(commands.Cog):
             changed_fields.append("rarity")
         if rarity is not None:
             ball.capacity_logic = {**ball.capacity_logic, "badge_rarity": rarity}
+            if "capacity_logic" not in changed_fields:
+                changed_fields.append("capacity_logic")
+        if background.strip():
+            ball.capacity_logic = {**(ball.capacity_logic or {}), "bg_preset": background.strip()}
             if "capacity_logic" not in changed_fields:
                 changed_fields.append("capacity_logic")
         if artwork_author.strip():
