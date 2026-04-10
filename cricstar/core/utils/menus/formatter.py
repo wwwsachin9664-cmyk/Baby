@@ -5,6 +5,7 @@ import discord.ui
 from django.db.models import QuerySet
 
 from bd_models.models import BallInstance
+from cricstar.core.utils.emojis import get_player_emoji_map
 from settings.models import settings
 
 if TYPE_CHECKING:
@@ -106,10 +107,21 @@ class CountryballFormatter(Formatter[QuerySet[BallInstance], discord.ui.Select])
 
     async def format_page(self, page):
         self.item.options = []
+        player_emoji_map = get_player_emoji_map()
+        count = 0
         async for ball in page:
             favorite = f"{settings.favorited_collectible_emoji} " if ball.favorite else ""
             raw_special = ball.specialcard.emoji if ball.specialcard else ""
             special = raw_special if raw_special and not str(raw_special).strip().isdigit() else ""
+
+            emoji: discord.PartialEmoji | str | None = None
+            player_eid = player_emoji_map.get(ball.cricketer.country.strip().lower())
+            if player_eid:
+                if player_eid.isdigit():
+                    emoji = discord.PartialEmoji(name="e", id=int(player_eid))
+                else:
+                    emoji = player_eid
+
             self.item.add_option(
                 label=f"{favorite}{special}#{ball.pk:0X} {ball.cricketer.country}",
                 description=(
@@ -117,9 +129,10 @@ class CountryballFormatter(Formatter[QuerySet[BallInstance], discord.ui.Select])
                     f"• HP: {ball.health}({ball.health_bonus:+d}%) • "
                     f"{ball.catch_date.strftime('%Y/%m/%d | %H:%M')}"
                 ),
-                emoji=None,
+                emoji=emoji,
                 value=f"{ball.pk}",
                 default=ball.pk in self.defaulted,
             )
-        self.min_values = max(self.min_values, len(page))
-        self.item.max_values = min(self.max_values, len(page))
+            count += 1
+        self.min_values = max(self.min_values, count)
+        self.item.max_values = min(self.max_values, count)

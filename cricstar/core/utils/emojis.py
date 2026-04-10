@@ -142,3 +142,25 @@ def format_emoji(entry: dict) -> str:
     if eid.isdigit():
         return f"<:e:{eid}>"
     return eid
+
+
+def get_player_emoji_map() -> dict[str, str]:
+    """Return a dict mapping player_name_lower -> emoji_id_str for all player-linked emojis."""
+    return {
+        e["player"].strip().lower(): e["id"]
+        for e in _load()
+        if e.get("player", "").strip()
+    }
+
+
+def parse_emoji_input(raw: str) -> str:
+    """
+    Accept a Discord emoji in any format and return the bare ID or unicode char.
+    Handles: '<:name:123456>', '<a:name:123456>', '123456', or a raw unicode emoji.
+    """
+    import re
+    raw = raw.strip()
+    m = re.match(r"<a?:[\w~]+:(\d+)>", raw)
+    if m:
+        return m.group(1)
+    return raw

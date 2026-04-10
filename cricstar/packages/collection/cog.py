@@ -10,7 +10,7 @@ from django.db.models import Count, Exists, F, OuterRef, Q
 
 from cricstar.core.discord import View
 from cricstar.core.utils.buttons import ConfirmChoiceView
-from cricstar.core.utils.emojis import get_player_emoji
+from cricstar.core.utils.emojis import get_player_emoji, get_player_emoji_map
 from cricstar.core.utils.menus import ChunkedListSource, Menu, SelectFormatter, TextFormatter, TextSource
 from cricstar.core.utils.sorting import FilteringChoices, SortingChoices, filter_balls, sort_balls
 from cricstar.core.utils.transformers import (
@@ -266,15 +266,17 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
             if await inventory_privacy(self.bot, interaction, player, user_obj) is False:
                 return
         # Filter disabled balls, they do not count towards progression
-        # Only ID and emoji is interesting for us
-        bot_cricketers = {x: y.emoji_id for x, y in balls.items() if y.enabled}
+        # Maps ball_id -> (emoji_id, country) for owned/missing display
+        bot_cricketers: dict[int, tuple[int, str]] = {
+            x: (y.emoji_id, y.country) for x, y in balls.items() if y.enabled
+        }
 
         # Set of ball IDs owned by the player
         filters = {"player__discord_id": user_obj.id, "ball__enabled": True}
         if special:
             filters["special"] = special
             bot_cricketers = {
-                x: y.emoji_id
+                x: (y.emoji_id, y.country)
                 for x, y in balls.items()
                 if y.enabled and (special.end_date is None or y.created_at is None or y.created_at < special.end_date)
             }
@@ -311,24 +313,44 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
             f"**{round(len(owned_cricketers) / len(bot_cricketers) * 100, 1)}%**\n"
         )
 
-        def fill_fields(title: str, emoji_ids: set[int]):
+        player_emoji_map = get_player_emoji_map()
+
+        def fill_fields(title: str, ball_ids: set[int]):
             nonlocal text
             text += f"### {title}\n"
-            if not emoji_ids:
+            if not ball_ids:
                 text += "Nothing yet.\n"
                 return
-            for emoji_id in emoji_ids:
-                emoji = self.bot.get_emoji(emoji_id)
-                if not emoji:
+            found_any = False
+            for ball_id in ball_ids:
+                entry = bot_cricketers.get(ball_id)
+                if entry is None:
                     continue
-                text += f"{emoji} "
+                emoji_id, country = entry
+                # Player emoji from emojis.json takes priority
+                player_eid = player_emoji_map.get(country.strip().lower())
+                if player_eid:
+                    if player_eid.isdigit():
+                        text += f"<:e:{player_eid}> "
+                    else:
+                        text += f"{player_eid} "
+                    found_any = True
+                else:
+                    # Fall back to the ball's uploaded Discord emoji
+                    emoji = self.bot.get_emoji(emoji_id) if emoji_id else None
+                    if emoji:
+                        text += f"{emoji} "
+                        found_any = True
+            if not found_any:
+                text += "*No emojis set yet*"
             text += "\n"
 
         # Getting the list of emoji IDs from the IDs of the owned cricketers
-        fill_fields(f"Owned {settings.plural_collectible_name}", set(bot_cricketers[x] for x in owned_cricketers))
+        fill_fields(f"Owned {settings.plural_collectible_name}", owned_cricketers)
 
-        if missing := set(y for x, y in bot_cricketers.items() if x not in owned_cricketers):
-            fill_fields(f"Missing {settings.plural_collectible_name}", missing)
+        missing_ids = set(x for x in bot_cricketers if x not in owned_cricketers)
+        if missing_ids:
+            fill_fields(f"Missing {settings.plural_collectible_name}", missing_ids)
         else:
             text += f"### :tada: No missing {settings.plural_collectible_name}, congratulations! :tada:"
 

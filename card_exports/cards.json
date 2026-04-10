@@ -355,5 +355,22 @@
     "catch_name": "vaibhav sooryavanshi",
     "event_id": 9,
     "filename": "premade_vaibhav_sooryavanshi.png"
+  },
+  "Rohit Sharma": {
+    "player_name": "Rohit Sharma",
+    "card_name": "Rohit",
+    "slug": "rohit_sharma",
+    "codename": "Hitman",
+    "description": "Rohitman Sharma is one of the great Indian batsman in modern era with over 20000 runs and former Indian skipper who lead his team to back to back championships in Icc Tournaments",
+    "bat_score": 90,
+    "ball_score": 30,
+    "rarity": 1.0,
+    "spawn_chance": 15.0,
+    "artwork_author": "Rishav",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "rohit sharma",
+    "event_id": null,
+    "filename": "premade_rohit_sharma.png"
   }
 }

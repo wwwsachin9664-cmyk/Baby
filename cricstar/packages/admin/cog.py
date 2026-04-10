@@ -19,7 +19,7 @@ from cricstar.card_sync import export_card as _export_card
 from cricstar.core.bot import impersonations
 from cricstar.core.discord import LayoutView
 from cricstar.core.image_generator.image_gen import draw_premade_card, get_neon_color, save_neon_color
-from cricstar.core.utils.emojis import add_emoji, format_emoji, get_player_emoji, list_emojis, remove_emoji
+from cricstar.core.utils.emojis import add_emoji, format_emoji, get_player_emoji, list_emojis, parse_emoji_input, remove_emoji
 from cricstar.core.utils import checks
 from cricstar.core.utils.buttons import ConfirmChoiceView
 from cricstar.core.utils.menus import (
@@ -187,6 +187,18 @@ async def _event_autocomplete(
         if current_lower in special.name.lower():
             choices.append(app_commands.Choice(name=special.name, value=special.name))
     return choices[:25]
+
+
+async def _ball_name_autocomplete(
+    interaction: discord.Interaction,
+    current: str,
+) -> list[app_commands.Choice[str]]:
+    """Autocomplete for cricketer (Ball) names — used in addemoji and similar commands."""
+    from bd_models.models import Ball as _Ball
+    choices: list[app_commands.Choice[str]] = []
+    async for country in _Ball.objects.filter(country__icontains=current).values_list("country", flat=True)[:25]:
+        choices.append(app_commands.Choice(name=country, value=country))
+    return choices
 
 
 class Admin(commands.Cog):
@@ -1736,15 +1748,16 @@ class Admin(commands.Cog):
     @app_commands.default_permissions(administrator=True)
     @checks.is_superuser()
     @app_commands.describe(
-        emoji_id="Discord custom emoji ID (numbers only) or a single unicode emoji character",
-        player_name=":Playername — tie this emoji to a specific player (shows everywhere their card appears)",
+        emoji="Paste the emoji directly (e.g. <:dhoni:123456>) or give a raw numeric ID / unicode char",
+        player_name="Cricketer name to link this emoji to — autocomplete shows existing cards",
         show_in_list="Also show this emoji randomly in /list output (default True)",
         show_in_bet="Also show this emoji randomly in bet proposals (default True)",
     )
+    @app_commands.autocomplete(player_name=_ball_name_autocomplete)
     async def addemoji(
         self,
         ctx: commands.Context["CricStarBot"],
-        emoji_id: str,
+        emoji: str,
         player_name: str = "",
         show_in_list: bool = True,
         show_in_bet: bool = True,
@@ -1754,19 +1767,28 @@ class Admin(commands.Cog):
 
         Parameters
         ----------
-        emoji_id: str
-            Discord custom emoji ID (numbers only) or a raw unicode emoji character.
+        emoji: str
+            Paste the Discord emoji directly (<:name:id>), or provide a raw numeric ID or unicode char.
         player_name: str
-            Exact player name (e.g. Virat Kohli). The emoji will show next to that
-            player everywhere their card appears (list, trade, bet, catch, give).
+            Cricketer name (e.g. Ms Dhoni). Autocomplete lists existing cards.
+            The emoji will show next to that player everywhere their card appears.
         show_in_list: bool
             If True, this emoji may also appear randomly in /list output. Default True.
         show_in_bet: bool
             If True, this emoji may also appear randomly next to cards in bet proposals. Default True.
         """
-        emoji_id = emoji_id.strip()
+        emoji_id = parse_emoji_input(emoji)
         if not emoji_id:
-            await ctx.send("❌ Please provide a valid emoji ID or character.", ephemeral=True)
+            await ctx.send("❌ Please provide a valid emoji — paste it directly or give a numeric ID.", ephemeral=True)
+            return
+
+        # Validate: must be a digit ID or a short unicode emoji
+        if not emoji_id.isdigit() and len(emoji_id) > 8:
+            await ctx.send(
+                "❌ Could not parse emoji. Paste the emoji directly (e.g. `<:dhoni:123456789>`) "
+                "or provide just the numeric ID.",
+                ephemeral=True,
+            )
             return
 
         add_emoji(emoji_id, show_in_list=show_in_list, show_in_bet=show_in_bet, player_name=player_name.strip())
@@ -1778,23 +1800,21 @@ class Admin(commands.Cog):
             flags.append("bet")
         flags_str = " + ".join(flags) if flags else "none"
 
-        if emoji_id.isdigit():
-            display = f"<:e:{emoji_id}>"
-        else:
-            display = emoji_id
-
+        display = f"<:e:{emoji_id}>" if emoji_id.isdigit() else emoji_id
         player_line = f"\nLinked to player: **{player_name.strip()}**" if player_name.strip() else ""
+
+        registry_lines = "\n".join(
+            f"• {format_emoji(e)} `{e['id']}`"
+            + (f" → **{e['player']}**" if e.get("player") else "")
+            + f" — list: {'✅' if e.get('list') else '❌'} | bet: {'✅' if e.get('bet') else '❌'}"
+            for e in list_emojis()
+        )
 
         await ctx.send(
             f"✅ Emoji {display} (`{emoji_id}`) registered.{player_line}\n"
             f"Also shown in: **{flags_str}**\n\n"
             f"**Current emoji registry ({len(list_emojis())} total):**\n"
-            + "\n".join(
-                f"• {format_emoji(e)} `{e['id']}`"
-                + (f" → **{e['player']}**" if e.get("player") else "")
-                + f" — list: {'✅' if e.get('list') else '❌'} | bet: {'✅' if e.get('bet') else '❌'}"
-                for e in list_emojis()
-            ),
+            + (registry_lines or "*Empty*"),
             ephemeral=True,
         )
 
