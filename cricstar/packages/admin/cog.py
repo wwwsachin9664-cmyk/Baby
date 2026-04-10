@@ -508,8 +508,13 @@ class Admin(commands.Cog):
         foreground_border="Whether to draw a white border around the foreground image (default True)",
         credit_stroke="Whether to draw a stroke/outline on the credit and artwork author text (default True)",
         only_spawn_in_event="If True, this card only spawns while its assigned event is active. Once the event ends, it stops spawning.",
+        credit_font="Font for 'Created by El Laggron' and 'Artwork' credit lines. Default = arial. optimus = Optimus Bold.",
     )
     @app_commands.autocomplete(event=_event_autocomplete, background=_background_autocomplete)
+    @app_commands.choices(credit_font=[
+        app_commands.Choice(name="Default (Arial)", value="default"),
+        app_commands.Choice(name="Optimus Bold", value="optimus"),
+    ])
     async def cardmaker(
         self,
         ctx: commands.Context["CricStarBot"],
@@ -531,6 +536,7 @@ class Admin(commands.Cog):
         foreground_border: bool = True,
         credit_stroke: bool = True,
         only_spawn_in_event: bool = False,
+        credit_font: str = "default",
     ):
         """
         Generate a Dembele-style cricket card and add it to the database.
@@ -673,6 +679,7 @@ class Admin(commands.Cog):
                     neon_color=get_neon_color(player_name),
                     foreground_border=foreground_border,
                     credit_stroke=credit_stroke,
+                    credit_font=credit_font,
                 )
 
             with ThreadPoolExecutor() as pool:
@@ -700,6 +707,7 @@ class Admin(commands.Cog):
                     "foreground_border": foreground_border,
                     "credit_stroke": credit_stroke,
                     "only_spawn_in_event": only_spawn_in_event,
+                    "credit_font": credit_font,
                 },
                 regime=regime,
                 tradeable=tradeable,
@@ -785,8 +793,14 @@ class Admin(commands.Cog):
         tradeable="Change tradeability (leave blank to keep existing)",
         catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
         only_spawn_in_event="If True, card only spawns while its event is active. Set False to allow spawning anytime.",
+        credit_font="Font for credit lines. Leave blank to keep existing. 'Default (Arial)' or 'Optimus Bold'.",
     )
     @app_commands.autocomplete(background=_background_autocomplete)
+    @app_commands.choices(credit_font=[
+        app_commands.Choice(name="Keep existing", value=""),
+        app_commands.Choice(name="Default (Arial)", value="default"),
+        app_commands.Choice(name="Optimus Bold", value="optimus"),
+    ])
     async def editcard(
         self,
         ctx: commands.Context["CricStarBot"],
@@ -805,6 +819,7 @@ class Admin(commands.Cog):
         tradeable: bool | None = None,
         catch_name: str = "",
         only_spawn_in_event: bool | None = None,
+        credit_font: str = "",
     ):
         """
         Edit an existing cricket card. Only supply the fields you want to change.
@@ -856,6 +871,7 @@ class Admin(commands.Cog):
             codename.strip() or description.strip() or display_name.strip()
             or bat_score is not None or ball_score is not None
             or rarity is not None or artwork_author.strip() or logo_url.strip()
+            or credit_font
         )
         wild_card_name = ball.wild_card.name if ball.wild_card else ""
         is_premade = wild_card_name.startswith("premade_")
@@ -867,9 +883,10 @@ class Admin(commands.Cog):
         bg_source = background.strip() or _stored_bg
         fg_source = foreground.strip() or slug
 
-        # Retrieve stored foreground_border / credit_stroke so they are preserved on regen
+        # Retrieve stored foreground_border / credit_stroke / credit_font so they are preserved on regen
         _stored_fg_border = (ball.capacity_logic or {}).get("foreground_border", True)
         _stored_credit_stroke = (ball.capacity_logic or {}).get("credit_stroke", True)
+        _stored_credit_font = (ball.capacity_logic or {}).get("credit_font", "default")
 
         filename = f"premade_{slug}.png"
         changed_fields: list[str] = []
@@ -980,6 +997,8 @@ class Admin(commands.Cog):
                         log.warning("Logo download failed: %s", e)
                         logo_path = None
 
+                _resolved_credit_font = credit_font if credit_font else _stored_credit_font
+
                 def _generate() -> tuple:
                     return draw_premade_card(
                         bg_path, fg_path, _card_name, _codename, _description,
@@ -987,6 +1006,7 @@ class Admin(commands.Cog):
                         neon_color=get_neon_color(player_name),
                         foreground_border=_stored_fg_border,
                         credit_stroke=_stored_credit_stroke,
+                        credit_font=_resolved_credit_font,
                     )
 
                 with ThreadPoolExecutor() as pool:
@@ -1041,6 +1061,10 @@ class Admin(commands.Cog):
             changed_fields.append("catch_names")
         if only_spawn_in_event is not None:
             ball.capacity_logic = {**(ball.capacity_logic or {}), "only_spawn_in_event": only_spawn_in_event}
+            if "capacity_logic" not in changed_fields:
+                changed_fields.append("capacity_logic")
+        if credit_font:
+            ball.capacity_logic = {**(ball.capacity_logic or {}), "credit_font": credit_font}
             if "capacity_logic" not in changed_fields:
                 changed_fields.append("capacity_logic")
 

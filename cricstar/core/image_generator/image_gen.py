@@ -332,6 +332,7 @@ def draw_premade_card(
     neon_color: "tuple | None" = None,
     foreground_border: bool = True,
     credit_stroke: bool = True,
+    credit_font: str = "default",
 ) -> "tuple[Image.Image, dict[str, Any]]":
     """
     Generate a cricket trading card.
@@ -381,6 +382,8 @@ def draw_premade_card(
                 return ImageFont.truetype(fallback_path, size)
             return ImageFont.load_default()
 
+    optimus_bold = str(SOURCES_PATH / "optimus_bold.otf")
+
     bar_font     = _font(nulshock, 122)                          # name + rarity
     codename_fnt = _font(nulshock, 50)                           # CODENAME: …
     try:
@@ -388,7 +391,10 @@ def draw_premade_card(
     except Exception:
         desc_fnt = _font(nulshock, 55)
     stat_fnt     = _font(nulshock, 107)                          # stat numbers (200 / 200)
-    cred_fnt     = _font(arial, 42, nulshock)                    # credits small text
+    if credit_font == "optimus":
+        cred_fnt = _font(optimus_bold, 42, arial)                # Optimus Bold credits
+    else:
+        cred_fnt = _font(arial, 42, nulshock)                    # credits small text (default)
 
     # ── 1. Background: open + resize to card dimensions ───────────────────────
     bg = Image.open(str(background_path)).convert("RGBA")
