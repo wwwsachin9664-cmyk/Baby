@@ -469,9 +469,6 @@ class BallInstance(models.Model):
                 emoji = bot.get_emoji(self.cricketer.emoji_id)
                 if emoji:
                     text = f"{emoji} {text}"
-        player_emoji = get_player_emoji(self.cricketer.country)
-        if player_emoji:
-            text = text.replace(self.cricketer.country, f"{player_emoji.strip()} {self.cricketer.country}", 1)
         return text
 
     def draw_card(self) -> BytesIO:

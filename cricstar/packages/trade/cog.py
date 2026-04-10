@@ -172,7 +172,7 @@ class Trade(commands.GroupCog):
         else:
             await trade.edit_message(None)
             await interaction.response.send_message(
-                f"{cricketer.description(is_trade=True, include_emoji=True, bot=self.bot)} added.", ephemeral=True
+                f"{cricketer.description(is_trade=True)} added.", ephemeral=True
             )
 
     @app_commands.command(extras={"trade": TradeCommandType.REMOVE})
@@ -197,7 +197,7 @@ class Trade(commands.GroupCog):
         else:
             await trade.edit_message(None)
             await interaction.response.send_message(
-                f"{cricketer.description(is_trade=True, include_emoji=True, bot=self.bot)} removed.", ephemeral=True
+                f"{cricketer.description(is_trade=True)} removed.", ephemeral=True
             )
 
     @app_commands.command()

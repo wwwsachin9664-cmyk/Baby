@@ -5,7 +5,6 @@ import discord.ui
 from django.db.models import QuerySet
 
 from bd_models.models import BallInstance
-from cricstar.core.utils.emojis import get_player_emoji_id
 from settings.models import settings
 
 if TYPE_CHECKING:
@@ -111,14 +110,6 @@ class CountryballFormatter(Formatter[QuerySet[BallInstance], discord.ui.Select])
             favorite = f"{settings.favorited_collectible_emoji} " if ball.favorite else ""
             raw_special = ball.specialcard.emoji if ball.specialcard else ""
             special = raw_special if raw_special and not str(raw_special).strip().isdigit() else ""
-            # Resolve which emoji to show: player-linked emoji takes priority over bot emoji
-            player_emoji_id = get_player_emoji_id(ball.cricketer.country)
-            if player_emoji_id and player_emoji_id.isdigit():
-                emoji = discord.PartialEmoji(name="e", id=int(player_emoji_id))
-            elif player_emoji_id:
-                emoji = discord.PartialEmoji(name=player_emoji_id)
-            else:
-                emoji = self.menu.bot.get_emoji(int(ball.cricketer.emoji_id))
             self.item.add_option(
                 label=f"{favorite}{special}#{ball.pk:0X} {ball.cricketer.country}",
                 description=(
@@ -126,7 +117,7 @@ class CountryballFormatter(Formatter[QuerySet[BallInstance], discord.ui.Select])
                     f"• HP: {ball.health}({ball.health_bonus:+d}%) • "
                     f"{ball.catch_date.strftime('%Y/%m/%d | %H:%M')}"
                 ),
-                emoji=emoji,
+                emoji=None,
                 value=f"{ball.pk}",
                 default=ball.pk in self.defaulted,
             )

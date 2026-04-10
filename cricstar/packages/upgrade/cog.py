@@ -13,6 +13,7 @@ from discord.ext import commands
 
 from bd_models.models import Ball
 from bd_models.models import balls as balls_cache
+from cricstar.core.utils.emojis import get_player_emoji
 from cricstar.core.image_generator.image_gen import patch_card_stats
 
 if TYPE_CHECKING:
@@ -145,9 +146,10 @@ class Upgrade(commands.Cog):
                 log.warning("upgrade: stat patch failed for %s: %s", ball.country, e)
 
         # Build result message
-        ball_id_str = f"#{ball.id}"
+        player_emoji = get_player_emoji(ball.country)
+        ball_id_str = f"#{ball.pk:0X}"
         bat_part    = f"**Bat** by **+{bat_gain}**"   if bat_gain  > 0 else "**Bat** unchanged"
         bowl_part   = f"**Bowl** by **+{bowl_gain}**"  if bowl_gain > 0 else "**Bowl** unchanged"
-        msg = f"{ball_id_str} **{ball.country}** increased its {bat_part}! {bowl_part}!"
+        msg = f"{player_emoji}`{ball_id_str}` **{ball.country}** upgraded! {bat_part}. {bowl_part}."
 
         await interaction.followup.send(content=msg)

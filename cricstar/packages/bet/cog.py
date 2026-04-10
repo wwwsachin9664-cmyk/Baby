@@ -73,7 +73,7 @@ class BulkBetSelector(Container):
             .annotate(**self.queryset.query.annotations)
             .order_by(*self.queryset.query.order_by)
         ):
-            text += f"- {ball.description(include_emoji=True, bot=self.bot)}\n"
+            text += f"- {ball.description()}\n"
         self.display_menu = Menu(self.bot, self.view, TextSource(text, page_length=3800), TextFormatter(self.balls))
         await self.display_menu.init(position=3, container=self)
 
@@ -251,7 +251,7 @@ class Bet(commands.GroupCog, name="bet"):
         else:
             await bet.edit_message(None)
             await interaction.response.send_message(
-                f"{cricketer.description(is_trade=True, include_emoji=True, bot=self.bot)} added to bet.",
+                f"{cricketer.description(is_trade=True)} added to bet.",
                 ephemeral=True,
             )
 
@@ -277,7 +277,7 @@ class Bet(commands.GroupCog, name="bet"):
         else:
             await bet.edit_message(None)
             await interaction.response.send_message(
-                f"{cricketer.description(is_trade=True, include_emoji=True, bot=self.bot)} removed from bet.",
+                f"{cricketer.description(is_trade=True)} removed from bet.",
                 ephemeral=True,
             )
 
