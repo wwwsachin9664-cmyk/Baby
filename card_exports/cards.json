@@ -302,7 +302,7 @@
     "tradeable": true,
     "spawnable": true,
     "catch_name": "vaibhav sooryawanshi",
-    "event_id": 8,
+    "event_id": 9,
     "filename": "premade_vaibhav_sooryawanshi.png"
   },
   "Brett Lee": {
@@ -338,5 +338,22 @@
     "catch_name": "viv richards",
     "event_id": 4,
     "filename": "premade_viv_richards.png"
+  },
+  "Vaibhav Sooryavanshi": {
+    "player_name": "Vaibhav Sooryavanshi",
+    "card_name": "VAIBHAV",
+    "slug": "vaibhav_sooryavanshi",
+    "codename": "Boss Baby",
+    "description": "Vaibhav Suryavanshi is an emerging young cricketer associated with the Indian Premier League 2026 known for his talent dedication and potential to grow into a strong performer in future seasons",
+    "bat_score": 76,
+    "ball_score": 23,
+    "rarity": 1.0,
+    "spawn_chance": 20.0,
+    "artwork_author": "Legend",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "vaibhav sooryavanshi",
+    "event_id": 9,
+    "filename": "premade_vaibhav_sooryavanshi.png"
   }
 }
