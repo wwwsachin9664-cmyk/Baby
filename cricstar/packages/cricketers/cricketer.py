@@ -184,8 +184,8 @@ class BallSpawnView(View):
         Get a new instance with a random cricketer. Rarity values are taken into account.
 
         Spawn weight rules:
-          - rarity <= 1.0  → weight = rarity  (0.01 = 1%, 0.5 = 50%, 1.0 = 100%)
-          - rarity >  1.0  → weight = rarity + 25  (1.0→26, 2.0→27, 20.0→45)
+          - weight = spawn_chance directly (e.g. 1.0 = 1%, 45.0 = 45%, 80.0 = 80%)
+          - Cards with spawn_chance = 0 are excluded automatically.
 
         Cards with only_spawn_in_event=True are excluded when their event is not active.
         """
@@ -212,9 +212,7 @@ class BallSpawnView(View):
             raise RuntimeError("No ball to spawn")
 
         def spawn_weight(rarity: float) -> float:
-            if rarity <= 1.0:
-                return rarity
-            return rarity + 25.0
+            return max(rarity, 0.0)
 
         weights = [spawn_weight(x.rarity) for x in cricketers]
         cb = random.choices(population=cricketers, weights=weights, k=1)[0]
