@@ -29,7 +29,7 @@ REQUIRED_SPECIALS = [
         "name": "ICONS",
         "catch_phrase": "You caught an **Icon Card**!",
         "rarity": 0.05,
-        "emoji": "👑",
+        "emoji": None,
         "tradeable": True,
         "hidden": False,
         "credits": "CricStar",

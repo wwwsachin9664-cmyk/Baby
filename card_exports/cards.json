@@ -19,7 +19,7 @@
   },
   "Brendon Mccullum": {
     "player_name": "Brendon Mccullum",
-    "card_name": "MCCULLUM",
+    "card_name": "Brendon Mccullum",
     "slug": "brendon_mccullum",
     "codename": "BAZ",
     "description": "McCullum was a high octane wicketkeeper batsman who treated every format like a T20  He was defined by his raw power and a win at all costs aggression that redefined New Zealands cricket culture",
@@ -32,8 +32,15 @@
     "spawnable": true,
     "catch_name": "brendon mccullum",
     "event_id": 4,
+    "event_name": "ICONS",
     "filename": "premade_brendon_mccullum.png",
-    "wild_card_filename": "premade_brendon_mccullum.png"
+    "wild_card_filename": "premade_brendon_mccullum.png",
+    "capacity_logic": {
+      "badge_rarity": 0.5,
+      "forced_special": 4,
+      "bg_preset": "Icons_2",
+      "credit_font": "optimus"
+    }
   },
   "Naveen ul Haq": {
     "player_name": "Naveen ul Haq",
@@ -181,7 +188,7 @@
   },
   "Ms Dhoni": {
     "player_name": "Ms Dhoni",
-    "card_name": "DHONI",
+    "card_name": "Ms Dhoni",
     "slug": "ms_dhoni",
     "codename": "CAPTAIN COOL",
     "description": "MS Dhoni is the most successful captain in Indian cricket history and arguably the sports greatest finisher. Known as Captain Cool  he is the only captain to win all three major ICC trophies T20 World Cup ODI World Cup and Champions Trophy",
@@ -194,8 +201,15 @@
     "spawnable": true,
     "catch_name": "ms dhoni",
     "event_id": 4,
+    "event_name": "ICONS",
     "filename": "premade_ms_dhoni.png",
-    "wild_card_filename": "premade_ms_dhoni.png"
+    "wild_card_filename": "premade_ms_dhoni.png",
+    "capacity_logic": {
+      "bg_preset": "Icons_2",
+      "credit_font": "optimus",
+      "badge_rarity": 0.2,
+      "forced_special": 4
+    }
   },
   "Kuldeep Yadav": {
     "player_name": "Kuldeep Yadav",
@@ -319,9 +333,13 @@
     "tradeable": true,
     "spawnable": true,
     "catch_name": "brett lee",
-    "event_id": null,
+    "event_id": 4,
     "filename": "premade_brett_lee.png",
-    "wild_card_filename": "premade_brett_lee.png"
+    "wild_card_filename": "premade_brett_lee.png",
+    "event_name": "ICONS",
+    "capacity_logic": {
+      "forced_special": 4
+    }
   },
   "Viv Richards": {
     "player_name": "Viv Richards",
@@ -413,6 +431,112 @@
       "only_spawn_in_event": true,
       "credit_font": "optimus",
       "forced_special": 5
+    }
+  },
+  "Jasprit Bumrah": {
+    "player_name": "Jasprit Bumrah",
+    "card_name": "Bumrah",
+    "slug": "jasprit_bumrah",
+    "codename": "Boom Boom",
+    "description": "A master of the unconventional Jasprit Bumrah dominates with a unique hyperextension release lethal yorkers and deceptive slower balls making him crickets most complete allformat bowling weapon",
+    "bat_score": 30,
+    "ball_score": 94,
+    "rarity": 1.0,
+    "spawn_chance": 10.0,
+    "artwork_author": "Rishav",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "jasprit bumrah",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_jasprit_bumrah.png",
+    "wild_card_filename": "premade_jasprit_bumrah.png",
+    "capacity_logic": {
+      "badge_rarity": 1.0,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "default"
+    }
+  },
+  "Hardik Pandya": {
+    "player_name": "Hardik Pandya",
+    "card_name": "Hardik",
+    "slug": "hardik_pandya",
+    "codename": "Kung Fu Pandya",
+    "description": "Hardik Pandya is a dynamic explosive allrounder who provides vital balance with aggressive batting and impactful pace bowling making him a premier matchwinner in limitedovers cricket",
+    "bat_score": 83,
+    "ball_score": 87,
+    "rarity": 1.5,
+    "spawn_chance": 15.0,
+    "artwork_author": "Rishav",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "hardik pandya",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_hardik_pandya.png",
+    "wild_card_filename": "premade_hardik_pandya.png",
+    "capacity_logic": {
+      "badge_rarity": 1.5,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "default"
+    }
+  },
+  "Surya Kumar Yadav": {
+    "player_name": "Surya Kumar Yadav",
+    "card_name": "Surya",
+    "slug": "surya_kumar_yadav",
+    "codename": "Sky",
+    "description": "Suryakumar Yadav is a revolutionary 360 degree batter who demoralizes bowlers with audacious wristwork and unorthodox sweep shots making him a fearless dominant force in modern T20 cricket",
+    "bat_score": 86,
+    "ball_score": 0,
+    "rarity": 4.0,
+    "spawn_chance": 40.0,
+    "artwork_author": "Rishav",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "surya kumar yadav",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_surya_kumar_yadav.png",
+    "wild_card_filename": "premade_surya_kumar_yadav.png",
+    "capacity_logic": {
+      "badge_rarity": 4.0,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "default"
+    }
+  },
+  "Mccullum": {
+    "player_name": "Mccullum",
+    "card_name": "Mccullum",
+    "slug": "brendon_mccullum",
+    "codename": "BAZ",
+    "description": "McCullum was a high octane wicketkeeper batsman who treated every format like a T20  He was defined by his raw power and a win at all costs aggression that redefined New Zealands cricket culture",
+    "bat_score": 95,
+    "ball_score": 0,
+    "rarity": 0.5,
+    "spawn_chance": 1.0,
+    "artwork_author": "NASH",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "brendon mccullum",
+    "event_id": 4,
+    "event_name": "ICONS",
+    "filename": "premade_brendon_mccullum.png",
+    "wild_card_filename": "premade_brendon_mccullum.png",
+    "capacity_logic": {
+      "bg_preset": "Icons_2",
+      "credit_font": "optimus",
+      "badge_rarity": 0.5,
+      "forced_special": 4
     }
   }
 }
