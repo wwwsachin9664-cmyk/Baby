@@ -12,10 +12,10 @@ from typing import TYPE_CHECKING, cast
 
 import discord
 from discord import app_commands
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord.ui import ActionRow, Button, Container, Section, TextDisplay
 
-from cricstar.card_sync import export_card as _export_card
+from cricstar.card_sync import export_card as _export_card, export_event as _export_event
 from cricstar.core.bot import impersonations
 from cricstar.core.discord import LayoutView
 from cricstar.core.image_generator.image_gen import draw_premade_card, get_neon_color, save_neon_color
@@ -232,6 +232,14 @@ class Admin(commands.Cog):
             )
             interaction.extras["handled"] = True
 
+    @tasks.loop(minutes=10)
+    async def _export_holdings_task(self):
+        from cricstar.card_sync import export_all_holdings
+        try:
+            await self.bot.loop.run_in_executor(None, export_all_holdings)
+        except Exception as e:
+            log.warning("Periodic holdings export failed (non-critical): %s", e)
+
     async def cog_load(self):
         guilds = [
             discord.Object(guild_id)
@@ -240,6 +248,15 @@ class Admin(commands.Cog):
             )
         ]
         self.bot.tree.add_command(self.admin.app_command, guilds=guilds)
+        self._export_holdings_task.start()
+
+    async def cog_unload(self):
+        self._export_holdings_task.cancel()
+        from cricstar.card_sync import export_all_holdings
+        try:
+            await self.bot.loop.run_in_executor(None, export_all_holdings)
+        except Exception as e:
+            log.warning("Holdings export on unload failed (non-critical): %s", e)
 
     @commands.hybrid_group()
     @app_commands.guilds(0)
@@ -753,7 +770,10 @@ class Admin(commands.Cog):
                     spawnable=spawnable,
                     catch_name=catch_name.strip().lower() or None,
                     event_id=event_id,
+                    event_name=event if event != "none" else "",
                     filename=filename,
+                    wild_card_filename=filename,
+                    capacity_logic=ball.capacity_logic,
                 )
             except Exception as export_err:
                 log.warning("card_sync export failed (non-critical): %s", export_err)
@@ -1077,6 +1097,32 @@ class Admin(commands.Cog):
 
         await ball.asave(update_fields=list(set(changed_fields)))
         balls_cache[ball.id] = ball
+
+        try:
+            _ev_id = (ball.capacity_logic or {}).get("forced_special")
+            _ev_name = specials_cache[_ev_id].name if _ev_id and _ev_id in specials_cache else ""
+            _export_card(
+                player_name=ball.country,
+                card_name=ball.country,
+                slug=slug,
+                codename=ball.capacity_name or "",
+                description=ball.capacity_description or "",
+                bat_score=ball.health,
+                ball_score=ball.attack,
+                rarity=(ball.capacity_logic or {}).get("badge_rarity", 1.0),
+                spawn_chance=ball.rarity,
+                artwork_author=ball.credits or "",
+                tradeable=ball.tradeable,
+                spawnable=ball.spawnable,
+                catch_name=ball.catch_names or None,
+                event_id=_ev_id,
+                event_name=_ev_name,
+                filename=filename,
+                wild_card_filename=str(ball.wild_card) if ball.wild_card else filename,
+                capacity_logic=ball.capacity_logic,
+            )
+        except Exception as _export_err:
+            log.warning("editcard: card_sync export failed (non-critical): %s", _export_err)
 
         summary_parts = []
         if regen:
@@ -1409,8 +1455,12 @@ class Admin(commands.Cog):
             hidden=hidden,
         )
             
-        # Add to live cache so it's usable immediately without restart
         specials_cache[special.id] = special
+
+        try:
+            _export_event(special)
+        except Exception as export_err:
+            log.warning("card_sync event export failed (non-critical): %s", export_err)
 
         log.info(f"createevent: '{name}' (id={special.id}) created by {ctx.author}")
 

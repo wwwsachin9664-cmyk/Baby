@@ -16,6 +16,15 @@ DISCORD_TOKEN = os.environ.get("DISCORD_BOT_TOKEN", "") or os.environ.get("DISCO
 
 env = {**os.environ, "DJANGO_SETTINGS_MODULE": "admin_panel.settings.cricstar"}
 
+_PYTHON_HEADER = f"""
+import os, sys
+sys.path.insert(0, r"{ADMIN_PANEL_DIR}")
+sys.path.insert(0, r"{BASE_DIR}")
+os.environ["DJANGO_SETTINGS_MODULE"] = "admin_panel.settings.cricstar"
+import django
+django.setup()
+"""
+
 # Step 1: Run database migrations
 print("=" * 50)
 print("Running database migrations...")
@@ -32,13 +41,7 @@ print("Migrations complete.")
 
 # Step 2: Initialize CricStar settings in the database
 print("Initializing CricStar settings...")
-init_script = f"""
-import os, sys
-sys.path.insert(0, r"{ADMIN_PANEL_DIR}")
-sys.path.insert(0, r"{BASE_DIR}")
-os.environ["DJANGO_SETTINGS_MODULE"] = "admin_panel.settings.cricstar"
-import django
-django.setup()
+init_script = _PYTHON_HEADER + f"""
 from settings.models import Settings
 
 DISCORD_TOKEN = os.environ.get("DISCORD_BOT_TOKEN", "") or os.environ.get("DISCORD_TOKEN", "")
@@ -62,52 +65,78 @@ print(f"Bot: {{settings_obj.bot_name}}")
 print(f"Collectible: {{settings_obj.collectible_name}} / {{settings_obj.plural_collectible_name}}")
 print(f"Slash command: /{{settings_obj.cricstar_slash_name}}")
 """
-result = subprocess.run(
-    [sys.executable, "-c", init_script],
-    env=env,
-    cwd=BASE_DIR,
-)
+result = subprocess.run([sys.executable, "-c", init_script], env=env, cwd=BASE_DIR)
 if result.returncode != 0:
     print("Settings initialization failed!")
     sys.exit(1)
 
-# Step 3: Restore any cards saved in card_exports/ (for remixed/forked projects)
-print("=" * 50)
-print("Restoring cards from card_exports/ (if any)...")
-print("=" * 50)
-restore_script = f"""
-import os, sys
-sys.path.insert(0, r"{ADMIN_PANEL_DIR}")
-sys.path.insert(0, r"{BASE_DIR}")
-os.environ["DJANGO_SETTINGS_MODULE"] = "admin_panel.settings.cricstar"
-import django
-django.setup()
-from cricstar.card_sync import import_all_cards
-count = import_all_cards()
-if count:
-    print(f"Restored {{count}} card(s) from card_exports/.")
-else:
-    print("No new cards to restore.")
-"""
-result = subprocess.run(
-    [sys.executable, "-c", restore_script],
-    env=env,
-    cwd=BASE_DIR,
-)
-if result.returncode != 0:
-    print("Card restore step failed (non-critical, continuing).")
-
-# Step 4: Ensure required special events exist
+# Step 3: Seed required special events (must run BEFORE card restore so events
+#         exist when cards reference them by name).
 print("Setting up special events...")
-result = subprocess.run(
-    [sys.executable, MANAGE_PY, "setup_specials"],
-    env=env,
-    cwd=BASE_DIR,
-)
+result = subprocess.run([sys.executable, MANAGE_PY, "setup_specials"], env=env, cwd=BASE_DIR)
 if result.returncode != 0:
     print("setup_specials failed (non-critical, continuing).")
 
-# Step 5: Start the bot
+# Step 4: Restore any custom events created via /createevent
+print("=" * 50)
+print("Restoring custom events from card_exports/ (if any)...")
+print("=" * 50)
+event_restore_script = _PYTHON_HEADER + """
+from cricstar.card_sync import import_all_events
+count = import_all_events()
+if count:
+    print(f"Restored {count} custom event(s) from card_exports/events.json.")
+else:
+    print("No new events to restore.")
+"""
+result = subprocess.run([sys.executable, "-c", event_restore_script], env=env, cwd=BASE_DIR)
+if result.returncode != 0:
+    print("Event restore step failed (non-critical, continuing).")
+
+# Step 5: Restore cards (runs after events so Special FKs resolve by name)
+print("=" * 50)
+print("Restoring cards from card_exports/ (if any)...")
+print("=" * 50)
+card_restore_script = _PYTHON_HEADER + """
+from cricstar.card_sync import import_all_cards
+count = import_all_cards()
+if count:
+    print(f"Restored {count} card(s) from card_exports/.")
+else:
+    print("No new cards to restore.")
+"""
+result = subprocess.run([sys.executable, "-c", card_restore_script], env=env, cwd=BASE_DIR)
+if result.returncode != 0:
+    print("Card restore step failed (non-critical, continuing).")
+
+# Step 6: Restore user holdings (only if Player table is empty = fresh remix)
+print("=" * 50)
+print("Restoring user holdings from card_exports/ (if any)...")
+print("=" * 50)
+holdings_restore_script = _PYTHON_HEADER + """
+from cricstar.card_sync import import_all_holdings
+count = import_all_holdings()
+if count:
+    print(f"Restored {count} user holding(s) from card_exports/holdings.json.")
+else:
+    print("No holdings to restore (DB already populated or no export found).")
+"""
+result = subprocess.run([sys.executable, "-c", holdings_restore_script], env=env, cwd=BASE_DIR)
+if result.returncode != 0:
+    print("Holdings restore step failed (non-critical, continuing).")
+
+# Step 7: Export current holdings so this checkpoint captures the latest state
+print("Exporting current user holdings to card_exports/holdings.json...")
+holdings_export_script = _PYTHON_HEADER + """
+from cricstar.card_sync import export_all_holdings
+count = export_all_holdings()
+print(f"Exported {count} holding(s) to card_exports/holdings.json.")
+"""
+result = subprocess.run([sys.executable, "-c", holdings_export_script], env=env, cwd=BASE_DIR)
+if result.returncode != 0:
+    print("Holdings export step failed (non-critical, continuing).")
+
+# Step 8: Start the bot
 print("=" * 50)
 print("Starting CricStar bot...")
 print("=" * 50)
