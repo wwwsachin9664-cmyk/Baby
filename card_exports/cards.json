@@ -14,7 +14,8 @@
     "spawnable": true,
     "catch_name": "naseem shah",
     "event_id": null,
-    "filename": "premade_naseem_shah.png"
+    "filename": "premade_naseem_shah.png",
+    "wild_card_filename": "premade_naseem_shah.png"
   },
   "Brendon Mccullum": {
     "player_name": "Brendon Mccullum",
@@ -31,7 +32,8 @@
     "spawnable": true,
     "catch_name": "brendon mccullum",
     "event_id": 4,
-    "filename": "premade_brendon_mccullum.png"
+    "filename": "premade_brendon_mccullum.png",
+    "wild_card_filename": "premade_brendon_mccullum.png"
   },
   "Naveen ul Haq": {
     "player_name": "Naveen ul Haq",
@@ -48,7 +50,8 @@
     "spawnable": true,
     "catch_name": "naveen ul haq",
     "event_id": null,
-    "filename": "premade_naveen_ul_haq.png"
+    "filename": "premade_naveen_ul_haq.png",
+    "wild_card_filename": "premade_naveen_ul_haq.png"
   },
   "Shivam Dube": {
     "player_name": "Shivam Dube",
@@ -65,7 +68,8 @@
     "spawnable": true,
     "catch_name": "shivam dube",
     "event_id": null,
-    "filename": "premade_shivam_dube.png"
+    "filename": "premade_shivam_dube.png",
+    "wild_card_filename": "premade_shivam_dube.png"
   },
   "Sanju Samson": {
     "player_name": "Sanju Samson",
@@ -82,7 +86,8 @@
     "spawnable": true,
     "catch_name": "sanju samson",
     "event_id": null,
-    "filename": "premade_sanju_samson.png"
+    "filename": "premade_sanju_samson.png",
+    "wild_card_filename": "premade_sanju_samson.png"
   },
   "Dale Steyn": {
     "player_name": "Dale Steyn",
@@ -99,7 +104,8 @@
     "spawnable": true,
     "catch_name": "dale steyn",
     "event_id": 4,
-    "filename": "premade_dale_steyn.png"
+    "filename": "premade_dale_steyn.png",
+    "wild_card_filename": "premade_dale_steyn.png"
   },
   "Kane Williamson": {
     "player_name": "Kane Williamson",
@@ -116,7 +122,8 @@
     "spawnable": true,
     "catch_name": "kane williamson",
     "event_id": null,
-    "filename": "premade_kane_williamson.png"
+    "filename": "premade_kane_williamson.png",
+    "wild_card_filename": "premade_kane_williamson.png"
   },
   "Tilak Varma": {
     "player_name": "Tilak Varma",
@@ -133,7 +140,8 @@
     "spawnable": true,
     "catch_name": "tilak varma",
     "event_id": null,
-    "filename": "premade_tilak_varma.png"
+    "filename": "premade_tilak_varma.png",
+    "wild_card_filename": "premade_tilak_varma.png"
   },
   "Virat Kohli": {
     "player_name": "Virat Kohli",
@@ -150,7 +158,8 @@
     "spawnable": true,
     "catch_name": "virat kohli",
     "event_id": null,
-    "filename": "premade_virat_kohli.png"
+    "filename": "premade_virat_kohli.png",
+    "wild_card_filename": "premade_virat_kohli.png"
   },
   "Rinku Singh": {
     "player_name": "Rinku Singh",
@@ -167,7 +176,8 @@
     "spawnable": true,
     "catch_name": "rinku singh",
     "event_id": null,
-    "filename": "premade_rinku_singh.png"
+    "filename": "premade_rinku_singh.png",
+    "wild_card_filename": "premade_rinku_singh.png"
   },
   "Ms Dhoni": {
     "player_name": "Ms Dhoni",
@@ -184,7 +194,8 @@
     "spawnable": true,
     "catch_name": "ms dhoni",
     "event_id": 4,
-    "filename": "premade_ms_dhoni.png"
+    "filename": "premade_ms_dhoni.png",
+    "wild_card_filename": "premade_ms_dhoni.png"
   },
   "Kuldeep Yadav": {
     "player_name": "Kuldeep Yadav",
@@ -201,7 +212,8 @@
     "spawnable": true,
     "catch_name": "kuldeep yadav",
     "event_id": null,
-    "filename": "premade_kuldeep_yadav.png"
+    "filename": "premade_kuldeep_yadav.png",
+    "wild_card_filename": "premade_kuldeep_yadav.png"
   },
   "Joe Root": {
     "player_name": "Joe Root",
@@ -218,7 +230,8 @@
     "spawnable": true,
     "catch_name": "joe root",
     "event_id": null,
-    "filename": "premade_joe_root.png"
+    "filename": "premade_joe_root.png",
+    "wild_card_filename": "premade_joe_root.png"
   },
   "Kwena Maphaka": {
     "player_name": "Kwena Maphaka",
@@ -235,7 +248,8 @@
     "spawnable": true,
     "catch_name": "kwena maphaka",
     "event_id": null,
-    "filename": "premade_kwena_maphaka.png"
+    "filename": "premade_kwena_maphaka.png",
+    "wild_card_filename": "premade_kwena_maphaka.png"
   },
   "Steve Smith": {
     "player_name": "Steve Smith",
@@ -252,7 +266,8 @@
     "spawnable": true,
     "catch_name": "steve smith",
     "event_id": null,
-    "filename": "premade_steve_smith.png"
+    "filename": "premade_steve_smith.png",
+    "wild_card_filename": "premade_steve_smith.png"
   },
   "Muhammad Waseem": {
     "player_name": "Muhammad Waseem",
@@ -269,7 +284,8 @@
     "spawnable": true,
     "catch_name": "muhammad waseem",
     "event_id": null,
-    "filename": "premade_muhammad_waseem.png"
+    "filename": "premade_muhammad_waseem.png",
+    "wild_card_filename": "premade_muhammad_waseem.png"
   },
   "AB de Villiers": {
     "player_name": "AB de Villiers",
@@ -286,7 +302,8 @@
     "spawnable": true,
     "catch_name": "ab de villiers",
     "event_id": null,
-    "filename": "premade_ab_de_villiers.png"
+    "filename": "premade_ab_de_villiers.png",
+    "wild_card_filename": "premade_ab_de_villiers.png"
   },
   "Vaibhav Sooryawanshi": {
     "player_name": "Vaibhav Sooryawanshi",
@@ -303,7 +320,8 @@
     "spawnable": true,
     "catch_name": "vaibhav sooryawanshi",
     "event_id": 3,
-    "filename": "premade_vaibhav_sooryawanshi.png"
+    "filename": "premade_vaibhav_sooryawanshi.png",
+    "wild_card_filename": "premade_vaibhav_sooryawanshi.png"
   },
   "Brett Lee": {
     "player_name": "Brett Lee",
@@ -320,7 +338,8 @@
     "spawnable": true,
     "catch_name": "brett lee",
     "event_id": null,
-    "filename": "premade_brett_lee.png"
+    "filename": "premade_brett_lee.png",
+    "wild_card_filename": "premade_brett_lee.png"
   },
   "Viv Richards": {
     "player_name": "Viv Richards",
@@ -337,7 +356,8 @@
     "spawnable": true,
     "catch_name": "viv richards",
     "event_id": 4,
-    "filename": "premade_viv_richards.png"
+    "filename": "premade_viv_richards.png",
+    "wild_card_filename": "premade_viv_richards.png"
   },
   "Vaibhav Sooryavanshi": {
     "player_name": "Vaibhav Sooryavanshi",
@@ -354,7 +374,8 @@
     "spawnable": true,
     "catch_name": "vaibhav sooryavanshi",
     "event_id": 9,
-    "filename": "premade_vaibhav_sooryavanshi.png"
+    "filename": "premade_vaibhav_sooryavanshi.png",
+    "wild_card_filename": "premade_vaibhav_sooryavanshi.png"
   },
   "Rohit Sharma": {
     "player_name": "Rohit Sharma",
@@ -371,7 +392,8 @@
     "spawnable": true,
     "catch_name": "rohit sharma",
     "event_id": null,
-    "filename": "premade_rohit_sharma.png"
+    "filename": "premade_rohit_sharma.png",
+    "wild_card_filename": "premade_rohit_sharma.png"
   },
   "Yashasvi Jaiswal": {
     "player_name": "Yashasvi Jaiswal",
@@ -388,6 +410,7 @@
     "spawnable": true,
     "catch_name": "yashasvi jaiswal",
     "event_id": 3,
-    "filename": "premade_yashasvi_jaiswal.png"
+    "filename": "premade_yashasvi_jaiswal.png",
+    "wild_card_filename": "premade_yashasvi_jaiswal.png"
   }
 }
