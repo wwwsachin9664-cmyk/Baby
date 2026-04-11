@@ -116,11 +116,12 @@ def pick_weekly_card() -> Ball | None:
 
 def get_random_special() -> Special | None:
     from django.utils import timezone as dj_tz
+    now = dj_tz.now()
     population = [
         x for x in specials.values()
-        if (x.start_date or datetime.min.replace(tzinfo=dj_tz.get_current_timezone()))
-        <= dj_tz.now()
-        <= (x.end_date or datetime.max.replace(tzinfo=dj_tz.get_current_timezone()))
+        if x.start_date is not None
+        and x.start_date <= now
+        and (x.end_date is None or x.end_date >= now)
     ]
     if not population:
         return None
@@ -140,7 +141,12 @@ async def _give_card(
     """Create a BallInstance and return the card PNG as a discord.File."""
     bonus_attack = random.randint(-settings.max_attack_bonus, settings.max_attack_bonus)
     bonus_health = random.randint(-settings.max_health_bonus, settings.max_health_bonus)
-    special = get_random_special() if include_special else None
+
+    forced_id = card.capacity_logic.get("forced_special") if card.capacity_logic else None
+    if forced_id:
+        special = specials.get(int(forced_id)) or None
+    else:
+        special = get_random_special() if include_special else None
 
     player, _ = await Player.objects.aget_or_create(discord_id=interaction.user.id)
     is_new    = not await BallInstance.objects.filter(player=player, ball=card).aexists()

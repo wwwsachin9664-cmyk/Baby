@@ -412,5 +412,61 @@
     "event_id": 3,
     "filename": "premade_yashasvi_jaiswal.png",
     "wild_card_filename": "premade_yashasvi_jaiswal.png"
+  },
+  "Vaibhav Sooryawanshi (IPL2026)": {
+    "player_name": "Vaibhav Sooryawanshi (IPL2026)",
+    "card_name": "VAIBHAV",
+    "slug": "vaibhav_sooryawanshi_ipl2026",
+    "codename": "Boss Baby",
+    "description": "Vaibhav Suryavanshi is an emerging young cricketer associated with the Indian Premier League 2026 known for his talent dedication and potential to grow into a strong performer in future seasons",
+    "bat_score": 76,
+    "ball_score": 23,
+    "rarity": 1.0,
+    "spawn_chance": 15.0,
+    "artwork_author": "Legend",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "vaibhav sooryavanshi",
+    "event_id": 5,
+    "event_name": "IPL2026",
+    "filename": "premade_vaibhav_sooryawanshi_ipl2026.png",
+    "wild_card_filename": "premade_vaibhav_sooryawanshi_ipl2026.png",
+    "capacity_logic": {
+      "badge_rarity": 1.0,
+      "bg_preset": "IPL2026",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": true,
+      "credit_font": "optimus",
+      "forced_special": 5
+    }
+  },
+  "Yashasvi Jaiswal (IPL2026)": {
+    "player_name": "Yashasvi Jaiswal (IPL2026)",
+    "card_name": "Yashasvi",
+    "slug": "yashasvi_jaiswal_ipl2026",
+    "codename": "Joeswal",
+    "description": "Yashasvi Jaiswal has impressed fans with his performances in the Indian Premier League and international matches.\nHis dedication hard work and hunger for runs make him a future star of Indian cricket",
+    "bat_score": 83,
+    "ball_score": 19,
+    "rarity": 1.0,
+    "spawn_chance": 15.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "yashasvi jaiswal",
+    "event_id": 5,
+    "event_name": "IPL2026",
+    "filename": "premade_yashasvi_jaiswal_ipl2026.png",
+    "wild_card_filename": "premade_yashasvi_jaiswal_ipl2026.png",
+    "capacity_logic": {
+      "badge_rarity": 1.0,
+      "bg_preset": "IPL2026",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": true,
+      "credit_font": "optimus",
+      "forced_special": 5
+    }
   }
 }

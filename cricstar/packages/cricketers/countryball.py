@@ -195,13 +195,18 @@ class BallSpawnView(View):
         return self.model.country
 
     def get_random_special(self) -> Special | None:
+        forced_id = self.model.capacity_logic.get("forced_special") if self.model.capacity_logic else None
+        if forced_id:
+            forced = specials.get(int(forced_id))
+            if forced:
+                return forced
+
         population = [
             x
             for x in specials.values()
-            # handle null start/end dates with infinity times
-            if (x.start_date or datetime.min.replace(tzinfo=timezone.get_current_timezone()))
-            <= timezone.now()
-            <= (x.end_date or datetime.max.replace(tzinfo=timezone.get_current_timezone()))
+            if x.start_date is not None
+            and x.start_date <= timezone.now()
+            and (x.end_date is None or x.end_date >= timezone.now())
         ]
 
         if not population:
