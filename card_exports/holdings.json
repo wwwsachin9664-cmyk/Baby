@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-11T09:48:01.006616+00:00",
-  "count": 19,
+  "exported_at": "2026-04-11T09:56:04.045800+00:00",
+  "count": 22,
   "holdings": [
     {
       "player_discord_id": 1317288099075850243,
@@ -246,6 +246,45 @@
       "tradeable": true,
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-11T08:15:35.098463+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Kuldeep Yadav",
+      "special_name": null,
+      "health_bonus": -7,
+      "attack_bonus": 8,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-11T09:50:14.958416+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 946731189128003594,
+      "ball_player_name": "Naveen ul Haq",
+      "special_name": null,
+      "health_bonus": -17,
+      "attack_bonus": -3,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-11T09:53:00.328216+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 946731189128003594,
+      "ball_player_name": "Yashasvi Jaiswal (IPL2026)",
+      "special_name": null,
+      "health_bonus": 6,
+      "attack_bonus": -19,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-11T09:53:09.691720+00:00",
       "spawned_time": null,
       "extra_data": {}
     }
