@@ -15,7 +15,7 @@ from discord import app_commands
 from discord.ext import commands, tasks
 from discord.ui import ActionRow, Button, Container, Section, TextDisplay
 
-from cricstar.card_sync import export_card as _export_card, export_event as _export_event
+from cricstar.card_sync import export_card as _export_card, export_event as _export_event, delete_card_export as _delete_card_export
 from cricstar.core.bot import impersonations
 from cricstar.core.discord import LayoutView
 from cricstar.core.image_generator.image_gen import draw_premade_card, get_neon_color, save_neon_color
@@ -1680,6 +1680,9 @@ class Admin(commands.Cog):
 
         ball_name = ball.country
         ball_id = ball.id
+        ball_slug = re.sub(r"[^a-z0-9]+", "_", ball_name.lower().strip()).strip("_")
+        ball_filename = str(ball.collection_card) if ball.collection_card else f"premade_{ball_slug}.png"
+        ball_wc_filename = str(ball.wild_card) if ball.wild_card else ball_filename
 
         # Delete all BallInstance records for this ball
         deleted_instances, _ = await BallInstance.objects.filter(ball=ball).adelete()
@@ -1698,6 +1701,19 @@ class Admin(commands.Cog):
                 deleted_files.append(p.name)
             except Exception as exc:
                 log.warning(f"removecard: could not delete file {p}: {exc}")
+
+        # Clean up card_exports/ so the card won't be re-imported on next restart
+        try:
+            export_removed = _delete_card_export(
+                player_name=ball_name,
+                filename=ball_filename,
+                wild_card_filename=ball_wc_filename if ball_wc_filename != ball_filename else None,
+                slug=ball_slug,
+            )
+            if export_removed:
+                deleted_files.extend(export_removed)
+        except Exception as sync_exc:
+            log.warning(f"removecard: card_sync cleanup failed (non-critical): {sync_exc}")
 
         files_summary = ", ".join(f"`{f}`" for f in deleted_files) if deleted_files else "none"
         log.info(

@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-11T09:56:04.045800+00:00",
-  "count": 22,
+  "exported_at": "2026-04-11T10:21:51.311521+00:00",
+  "count": 23,
   "holdings": [
     {
       "player_discord_id": 1317288099075850243,
@@ -286,6 +286,19 @@
       "server_id": null,
       "catch_date": "2026-04-11T09:53:09.691720+00:00",
       "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1274638398853742605,
+      "ball_player_name": "Virat Kohli",
+      "special_name": null,
+      "health_bonus": 7,
+      "attack_bonus": -6,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-11T10:14:19.001334+00:00",
+      "spawned_time": "2026-04-11T10:14:07.818000+00:00",
       "extra_data": {}
     }
   ]

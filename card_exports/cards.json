@@ -305,24 +305,6 @@
     "filename": "premade_ab_de_villiers.png",
     "wild_card_filename": "premade_ab_de_villiers.png"
   },
-  "Vaibhav Sooryawanshi": {
-    "player_name": "Vaibhav Sooryawanshi",
-    "card_name": "VAIBHAV",
-    "slug": "vaibhav_sooryawanshi",
-    "codename": "Boss Baby",
-    "description": "Vaibhav Suryavanshi is an emerging young cricketer associated with the Indian Premier League 2026 known for his talent dedication and potential to grow into a strong performer in future seasons",
-    "bat_score": 76,
-    "ball_score": 23,
-    "rarity": 1.0,
-    "spawn_chance": 20.0,
-    "artwork_author": "Legend",
-    "tradeable": true,
-    "spawnable": true,
-    "catch_name": "vaibhav sooryawanshi",
-    "event_id": 3,
-    "filename": "premade_vaibhav_sooryawanshi.png",
-    "wild_card_filename": "premade_vaibhav_sooryawanshi.png"
-  },
   "Brett Lee": {
     "player_name": "Brett Lee",
     "card_name": "Brett Lee",
@@ -358,24 +340,6 @@
     "event_id": 4,
     "filename": "premade_viv_richards.png",
     "wild_card_filename": "premade_viv_richards.png"
-  },
-  "Vaibhav Sooryavanshi": {
-    "player_name": "Vaibhav Sooryavanshi",
-    "card_name": "VAIBHAV",
-    "slug": "vaibhav_sooryavanshi",
-    "codename": "Boss Baby",
-    "description": "Vaibhav Suryavanshi is an emerging young cricketer associated with the Indian Premier League 2026 known for his talent dedication and potential to grow into a strong performer in future seasons",
-    "bat_score": 76,
-    "ball_score": 23,
-    "rarity": 1.0,
-    "spawn_chance": 20.0,
-    "artwork_author": "Legend",
-    "tradeable": true,
-    "spawnable": true,
-    "catch_name": "vaibhav sooryavanshi",
-    "event_id": 9,
-    "filename": "premade_vaibhav_sooryavanshi.png",
-    "wild_card_filename": "premade_vaibhav_sooryavanshi.png"
   },
   "Rohit Sharma": {
     "player_name": "Rohit Sharma",

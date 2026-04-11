@@ -132,6 +132,51 @@ def export_card(
     log.info("card_sync: saved export for %r", player_name)
 
 
+def delete_card_export(player_name: str, filename: str, wild_card_filename: str | None, slug: str) -> list[str]:
+    """
+    Remove a card from card_exports/ entirely.
+    Called by /removecard so deleted cards don't get re-imported on next restart.
+    Returns a list of paths that were removed.
+    """
+    _ensure_dirs()
+    removed: list[str] = []
+
+    records = _load_json(CARDS_JSON)
+    if player_name in records:
+        del records[player_name]
+        CARDS_JSON.write_text(json.dumps(records, indent=2, ensure_ascii=False))
+        removed.append("cards.json entry")
+        log.info("card_sync: removed %r from cards.json", player_name)
+
+    wc_filename = wild_card_filename or filename
+    for target in [IMAGES_DIR / filename, SPAWNS_DIR / wc_filename, FOREGROUNDS_DIR / slug]:
+        if target.exists():
+            target.unlink()
+            removed.append(str(target.name))
+            log.info("card_sync: deleted export file %s", target)
+
+    if wc_filename != filename:
+        extra = SPAWNS_DIR / filename
+        if extra.exists():
+            extra.unlink()
+            removed.append(str(extra.name))
+
+    holdings_payload = _load_json(HOLDINGS_JSON)
+    if isinstance(holdings_payload, dict) and "holdings" in holdings_payload:
+        original = holdings_payload["holdings"]
+        filtered = [h for h in original if h.get("ball_player_name") != player_name]
+        if len(filtered) < len(original):
+            holdings_payload["holdings"] = filtered
+            holdings_payload["count"] = len(filtered)
+            holdings_payload["exported_at"] = datetime.now(timezone.utc).isoformat()
+            HOLDINGS_JSON.write_text(json.dumps(holdings_payload, indent=2, ensure_ascii=False))
+            removed.append(f"holdings.json ({len(original) - len(filtered)} entries)")
+            log.info("card_sync: removed %d holding(s) for %r from holdings.json",
+                     len(original) - len(filtered), player_name)
+
+    return removed
+
+
 def import_all_cards() -> int:
     records = _load_json(CARDS_JSON)
     if not records:
