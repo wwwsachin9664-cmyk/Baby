@@ -359,24 +359,6 @@
     "filename": "premade_rohit_sharma.png",
     "wild_card_filename": "premade_rohit_sharma.png"
   },
-  "Yashasvi Jaiswal": {
-    "player_name": "Yashasvi Jaiswal",
-    "card_name": "Yashasvi",
-    "slug": "yashasvi_jaiswal",
-    "codename": "Joeswal",
-    "description": "Yashasvi Jaiswal has impressed fans with his performances in the Indian Premier League and international matches.\nHis dedication hard work and hunger for runs make him a future star of Indian cricket",
-    "bat_score": 83,
-    "ball_score": 19,
-    "rarity": 1.0,
-    "spawn_chance": 15.0,
-    "artwork_author": "Sachin",
-    "tradeable": true,
-    "spawnable": true,
-    "catch_name": "yashasvi jaiswal",
-    "event_id": 3,
-    "filename": "premade_yashasvi_jaiswal.png",
-    "wild_card_filename": "premade_yashasvi_jaiswal.png"
-  },
   "Vaibhav Sooryawanshi (IPL2026)": {
     "player_name": "Vaibhav Sooryawanshi (IPL2026)",
     "card_name": "VAIBHAV",
