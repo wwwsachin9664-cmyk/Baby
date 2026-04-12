@@ -12,7 +12,7 @@ MANAGE_PY = os.path.join(ADMIN_PANEL_DIR, "manage.py")
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "admin_panel.settings.cricstar")
 
-DISCORD_TOKEN = os.environ.get("DISCORD_BOT_TOKEN", "") or os.environ.get("DISCORD_TOKEN", "")
+DISCORD_TOKEN = (os.environ.get("DISCORD_BOT_TOKEN") or os.environ.get("DISCORD_TOKEN") or "").strip()
 
 env = {**os.environ, "DJANGO_SETTINGS_MODULE": "admin_panel.settings.cricstar"}
 
@@ -44,17 +44,21 @@ print("Initializing CricStar settings...")
 init_script = _PYTHON_HEADER + f"""
 from settings.models import Settings
 
-DISCORD_TOKEN = os.environ.get("DISCORD_BOT_TOKEN", "") or os.environ.get("DISCORD_TOKEN", "")
+DISCORD_TOKEN = (os.environ.get("DISCORD_BOT_TOKEN") or os.environ.get("DISCORD_TOKEN") or "").strip()
 settings_obj, created = Settings.objects.get_or_create(pk=1)
 changed = False
-if created or not settings_obj.bot_token:
+if DISCORD_TOKEN and settings_obj.bot_token != DISCORD_TOKEN:
     settings_obj.bot_token = DISCORD_TOKEN
+    changed = True
+if created:
     settings_obj.bot_name = "CricStar"
     settings_obj.collectible_name = "cricketer"
     settings_obj.plural_collectible_name = "cricketers"
     settings_obj.cricstar_slash_name = "cricstar"
     settings_obj.catch_button_label = "Catch me!"
     changed = True
+if not settings_obj.bot_token:
+    raise RuntimeError("DISCORD_BOT_TOKEN or DISCORD_TOKEN must be set before starting the bot.")
 if changed:
     settings_obj.save()
     print("CricStar settings saved.")
