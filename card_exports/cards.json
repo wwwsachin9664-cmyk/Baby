@@ -96,31 +96,6 @@
     "filename": "premade_sanju_samson.png",
     "wild_card_filename": "spawn_sanju_samson.jpg"
   },
-  "Dale Steyn": {
-    "player_name": "Dale Steyn",
-    "card_name": "Dale Steyn",
-    "slug": "dale_steyn",
-    "codename": "Steyn Gun",
-    "description": "Dale Steyn is widely considered the greatest fast bowler of his generation \nKnown for his extreme pace late outswing and a fierce chainsaw celebration  ruled over world  maintaining the Number 1 spot in the ICC Test rankings for a record breaking 2343 days",
-    "bat_score": 41,
-    "ball_score": 97,
-    "rarity": 0.2,
-    "spawn_chance": 5.0,
-    "artwork_author": "NASH",
-    "tradeable": true,
-    "spawnable": true,
-    "catch_name": "dale steyn",
-    "event_id": 4,
-    "event_name": "ICONS",
-    "filename": "premade_dale_steyn.png",
-    "wild_card_filename": "spawn_dale_steyn.jpg",
-    "capacity_logic": {
-      "bg_preset": "icons_9",
-      "badge_rarity": 0.2,
-      "forced_special": 4,
-      "credit_font": "optimus"
-    }
-  },
   "Kane Williamson": {
     "player_name": "Kane Williamson",
     "card_name": "Williamson",
@@ -570,31 +545,6 @@
       "only_spawn_in_event": false
     }
   },
-  "Steyn": {
-    "player_name": "Steyn",
-    "card_name": "Steyn",
-    "slug": "dale_steyn",
-    "codename": "Steyn Gun",
-    "description": "Dale Steyn is widely considered the greatest fast bowler of his generation \nKnown for his extreme pace late outswing and a fierce chainsaw celebration  ruled over world  maintaining the Number 1 spot in the ICC Test rankings for a record breaking 2343 days",
-    "bat_score": 41,
-    "ball_score": 97,
-    "rarity": 0.2,
-    "spawn_chance": 5.0,
-    "artwork_author": "NASH",
-    "tradeable": true,
-    "spawnable": true,
-    "catch_name": "dale steyn",
-    "event_id": 4,
-    "event_name": "ICONS",
-    "filename": "premade_dale_steyn.png",
-    "wild_card_filename": "spawn_dale_steyn.jpg",
-    "capacity_logic": {
-      "bg_preset": "icons_9",
-      "credit_font": "optimus",
-      "badge_rarity": 0.2,
-      "forced_special": 4
-    }
-  },
   "Sachin Tendulkar": {
     "player_name": "Sachin Tendulkar",
     "card_name": "Sachin Tendulkar",
@@ -737,6 +687,98 @@
       "weekly_chance": 45.0,
       "foreground_border": true,
       "only_spawn_in_event": false
+    }
+  },
+  "Dale Steyn": {
+    "player_name": "Dale Steyn",
+    "card_name": "Steyn",
+    "slug": "dale_steyn",
+    "codename": "Steyn Gun",
+    "description": "Dale Steyn is widely regarded as one of the greatest and most feared fast bowlers in modern cricket history",
+    "bat_score": 0,
+    "ball_score": 97,
+    "rarity": 0.2,
+    "spawn_chance": 2.0,
+    "artwork_author": "Nash",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "dale steyn",
+    "event_id": 4,
+    "event_name": "ICONS",
+    "filename": "premade_dale_steyn.png",
+    "wild_card_filename": "premade_dale_steyn.png",
+    "capacity_logic": {
+      "badge_rarity": 0.2,
+      "bg_preset": "icons_9",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 1.0,
+      "daily_chance": 1.0,
+      "display_name": "Steyn",
+      "forced_special": 4
+    }
+  },
+  "Travis Head": {
+    "player_name": "Travis Head",
+    "card_name": "Travis",
+    "slug": "travis_head",
+    "codename": "Heady",
+    "description": "Travis Head is an aggressive top order batter known for fearless strokeplay quick scoring ability and delivering impactful performances in high pressure international matches consistently",
+    "bat_score": 89,
+    "ball_score": 44,
+    "rarity": 1.5,
+    "spawn_chance": 130.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "travis head",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_travis_head.png",
+    "wild_card_filename": "spawn_travis_head.jpg",
+    "capacity_logic": {
+      "badge_rarity": 1.5,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 80.0,
+      "daily_chance": 20.0,
+      "display_name": "Travis"
+    }
+  },
+  "Virat Kohli (IPL2026)": {
+    "player_name": "Virat Kohli (IPL2026)",
+    "card_name": "Virat",
+    "slug": "virat_kohli_ipl2026",
+    "codename": "Run Machine",
+    "description": "Virat Kohli is a world class batter known for unmatched consistency intense mindset and exceptional ability to control chases with precision and dominate bowlers across formats consistently",
+    "bat_score": 96,
+    "ball_score": 24,
+    "rarity": 1.0,
+    "spawn_chance": 150.0,
+    "artwork_author": "Marco",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "virat kohli",
+    "event_id": 3,
+    "event_name": "IPL2026",
+    "filename": "premade_virat_kohli_ipl2026.png",
+    "wild_card_filename": "spawn_virat_kohli_ipl2026.jpg",
+    "capacity_logic": {
+      "badge_rarity": 1.0,
+      "bg_preset": "IPL2026",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": true,
+      "credit_font": "optimus",
+      "weekly_chance": 25.0,
+      "daily_chance": 10.0,
+      "display_name": "Virat",
+      "forced_special": 3
     }
   }
 }
