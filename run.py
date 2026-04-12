@@ -55,9 +55,6 @@ if created or not settings_obj.bot_token:
     settings_obj.cricstar_slash_name = "cricstar"
     settings_obj.catch_button_label = "Catch me!"
     changed = True
-elif DISCORD_TOKEN and settings_obj.bot_token != DISCORD_TOKEN:
-    settings_obj.bot_token = DISCORD_TOKEN
-    changed = True
 if changed:
     settings_obj.save()
     print("CricStar settings saved.")
