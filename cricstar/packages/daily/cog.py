@@ -24,22 +24,24 @@ WEEKLY_DAYS  = 7
 
 # ── Rarity weight tables ──────────────────────────────────────────────────────
 
-# Weekly weights by spawn_chance tier
-#   < 1%             → 0   (never — too rare to appear in weekly)
-#   1  – 5%          → 8   (rare cards, small but real chance)
-#   6  – 15%         → 30  (medium-rare, decent weekly reward)
-#   16 – 35%         → 60  (common-ish, most frequent weekly pick)
-#   > 35%            → 0   (excluded — too common for a weekly reward)
-def _weekly_weight(rarity: float) -> float:
-    if rarity < 1.0:
-        return 0.0
-    if 1.0 <= rarity <= 5.0:
-        return 8.0
-    if 6.0 <= rarity <= 15.0:
-        return 30.0
-    if 16.0 <= rarity <= 35.0:
-        return 60.0
-    return 0.0
+WEEKLY_BADGE_RARITY_WEIGHTS = {
+    0.2: 1.0,
+    0.5: 2.0,
+    1.0: 90.0,
+    1.5: 20.0,
+    5.0: 20.0,
+}
+
+
+def _badge_rarity(ball: Ball) -> float | None:
+    logic = ball.capacity_logic or {}
+    raw = logic.get("badge_rarity")
+    if raw is None:
+        return None
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return None
 
 
 # Daily weights by spawn_chance tier
@@ -104,12 +106,18 @@ def pick_weekly_card() -> Ball | None:
     eligible = [b for b in balls_cache.values() if b.enabled]
     if not eligible:
         return None
-    filtered = [(b, _weekly_weight(b.rarity)) for b in eligible]
-    filtered = [(b, w) for b, w in filtered if w > 0]
-    if not filtered:
+    grouped: dict[float, list[Ball]] = {}
+    for ball in eligible:
+        badge_rarity = _badge_rarity(ball)
+        if badge_rarity not in WEEKLY_BADGE_RARITY_WEIGHTS:
+            continue
+        grouped.setdefault(badge_rarity, []).append(ball)
+    if not grouped:
         return None
-    balls_list, weights_list = zip(*filtered)
-    return random.choices(balls_list, weights=weights_list, k=1)[0]
+    rarity_tiers = list(grouped.keys())
+    weights = [WEEKLY_BADGE_RARITY_WEIGHTS[tier] for tier in rarity_tiers]
+    selected_tier = random.choices(rarity_tiers, weights=weights, k=1)[0]
+    return random.choice(grouped[selected_tier])
 
 
 # ── Special helper ────────────────────────────────────────────────────────────
