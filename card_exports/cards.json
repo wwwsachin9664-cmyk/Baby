@@ -308,31 +308,6 @@
     "filename": "premade_muhammad_waseem.png",
     "wild_card_filename": "premade_muhammad_waseem.png"
   },
-  "AB de Villiers": {
-    "player_name": "AB de Villiers",
-    "card_name": "AB de Villiers",
-    "slug": "ab_de_villiers",
-    "codename": "Mr 360",
-    "description": "One of most destructive batter in cricketing history and probably best South African Cricketer in 2010s decade and one of best overseas batsman in IPL too",
-    "bat_score": 97,
-    "ball_score": 0,
-    "rarity": 0.5,
-    "spawn_chance": 2.0,
-    "artwork_author": "Rishav",
-    "tradeable": true,
-    "spawnable": true,
-    "catch_name": "ab de villiers",
-    "event_id": 4,
-    "event_name": "ICONS",
-    "filename": "premade_ab_de_villiers.png",
-    "wild_card_filename": "spawn_ab_de_villiers.jpg",
-    "capacity_logic": {
-      "bg_preset": "icons_9",
-      "credit_font": "optimus",
-      "badge_rarity": 0.5,
-      "forced_special": 4
-    }
-  },
   "Brett Lee": {
     "player_name": "Brett Lee",
     "card_name": "Brett Lee",
@@ -348,11 +323,14 @@
     "spawnable": true,
     "catch_name": "brett lee",
     "event_id": 4,
-    "filename": "premade_brett_lee.png",
-    "wild_card_filename": "premade_brett_lee.png",
     "event_name": "ICONS",
+    "filename": "premade_brett_lee.png",
+    "wild_card_filename": "spawn_brett_lee.jpg",
     "capacity_logic": {
-      "forced_special": 4
+      "badge_rarity": 0.5,
+      "forced_special": 4,
+      "bg_preset": "icons_9",
+      "credit_font": "optimus"
     }
   },
   "Viv Richards": {
@@ -370,8 +348,15 @@
     "spawnable": true,
     "catch_name": "viv richards",
     "event_id": 4,
+    "event_name": "ICONS",
     "filename": "premade_viv_richards.png",
-    "wild_card_filename": "premade_viv_richards.png"
+    "wild_card_filename": "spawn_viv_richards.jpg",
+    "capacity_logic": {
+      "bg_preset": "icons_9",
+      "badge_rarity": 0.2,
+      "forced_special": 4,
+      "credit_font": "optimus"
+    }
   },
   "Rohit Sharma": {
     "player_name": "Rohit Sharma",
@@ -635,14 +620,14 @@
       "forced_special": 4
     }
   },
-  "De Villiers": {
-    "player_name": "De Villiers",
+  "AB de Villiers": {
+    "player_name": "AB de Villiers",
     "card_name": "De Villiers",
     "slug": "ab_de_villiers",
-    "codename": "Mr 360",
+    "codename": "Mr 360°",
     "description": "One of most destructive batter in cricketing history and probably best South African Cricketer in 2010s decade and one of best overseas batsman in IPL too",
     "bat_score": 97,
-    "ball_score": 0,
+    "ball_score": 10,
     "rarity": 0.5,
     "spawn_chance": 2.0,
     "artwork_author": "Rishav",
@@ -652,11 +637,15 @@
     "event_id": 4,
     "event_name": "ICONS",
     "filename": "premade_ab_de_villiers.png",
-    "wild_card_filename": "spawn_ab_de_villiers.jpg",
+    "wild_card_filename": "premade_ab_de_villiers.png",
     "capacity_logic": {
-      "bg_preset": "icons_9",
-      "credit_font": "optimus",
       "badge_rarity": 0.5,
+      "bg_preset": "icons_9",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "display_name": "De Villiers",
       "forced_special": 4
     }
   }
