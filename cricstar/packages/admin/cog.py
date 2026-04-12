@@ -2490,6 +2490,126 @@ class Admin(commands.Cog):
             ephemeral=True,
         )
 
+    @app_commands.command(
+        name="csspawnchance",
+        description="[Admin] View or change one player's spawn chance.",
+    )
+    @app_commands.default_permissions(administrator=True)
+    @app_commands.describe(
+        player_name="Player/card to inspect or update.",
+        action="What to do with this player's spawn chance.",
+        amount="Amount to set, add, or subtract. Not needed for view/disable.",
+    )
+    @app_commands.choices(action=[
+        app_commands.Choice(name="View current spawn chance", value="view"),
+        app_commands.Choice(name="Set to amount", value="set"),
+        app_commands.Choice(name="Increase by amount", value="increase"),
+        app_commands.Choice(name="Decrease by amount", value="decrease"),
+        app_commands.Choice(name="Disable spawning", value="disable"),
+    ])
+    @app_commands.autocomplete(player_name=_player_name_autocomplete)
+    async def csspawnchance(
+        self,
+        interaction: discord.Interaction["CricStarBot"],
+        player_name: str,
+        action: str = "view",
+        amount: float = 0.0,
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        try:
+            ball = await Ball.objects.aget(country=player_name)
+        except Ball.DoesNotExist:
+            close = [
+                b.country for b in balls_cache.values()
+                if player_name.lower() in b.country.lower()
+            ][:5]
+            hint = f"\nDid you mean: {', '.join(close)}?" if close else ""
+            await interaction.followup.send(
+                f"❌ No cricketer named **{player_name}** found.{hint}",
+                ephemeral=True,
+            )
+            return
+
+        action = action.lower().strip()
+        old_chance = float(ball.rarity or 0)
+
+        if action not in {"view", "set", "increase", "decrease", "disable"}:
+            await interaction.followup.send(
+                "❌ Invalid action. Use view, set, increase, decrease, or disable.",
+                ephemeral=True,
+            )
+            return
+
+        if action in {"set", "increase", "decrease"} and amount < 0:
+            await interaction.followup.send("❌ Amount cannot be negative.", ephemeral=True)
+            return
+
+        if action == "view":
+            new_chance = old_chance
+        elif action == "set":
+            new_chance = amount
+        elif action == "increase":
+            new_chance = old_chance + amount
+        elif action == "decrease":
+            new_chance = max(0.0, old_chance - amount)
+        else:
+            new_chance = 0.0
+
+        if new_chance > 890:
+            await interaction.followup.send(
+                "❌ Spawn chance cannot be higher than `890`.",
+                ephemeral=True,
+            )
+            return
+
+        changed = action != "view" and new_chance != old_chance
+        if action != "view":
+            ball.rarity = new_chance
+            ball.spawnable = new_chance > 0
+            await ball.asave(update_fields=["rarity", "spawnable"])
+            if ball.pk in balls_cache:
+                balls_cache[ball.pk].rarity = new_chance
+                balls_cache[ball.pk].spawnable = new_chance > 0
+
+            import json as _json
+            from pathlib import Path as _Path
+            cards_path = _Path("card_exports/cards.json")
+            if cards_path.exists():
+                try:
+                    records: dict = _json.loads(cards_path.read_text())
+                    data = records.get(ball.country)
+                    if data is not None:
+                        data["spawn_chance"] = new_chance
+                        data["spawnable"] = new_chance > 0
+                        cards_path.write_text(_json.dumps(records, indent=2, ensure_ascii=False))
+                except Exception as exc:
+                    log.warning("csspawnchance: could not update cards.json: %s", exc)
+
+        all_spawnable = [b async for b in Ball.objects.filter(enabled=True, spawnable=True, rarity__gt=0)]
+        total_weight = sum(float(b.rarity or 0) for b in all_spawnable)
+        current_percent = (new_chance / total_weight * 100) if total_weight and new_chance > 0 else 0.0
+        badge_rarity = (ball.capacity_logic or {}).get("badge_rarity", "?")
+        status = "disabled" if new_chance <= 0 or not ball.spawnable else "enabled"
+
+        if action == "view":
+            title = f"ℹ️ **{ball.country}** spawn chance"
+        elif changed:
+            title = f"✅ Updated **{ball.country}** spawn chance"
+        else:
+            title = f"ℹ️ **{ball.country}** spawn chance unchanged"
+
+        await interaction.followup.send(
+            f"{title}\n"
+            f"Badge rarity: `{badge_rarity}`\n"
+            f"Before: `{old_chance:.4g}`\n"
+            f"Now: `{new_chance:.4g}`\n"
+            f"Status: `{status}`\n"
+            f"Total spawn pool weight: `{total_weight:.4g}`\n"
+            f"Current random-spawn share: `{current_percent:.2f}%`",
+            ephemeral=True,
+        )
+
     # ── /adminrarity ──────────────────────────────────────────────────────────
     @app_commands.command(
         name="adminrarity",
