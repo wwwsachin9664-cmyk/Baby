@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-12T04:33:34.255685+00:00",
-  "count": 56,
+  "exported_at": "2026-04-12T04:50:15.756363+00:00",
+  "count": 59,
   "holdings": [
     {
       "player_discord_id": 1317288099075850243,
@@ -728,6 +728,45 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-12T04:21:25.190693+00:00",
       "spawned_time": "2026-04-12T04:20:26.555000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Sachin Tendulkar",
+      "special_name": "ICONS",
+      "health_bonus": -18,
+      "attack_bonus": 11,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-12T04:40:10.995036+00:00",
+      "spawned_time": "2026-04-12T04:40:04.044000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "De Villiers",
+      "special_name": null,
+      "health_bonus": -9,
+      "attack_bonus": -17,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-12T04:41:52.800692+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "De Villiers",
+      "special_name": "ICONS",
+      "health_bonus": -3,
+      "attack_bonus": -19,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-12T04:44:45.449561+00:00",
+      "spawned_time": "2026-04-12T04:44:38.711000+00:00",
       "extra_data": {}
     }
   ]

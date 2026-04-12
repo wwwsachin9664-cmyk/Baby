@@ -725,6 +725,7 @@ class Admin(commands.Cog):
                     "credit_stroke": credit_stroke,
                     "only_spawn_in_event": only_spawn_in_event,
                     "credit_font": credit_font,
+                    **({"display_name": card_name} if card_name != player_name else {}),
                 },
                 regime=regime,
                 tradeable=tradeable,
@@ -984,7 +985,7 @@ class Admin(commands.Cog):
                 _shutil.copy2(fg_path, str(fg_preset))
 
                 # Resolve display values (use new value or fall back to existing DB value)
-                _card_name = display_name.strip() or ball.country
+                _card_name = display_name.strip() or (ball.capacity_logic or {}).get("display_name") or ball.country
                 _codename = codename.strip() or ball.capacity_name or ""
                 _description = description.strip() or ball.capacity_description or ""
                 _rarity = rarity if rarity is not None else (ball.capacity_logic or {}).get("badge_rarity", ball.rarity)
@@ -1043,8 +1044,9 @@ class Admin(commands.Cog):
 
         # --- Apply text / stat field changes ---
         if display_name.strip():
-            ball.country = display_name.strip()
-            changed_fields.append("country")
+            ball.capacity_logic = {**(ball.capacity_logic or {}), "display_name": display_name.strip()}
+            if "capacity_logic" not in changed_fields:
+                changed_fields.append("capacity_logic")
         if codename.strip():
             ball.capacity_name = codename.strip()
             changed_fields.append("capacity_name")
@@ -1131,7 +1133,7 @@ class Admin(commands.Cog):
             _ev_name = specials_cache[_ev_id].name if _ev_id and _ev_id in specials_cache else ""
             _export_card(
                 player_name=ball.country,
-                card_name=ball.country,
+                card_name=(ball.capacity_logic or {}).get("display_name") or ball.country,
                 slug=slug,
                 codename=ball.capacity_name or "",
                 description=ball.capacity_description or "",
@@ -1156,7 +1158,7 @@ class Admin(commands.Cog):
         if regen:
             summary_parts.append("Card image regenerated")
         if display_name.strip():
-            summary_parts.append(f"Display name → `{ball.country}`")
+            summary_parts.append(f"Display name → `{display_name.strip()}` *(image only)*")
         if codename.strip():
             summary_parts.append(f"Codename → `{ball.capacity_name}`")
         if description.strip():

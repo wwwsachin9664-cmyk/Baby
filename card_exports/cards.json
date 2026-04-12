@@ -317,19 +317,20 @@
     "bat_score": 97,
     "ball_score": 0,
     "rarity": 0.5,
-    "spawn_chance": 3.0,
+    "spawn_chance": 2.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "ab de villiers",
-    "event_id": null,
-    "event_name": "",
+    "event_id": 4,
+    "event_name": "ICONS",
     "filename": "premade_ab_de_villiers.png",
-    "wild_card_filename": "premade_ab_de_villiers.png",
+    "wild_card_filename": "spawn_ab_de_villiers.jpg",
     "capacity_logic": {
-      "bg_preset": "Icons_2",
+      "bg_preset": "icons_9",
       "credit_font": "optimus",
-      "badge_rarity": 0.5
+      "badge_rarity": 0.5,
+      "forced_special": 4
     }
   },
   "Brett Lee": {
@@ -581,33 +582,6 @@
       "only_spawn_in_event": false
     }
   },
-  "Sachin Tendulkar": {
-    "player_name": "Sachin Tendulkar",
-    "card_name": "Sachin Tendulkar",
-    "slug": "sachin_tendulkar",
-    "codename": "GOD",
-    "description": "The ultimate cricket icon whose technical perfection inspired billions Known as the Master Blaster he played with unmatched grace and humility His legendary straight drive and excellence made him a global symbol of hope and a timeless legend of the game",
-    "bat_score": 100,
-    "ball_score": 75,
-    "rarity": 0.1,
-    "spawn_chance": 1.0,
-    "artwork_author": "Rishav",
-    "tradeable": true,
-    "spawnable": true,
-    "catch_name": "",
-    "event_id": null,
-    "event_name": "",
-    "filename": "premade_sachin_tendulkar.png",
-    "wild_card_filename": "premade_sachin_tendulkar.png",
-    "capacity_logic": {
-      "badge_rarity": 0.1,
-      "bg_preset": "Icons_2",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
-      "credit_font": "default"
-    }
-  },
   "Steyn": {
     "player_name": "Steyn",
     "card_name": "Steyn",
@@ -630,6 +604,59 @@
       "bg_preset": "icons_9",
       "credit_font": "optimus",
       "badge_rarity": 0.2,
+      "forced_special": 4
+    }
+  },
+  "Sachin Tendulkar": {
+    "player_name": "Sachin Tendulkar",
+    "card_name": "Sachin Tendulkar",
+    "slug": "sachin_tendulkar",
+    "codename": "GOD",
+    "description": "The ultimate cricket icon whose technical perfection inspired billions Known as the Master Blaster he played with unmatched grace and humility His legendary straight drive and excellence made him a global symbol of hope and a timeless legend of the game",
+    "bat_score": 99,
+    "ball_score": 75,
+    "rarity": 0.1,
+    "spawn_chance": 1.0,
+    "artwork_author": "Rishav",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "",
+    "event_id": 4,
+    "event_name": "ICONS",
+    "filename": "premade_sachin_tendulkar.png",
+    "wild_card_filename": "premade_sachin_tendulkar.png",
+    "capacity_logic": {
+      "badge_rarity": 0.1,
+      "bg_preset": "icons_9",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "forced_special": 4
+    }
+  },
+  "De Villiers": {
+    "player_name": "De Villiers",
+    "card_name": "De Villiers",
+    "slug": "ab_de_villiers",
+    "codename": "Mr 360",
+    "description": "One of most destructive batter in cricketing history and probably best South African Cricketer in 2010s decade and one of best overseas batsman in IPL too",
+    "bat_score": 97,
+    "ball_score": 0,
+    "rarity": 0.5,
+    "spawn_chance": 2.0,
+    "artwork_author": "Rishav",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "ab de villiers",
+    "event_id": 4,
+    "event_name": "ICONS",
+    "filename": "premade_ab_de_villiers.png",
+    "wild_card_filename": "spawn_ab_de_villiers.jpg",
+    "capacity_logic": {
+      "bg_preset": "icons_9",
+      "credit_font": "optimus",
+      "badge_rarity": 0.5,
       "forced_special": 4
     }
   }
