@@ -98,7 +98,7 @@
   },
   "Dale Steyn": {
     "player_name": "Dale Steyn",
-    "card_name": "STEYN",
+    "card_name": "Dale Steyn",
     "slug": "dale_steyn",
     "codename": "Steyn Gun",
     "description": "Dale Steyn is widely considered the greatest fast bowler of his generation \nKnown for his extreme pace late outswing and a fierce chainsaw celebration  ruled over world  maintaining the Number 1 spot in the ICC Test rankings for a record breaking 2343 days",
@@ -111,8 +111,15 @@
     "spawnable": true,
     "catch_name": "dale steyn",
     "event_id": 4,
+    "event_name": "ICONS",
     "filename": "premade_dale_steyn.png",
-    "wild_card_filename": "premade_dale_steyn.png"
+    "wild_card_filename": "spawn_dale_steyn.jpg",
+    "capacity_logic": {
+      "bg_preset": "icons_9",
+      "badge_rarity": 0.2,
+      "forced_special": 4,
+      "credit_font": "optimus"
+    }
   },
   "Kane Williamson": {
     "player_name": "Kane Williamson",
@@ -549,7 +556,7 @@
   },
   "Shubman Gill": {
     "player_name": "Shubman Gill",
-    "card_name": "Shubman",
+    "card_name": "Shubman Gill",
     "slug": "shubman_gill",
     "codename": "Prince",
     "description": "Shubman Gill is a technically refined opener known for elegant strokeplay strong temperament and the ability to build innings while adapting to different match situations consistently",
@@ -566,12 +573,12 @@
     "filename": "premade_shubman_gill.png",
     "wild_card_filename": "premade_shubman_gill.png",
     "capacity_logic": {
-      "badge_rarity": 5.0,
       "bg_preset": "base_card",
-      "foreground_border": true,
+      "credit_font": "optimus",
+      "badge_rarity": 5.0,
       "credit_stroke": false,
-      "only_spawn_in_event": false,
-      "credit_font": "optimus"
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   },
   "Sachin Tendulkar": {
@@ -601,31 +608,29 @@
       "credit_font": "default"
     }
   },
-  "Sachin": {
-    "player_name": "Sachin",
-    "card_name": "Sachin",
-    "slug": "sachin_tendulkar",
-    "codename": "GOD",
-    "description": "The ultimate cricket icon whose technical perfection inspired billions Known as the Master Blaster he played with unmatched grace and humility His legendary straight drive and excellence made him a global symbol of hope and a timeless legend of the game",
-    "bat_score": 100,
-    "ball_score": 75,
-    "rarity": 0.1,
+  "Steyn": {
+    "player_name": "Steyn",
+    "card_name": "Steyn",
+    "slug": "dale_steyn",
+    "codename": "Steyn Gun",
+    "description": "Dale Steyn is widely considered the greatest fast bowler of his generation \nKnown for his extreme pace late outswing and a fierce chainsaw celebration  ruled over world  maintaining the Number 1 spot in the ICC Test rankings for a record breaking 2343 days",
+    "bat_score": 41,
+    "ball_score": 97,
+    "rarity": 0.2,
     "spawn_chance": 1.0,
-    "artwork_author": "Rishav",
+    "artwork_author": "NASH",
     "tradeable": true,
     "spawnable": true,
-    "catch_name": "sachin tendulkar",
-    "event_id": null,
-    "event_name": "",
-    "filename": "premade_sachin_tendulkar.png",
-    "wild_card_filename": "premade_sachin_tendulkar.png",
+    "catch_name": "dale steyn",
+    "event_id": 4,
+    "event_name": "ICONS",
+    "filename": "premade_dale_steyn.png",
+    "wild_card_filename": "spawn_dale_steyn.jpg",
     "capacity_logic": {
-      "bg_preset": "Icons_2",
-      "credit_font": "default",
-      "badge_rarity": 0.1,
-      "credit_stroke": true,
-      "foreground_border": true,
-      "only_spawn_in_event": false
+      "bg_preset": "icons_9",
+      "credit_font": "optimus",
+      "badge_rarity": 0.2,
+      "forced_special": 4
     }
   }
 }

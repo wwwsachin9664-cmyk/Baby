@@ -814,8 +814,9 @@ class Admin(commands.Cog):
         catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
         only_spawn_in_event="If True, card only spawns while its event is active. Set False to allow spawning anytime.",
         credit_font="Font for credit lines. Leave blank to keep existing. 'Default (Arial)' or 'Optimus Bold'.",
+        event="Assign or change the special event for this card. Choose 'none' to remove the current event.",
     )
-    @app_commands.autocomplete(background=_background_autocomplete)
+    @app_commands.autocomplete(background=_background_autocomplete, event=_event_autocomplete)
     @app_commands.choices(credit_font=[
         app_commands.Choice(name="Keep existing", value=""),
         app_commands.Choice(name="Default (Arial)", value="default"),
@@ -840,6 +841,7 @@ class Admin(commands.Cog):
         catch_name: str = "",
         only_spawn_in_event: bool | None = None,
         credit_font: str = "",
+        event: str = "",
     ):
         """
         Edit an existing cricket card. Only supply the fields you want to change.
@@ -1087,6 +1089,33 @@ class Admin(commands.Cog):
             if "capacity_logic" not in changed_fields:
                 changed_fields.append("capacity_logic")
 
+        event_summary = ""
+        if event.strip():
+            if event.strip().lower() == "none":
+                # Remove forced_special from capacity_logic
+                logic = dict(ball.capacity_logic or {})
+                if "forced_special" in logic:
+                    del logic["forced_special"]
+                    ball.capacity_logic = logic
+                    if "capacity_logic" not in changed_fields:
+                        changed_fields.append("capacity_logic")
+                    event_summary = "Event → `removed`"
+            else:
+                try:
+                    special = await Special.objects.aget(name=event.strip())
+                    ball.capacity_logic = {**(ball.capacity_logic or {}), "forced_special": special.id}
+                    if "capacity_logic" not in changed_fields:
+                        changed_fields.append("capacity_logic")
+                    specials_cache[special.id] = special
+                    event_summary = f"Event → `{special.name}`"
+                except Special.DoesNotExist:
+                    await ctx.send(
+                        f"❌ Special event **{event.strip()}** was not found in the database.\n"
+                        f"Use autocomplete to pick a valid event, or type `none` to remove the current one.",
+                        ephemeral=True,
+                    )
+                    return
+
         if not changed_fields:
             await ctx.send(
                 "⚠️ Nothing to change — you didn't supply any new values.",
@@ -1143,6 +1172,8 @@ class Admin(commands.Cog):
             summary_parts.append(f"Author → `{ball.credits}`")
         if tradeable is not None:
             summary_parts.append(f"Tradeable → `{ball.tradeable}`")
+        if event_summary:
+            summary_parts.append(event_summary)
 
         summary = " | ".join(summary_parts)
         card_path = media_dir / filename
