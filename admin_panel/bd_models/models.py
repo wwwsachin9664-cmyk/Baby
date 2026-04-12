@@ -648,3 +648,39 @@ class Block(models.Model):
     class Meta:
         managed = True
         db_table = "block"
+
+
+class Logo(models.Model):
+    name = models.CharField(
+        max_length=100,
+        unique=True,
+        help_text="Logo identifier used in /cardmaker and /editcard commands (e.g. ICONS)",
+    )
+    url = models.URLField(
+        blank=True,
+        default="",
+        help_text="Optional URL to download the logo image from",
+    )
+    pathname = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        help_text="Optional local filename inside admin_panel/media/logos/ (e.g. ICONS.png)",
+    )
+    image = models.ImageField(
+        upload_to="logos/",
+        null=True,
+        blank=True,
+        help_text="Upload a logo image directly",
+    )
+
+    objects: Manager[Self] = Manager()
+
+    def __str__(self) -> str:
+        return self.name
+
+    class Meta:
+        managed = True
+        db_table = "logo"
+        verbose_name = "Logo"
+        verbose_name_plural = "Logos (Logo Maker)"

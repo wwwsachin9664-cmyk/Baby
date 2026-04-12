@@ -41,7 +41,7 @@ from cricstar.core.utils.menus import (
 )
 from django.db.models import Max
 
-from bd_models.models import Ball, BallInstance, GuildConfig, Regime, Special, TradeObject
+from bd_models.models import Ball, BallInstance, GuildConfig, Logo, Regime, Special, TradeObject
 from bd_models.models import balls as balls_cache
 from bd_models.models import specials as specials_cache
 from settings.models import settings
@@ -224,6 +224,75 @@ class Admin(commands.Cog):
         self.admin.add_command(history_group)
         self.admin.add_command(logs_group)
         self.admin.add_command(money_group)
+
+    async def _resolve_logo(self, logo_input: str, dest_path: str) -> bool:
+        """
+        Resolve a logo from either a name (looks up Logo model / logos dir) or a URL.
+        Copies/downloads the logo to dest_path. Returns True on success.
+        """
+        import shutil as _shutil
+
+        logo_input = logo_input.strip()
+        if not logo_input:
+            return False
+
+        logos_dir = Path("admin_panel/media/logos")
+
+        if not logo_input.startswith(("http://", "https://")):
+            # Name-based lookup: check Logo DB entry first
+            try:
+                db_logo = await Logo.objects.aget(name__iexact=logo_input)
+                # Priority 1: uploaded image file
+                if db_logo.image:
+                    img_path = Path("admin_panel/media") / str(db_logo.image)
+                    if img_path.exists():
+                        _shutil.copy2(str(img_path), dest_path)
+                        return True
+                # Priority 2: pathname field
+                if db_logo.pathname:
+                    candidate = logos_dir / db_logo.pathname
+                    if candidate.exists():
+                        _shutil.copy2(str(candidate), dest_path)
+                        return True
+                # Priority 3: URL field on the Logo entry
+                if db_logo.url:
+                    logo_input = db_logo.url
+            except Logo.DoesNotExist:
+                pass
+
+            if not logo_input.startswith(("http://", "https://")):
+                # Fallback: scan logos dir for matching filename
+                for ext in (".png", ".jpg", ".jpeg", ".webp", ""):
+                    candidate = logos_dir / f"{logo_input}{ext}"
+                    if candidate.exists():
+                        _shutil.copy2(str(candidate), dest_path)
+                        return True
+                return False
+
+        # URL download
+        try:
+            _ssl_ctx = ssl.create_default_context()
+            _ssl_ctx.check_hostname = False
+            _ssl_ctx.verify_mode = ssl.CERT_NONE
+            req = urllib.request.Request(
+                logo_input,
+                headers={
+                    "User-Agent": (
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/124.0.0.0 Safari/537.36"
+                    ),
+                    "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+                },
+            )
+            with urllib.request.urlopen(req, timeout=20, context=_ssl_ctx) as resp:
+                data = resp.read(2 * 1024 * 1024)
+            with open(dest_path, "wb") as f:
+                f.write(data)
+            return True
+        except Exception as e:
+            log.warning("Logo download failed for %r: %s", logo_input[:80], e)
+            return False
 
     async def cog_check(self, ctx: commands.Context["CricStarBot"]) -> bool:
         return await checks.is_staff().predicate(ctx)
@@ -526,7 +595,7 @@ class Admin(commands.Cog):
         artwork_author="Name of the artwork creator",
         background="Preset name (e.g. custom_bg) or image URL",
         foreground="Player image URL or preset name (saved by player name after first use)",
-        logo_url="Optional team/event logo URL shown on the card",
+        logo_url="Logo name (e.g. ICONS) or direct image URL shown on the card",
         event="Assign card to a special event (always spawns with it)",
         tradeable="Whether this card can be traded (default True)",
         catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
@@ -674,27 +743,8 @@ class Admin(commands.Cog):
 
             if logo_url.strip():
                 logo_path = os.path.join(tmpdir, "logo.png")
-                try:
-                    _ssl_ctx = ssl.create_default_context()
-                    _ssl_ctx.check_hostname = False
-                    _ssl_ctx.verify_mode = ssl.CERT_NONE
-                    req = urllib.request.Request(
-                        logo_url.strip(),
-                        headers={
-                            "User-Agent": (
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                                "Chrome/124.0.0.0 Safari/537.36"
-                            ),
-                            "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
-                        },
-                    )
-                    with urllib.request.urlopen(req, timeout=20, context=_ssl_ctx) as resp:
-                        data = resp.read(2 * 1024 * 1024)
-                    with open(logo_path, "wb") as f:
-                        f.write(data)
-                except Exception as e:
-                    log.warning("Logo download failed: %s", e)
+                logo_ok = await self._resolve_logo(logo_url.strip(), logo_path)
+                if not logo_ok:
                     logo_path = None
 
             def _generate() -> tuple:
@@ -818,7 +868,7 @@ class Admin(commands.Cog):
         rarity="New badge display value — cosmetic only (leave blank to keep existing)",
         spawn_chance="New spawn chance as % (e.g. 1 = 1%, 5 = 5%) — set to 0 to disable spawning",
         artwork_author="New artwork author name (leave blank to keep existing)",
-        logo_url="New team/event logo URL (leave blank to keep existing)",
+        logo_url="Logo name (e.g. ICONS) or URL — leave blank to keep existing",
         tradeable="Change tradeability (leave blank to keep existing)",
         catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
         only_spawn_in_event="If True, card only spawns while its event is active. Set False to allow spawning anytime.",
@@ -1005,27 +1055,8 @@ class Admin(commands.Cog):
                 logo_url_clean = logo_url.strip()
                 if logo_url_clean:
                     logo_path = os.path.join(tmpdir, "logo.png")
-                    try:
-                        _ssl_ctx = ssl.create_default_context()
-                        _ssl_ctx.check_hostname = False
-                        _ssl_ctx.verify_mode = ssl.CERT_NONE
-                        req = urllib.request.Request(
-                            logo_url_clean,
-                            headers={
-                                "User-Agent": (
-                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                                    "AppleWebKit/537.36 (KHTML, like Gecko) "
-                                    "Chrome/124.0.0.0 Safari/537.36"
-                                ),
-                                "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
-                            },
-                        )
-                        with urllib.request.urlopen(req, timeout=20, context=_ssl_ctx) as resp:
-                            data = resp.read(2 * 1024 * 1024)
-                        with open(logo_path, "wb") as f:
-                            f.write(data)
-                    except Exception as e:
-                        log.warning("Logo download failed: %s", e)
+                    logo_ok = await self._resolve_logo(logo_url_clean, logo_path)
+                    if not logo_ok:
                         logo_path = None
 
                 _resolved_credit_font = credit_font if credit_font else _stored_credit_font

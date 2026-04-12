@@ -15,7 +15,7 @@
     "catch_name": "naseem shah",
     "event_id": null,
     "filename": "premade_naseem_shah.png",
-    "wild_card_filename": "premade_naseem_shah.png"
+    "wild_card_filename": "spawn_naseem_shah.jpg"
   },
   "Brendon Mccullum": {
     "player_name": "Brendon Mccullum",
@@ -34,7 +34,7 @@
     "event_id": 4,
     "event_name": "ICONS",
     "filename": "premade_brendon_mccullum.png",
-    "wild_card_filename": "premade_brendon_mccullum.png",
+    "wild_card_filename": "spawn_brendon_mccullum.jpg",
     "capacity_logic": {
       "badge_rarity": 0.5,
       "forced_special": 4,
@@ -58,7 +58,7 @@
     "catch_name": "naveen ul haq",
     "event_id": null,
     "filename": "premade_naveen_ul_haq.png",
-    "wild_card_filename": "premade_naveen_ul_haq.png"
+    "wild_card_filename": "spawn_naveen_ul_haq.jpg"
   },
   "Shivam Dube": {
     "player_name": "Shivam Dube",
@@ -76,7 +76,7 @@
     "catch_name": "shivam dube",
     "event_id": null,
     "filename": "premade_shivam_dube.png",
-    "wild_card_filename": "premade_shivam_dube.png"
+    "wild_card_filename": "spawn_shivam_dube.jpg"
   },
   "Sanju Samson": {
     "player_name": "Sanju Samson",
@@ -94,7 +94,7 @@
     "catch_name": "sanju samson",
     "event_id": null,
     "filename": "premade_sanju_samson.png",
-    "wild_card_filename": "premade_sanju_samson.png"
+    "wild_card_filename": "spawn_sanju_samson.jpg"
   },
   "Dale Steyn": {
     "player_name": "Dale Steyn",
@@ -137,7 +137,7 @@
     "catch_name": "kane williamson",
     "event_id": null,
     "filename": "premade_kane_williamson.png",
-    "wild_card_filename": "premade_kane_williamson.png"
+    "wild_card_filename": "spawn_kane_williamson.jpg"
   },
   "Tilak Varma": {
     "player_name": "Tilak Varma",
@@ -155,7 +155,7 @@
     "catch_name": "tilak varma",
     "event_id": null,
     "filename": "premade_tilak_varma.png",
-    "wild_card_filename": "premade_tilak_varma.png"
+    "wild_card_filename": "spawn_tilak_varma.jpg"
   },
   "Virat Kohli": {
     "player_name": "Virat Kohli",
@@ -173,7 +173,7 @@
     "catch_name": "virat kohli",
     "event_id": null,
     "filename": "premade_virat_kohli.png",
-    "wild_card_filename": "premade_virat_kohli.png"
+    "wild_card_filename": "spawn_virat_kohli.jpg"
   },
   "Rinku Singh": {
     "player_name": "Rinku Singh",
@@ -191,7 +191,7 @@
     "catch_name": "rinku singh",
     "event_id": null,
     "filename": "premade_rinku_singh.png",
-    "wild_card_filename": "premade_rinku_singh.png"
+    "wild_card_filename": "spawn_rinku_singh.jpg"
   },
   "Ms Dhoni": {
     "player_name": "Ms Dhoni",
@@ -210,7 +210,7 @@
     "event_id": 4,
     "event_name": "ICONS",
     "filename": "premade_ms_dhoni.png",
-    "wild_card_filename": "premade_ms_dhoni.png",
+    "wild_card_filename": "spawn_ms_dhoni.jpg",
     "capacity_logic": {
       "bg_preset": "icons_9",
       "credit_font": "optimus",
@@ -234,7 +234,7 @@
     "catch_name": "kuldeep yadav",
     "event_id": null,
     "filename": "premade_kuldeep_yadav.png",
-    "wild_card_filename": "premade_kuldeep_yadav.png"
+    "wild_card_filename": "spawn_kuldeep_yadav.jpg"
   },
   "Joe Root": {
     "player_name": "Joe Root",
@@ -252,7 +252,7 @@
     "catch_name": "joe root",
     "event_id": null,
     "filename": "premade_joe_root.png",
-    "wild_card_filename": "premade_joe_root.png"
+    "wild_card_filename": "spawn_joe_root.jpg"
   },
   "Kwena Maphaka": {
     "player_name": "Kwena Maphaka",
@@ -270,7 +270,7 @@
     "catch_name": "kwena maphaka",
     "event_id": null,
     "filename": "premade_kwena_maphaka.png",
-    "wild_card_filename": "premade_kwena_maphaka.png"
+    "wild_card_filename": "spawn_kwena_maphaka.jpg"
   },
   "Steve Smith": {
     "player_name": "Steve Smith",
@@ -288,7 +288,7 @@
     "catch_name": "steve smith",
     "event_id": null,
     "filename": "premade_steve_smith.png",
-    "wild_card_filename": "premade_steve_smith.png"
+    "wild_card_filename": "spawn_steve_smith.jpg"
   },
   "Muhammad Waseem": {
     "player_name": "Muhammad Waseem",
@@ -306,7 +306,7 @@
     "catch_name": "muhammad waseem",
     "event_id": null,
     "filename": "premade_muhammad_waseem.png",
-    "wild_card_filename": "premade_muhammad_waseem.png"
+    "wild_card_filename": "spawn_muhammad_waseem.jpg"
   },
   "Brett Lee": {
     "player_name": "Brett Lee",
@@ -374,7 +374,7 @@
     "catch_name": "rohit sharma",
     "event_id": null,
     "filename": "premade_rohit_sharma.png",
-    "wild_card_filename": "premade_rohit_sharma.png"
+    "wild_card_filename": "spawn_rohit_sharma.jpg"
   },
   "Vaibhav Sooryawanshi (IPL2026)": {
     "player_name": "Vaibhav Sooryawanshi (IPL2026)",
@@ -393,7 +393,7 @@
     "event_id": 5,
     "event_name": "IPL2026",
     "filename": "premade_vaibhav_sooryawanshi_ipl2026.png",
-    "wild_card_filename": "premade_vaibhav_sooryawanshi_ipl2026.png",
+    "wild_card_filename": "spawn_vaibhav_sooryawanshi_ipl2026.jpg",
     "capacity_logic": {
       "badge_rarity": 1.0,
       "bg_preset": "IPL2026",
@@ -421,7 +421,7 @@
     "event_id": 5,
     "event_name": "IPL2026",
     "filename": "premade_yashasvi_jaiswal_ipl2026.png",
-    "wild_card_filename": "premade_yashasvi_jaiswal_ipl2026.png",
+    "wild_card_filename": "spawn_yashasvi_jaiswal_ipl2026.jpg",
     "capacity_logic": {
       "badge_rarity": 1.0,
       "bg_preset": "IPL2026",
@@ -449,7 +449,7 @@
     "event_id": null,
     "event_name": "",
     "filename": "premade_jasprit_bumrah.png",
-    "wild_card_filename": "premade_jasprit_bumrah.png",
+    "wild_card_filename": "spawn_jasprit_bumrah.jpg",
     "capacity_logic": {
       "badge_rarity": 1.0,
       "bg_preset": "base_card",
@@ -476,7 +476,7 @@
     "event_id": null,
     "event_name": "",
     "filename": "premade_hardik_pandya.png",
-    "wild_card_filename": "premade_hardik_pandya.png",
+    "wild_card_filename": "spawn_hardik_pandya.jpg",
     "capacity_logic": {
       "badge_rarity": 1.5,
       "bg_preset": "base_card",
@@ -503,7 +503,7 @@
     "event_id": null,
     "event_name": "",
     "filename": "premade_surya_kumar_yadav.png",
-    "wild_card_filename": "premade_surya_kumar_yadav.png",
+    "wild_card_filename": "spawn_surya_kumar_yadav.jpg",
     "capacity_logic": {
       "badge_rarity": 4.0,
       "bg_preset": "base_card",
@@ -530,7 +530,7 @@
     "event_id": null,
     "event_name": "",
     "filename": "premade_shreyas_iyer.png",
-    "wild_card_filename": "premade_shreyas_iyer.png",
+    "wild_card_filename": "spawn_shreyas_iyer.jpg",
     "capacity_logic": {
       "badge_rarity": 5.0,
       "bg_preset": "base_card",
@@ -557,7 +557,7 @@
     "event_id": null,
     "event_name": "",
     "filename": "premade_shubman_gill.png",
-    "wild_card_filename": "premade_shubman_gill.png",
+    "wild_card_filename": "spawn_shubman_gill.jpg",
     "capacity_logic": {
       "bg_preset": "base_card",
       "credit_font": "optimus",
@@ -637,7 +637,7 @@
     "event_id": 4,
     "event_name": "ICONS",
     "filename": "premade_ab_de_villiers.png",
-    "wild_card_filename": "premade_ab_de_villiers.png",
+    "wild_card_filename": "spawn_ab_de_villiers.jpg",
     "capacity_logic": {
       "badge_rarity": 0.5,
       "bg_preset": "icons_9",
@@ -646,6 +646,35 @@
       "only_spawn_in_event": false,
       "credit_font": "optimus",
       "display_name": "De Villiers",
+      "forced_special": 4
+    }
+  },
+  "Brian Lara": {
+    "player_name": "Brian Lara",
+    "card_name": "LARA",
+    "slug": "brian_lara",
+    "codename": "The prince",
+    "description": "Brian Lara is a legendary Trinidadian cricketer widely celebrated as one of the greatest batsmen to ever play the game known for his extraordinary ability to score massive runs and his elegant left handed stroke play",
+    "bat_score": 98,
+    "ball_score": 29,
+    "rarity": 0.2,
+    "spawn_chance": 1.0,
+    "artwork_author": "NASH",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "brian lara",
+    "event_id": 4,
+    "event_name": "ICONS",
+    "filename": "premade_brian_lara.png",
+    "wild_card_filename": "spawn_brian_lara.jpg",
+    "capacity_logic": {
+      "badge_rarity": 0.2,
+      "bg_preset": "icons_9",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "display_name": "LARA",
       "forced_special": 4
     }
   }
