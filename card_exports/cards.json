@@ -378,7 +378,7 @@
   },
   "Vaibhav Sooryawanshi (IPL2026)": {
     "player_name": "Vaibhav Sooryawanshi (IPL2026)",
-    "card_name": "VAIBHAV",
+    "card_name": "Vaibhav",
     "slug": "vaibhav_sooryawanshi_ipl2026",
     "codename": "Boss Baby",
     "description": "Vaibhav Suryavanshi is an emerging young cricketer associated with the Indian Premier League 2026 known for his talent dedication and potential to grow into a strong performer in future seasons",
@@ -386,22 +386,25 @@
     "ball_score": 23,
     "rarity": 1.0,
     "spawn_chance": 15.0,
-    "artwork_author": "Legend",
+    "artwork_author": "Legendos",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "vaibhav sooryavanshi",
-    "event_id": 5,
+    "event_id": 3,
     "event_name": "IPL2026",
     "filename": "premade_vaibhav_sooryawanshi_ipl2026.png",
     "wild_card_filename": "spawn_vaibhav_sooryawanshi_ipl2026.jpg",
     "capacity_logic": {
-      "badge_rarity": 1.0,
       "bg_preset": "IPL2026",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": true,
       "credit_font": "optimus",
-      "forced_special": 5
+      "badge_rarity": 1.0,
+      "daily_chance": 0.0,
+      "display_name": "Vaibhav",
+      "credit_stroke": true,
+      "weekly_chance": 20.0,
+      "forced_special": 3,
+      "foreground_border": true,
+      "only_spawn_in_event": true
     }
   },
   "Yashasvi Jaiswal (IPL2026)": {
@@ -695,7 +698,7 @@
     "event_id": null,
     "event_name": "",
     "filename": "premade_arshdeep_singh.png",
-    "wild_card_filename": "premade_arshdeep_singh.png",
+    "wild_card_filename": "spawn_arshdeep_singh.jpg",
     "capacity_logic": {
       "badge_rarity": 5.0,
       "bg_preset": "base_card",
@@ -704,6 +707,36 @@
       "only_spawn_in_event": false,
       "credit_font": "optimus",
       "display_name": "Arshdeep"
+    }
+  },
+  "Rishabh Pant": {
+    "player_name": "Rishabh Pant",
+    "card_name": "Pant",
+    "slug": "rishabh_pant",
+    "codename": "Spidey",
+    "description": "Rishabh Pant is a fearless left handed wicketkeeper batter known for his explosive power and match winning ability His audacious strokeplay and charismatic presence make him a true modern cricket icon",
+    "bat_score": 86,
+    "ball_score": 0,
+    "rarity": 4.0,
+    "spawn_chance": 40.0,
+    "artwork_author": "Rishav",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "rishabh pant",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_rishabh_pant.png",
+    "wild_card_filename": "spawn_rishabh_pant.jpg",
+    "capacity_logic": {
+      "bg_preset": "base_card",
+      "credit_font": "optimus",
+      "badge_rarity": 4.0,
+      "daily_chance": 20.0,
+      "display_name": "Pant",
+      "credit_stroke": true,
+      "weekly_chance": 45.0,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   }
 }
