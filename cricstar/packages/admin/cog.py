@@ -985,7 +985,7 @@ class Admin(commands.Cog):
                 _card_name = display_name.strip() or ball.country
                 _codename = codename.strip() or ball.capacity_name or ""
                 _description = description.strip() or ball.capacity_description or ""
-                _rarity = rarity if rarity is not None else ball.rarity * 100
+                _rarity = rarity if rarity is not None else (ball.capacity_logic or {}).get("badge_rarity", ball.rarity)
                 _bat = bat_score if bat_score is not None else ball.health
                 _ball = ball_score if ball_score is not None else ball.attack
                 _author = artwork_author.strip() or ball.credits or ""
@@ -1036,9 +1036,8 @@ class Admin(commands.Cog):
                 image.save(str(card_path), **img_kwargs)
                 image.close()
 
-                ball.wild_card = filename
                 ball.collection_card = filename
-                changed_fields += ["wild_card", "collection_card"]
+                changed_fields.append("collection_card")
 
         # --- Apply text / stat field changes ---
         if display_name.strip():
@@ -1155,9 +1154,10 @@ class Admin(commands.Cog):
                     f"✅ **{player_name}** updated!\n{summary}",
                     file=preview_file,
                 )
-            except Exception as send_err:
+            except discord.HTTPException as send_err:
                 log.error(f"editcard: preview send failed: {send_err}")
-                await ctx.send(f"✅ **{player_name}** updated!\n{summary}")
+                # Do NOT send a fallback success message — the card may have already
+                # been delivered to Discord and a second ctx.send would create a duplicate.
         else:
             await ctx.send(f"✅ **{player_name}** updated!\n{summary}")
 
