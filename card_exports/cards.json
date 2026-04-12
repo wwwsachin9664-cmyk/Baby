@@ -609,7 +609,7 @@
     "event_id": 4,
     "event_name": "ICONS",
     "filename": "premade_sachin_tendulkar.png",
-    "wild_card_filename": "premade_sachin_tendulkar.png",
+    "wild_card_filename": "spawn_sachin_tendulkar.jpg",
     "capacity_logic": {
       "badge_rarity": 0.1,
       "bg_preset": "icons_9",
