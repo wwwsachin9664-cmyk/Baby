@@ -591,7 +591,7 @@ class Admin(commands.Cog):
         bat_score="Bat / health score shown on left (e.g. 342)",
         ball_score="Ball / attack score shown on right (e.g. 327)",
         rarity="Value shown on card badge (e.g. 50.0) — cosmetic only",
-        spawn_chance="Direct spawn chance % (e.g. 0.01 = 0.01%, 1 = 1%, 45 = 45%) — 0 disables spawning",
+        spawn_chance="Direct spawn chance % from 0 to 890 — 0 disables spawning",
         artwork_author="Name of the artwork creator",
         background="Preset name (e.g. custom_bg) or image URL",
         foreground="Player image URL or preset name (saved by player name after first use)",
@@ -620,7 +620,7 @@ class Admin(commands.Cog):
         bat_score: int,
         ball_score: int,
         rarity: float,
-        spawn_chance: app_commands.Range[float, 0.0, 100.0],
+        spawn_chance: app_commands.Range[float, 0.0, 890.0],
         artwork_author: str,
         background: str,
         foreground: str,
@@ -639,7 +639,7 @@ class Admin(commands.Cog):
         """
         Generate a Dembele-style cricket card and add it to the database.
         rarity: badge display value (any number, e.g. 50.0).
-        spawn_chance: spawn chance as % (e.g. 1 = 1%, 5 = 5%). Set to 0 to disable spawning.
+        spawn_chance: spawn chance as % from 0 to 890. Set to 0 to disable spawning.
         background: preset name or URL. foreground: URL or saved preset name.
         """
         await ctx.defer()
@@ -872,7 +872,7 @@ class Admin(commands.Cog):
         bat_score="New bat / health score (leave blank to keep existing)",
         ball_score="New ball / attack score (leave blank to keep existing)",
         rarity="New badge display value — cosmetic only (leave blank to keep existing)",
-        spawn_chance="New spawn chance as % (e.g. 1 = 1%, 5 = 5%) — set to 0 to disable spawning",
+        spawn_chance="New spawn chance as % from 0 to 890 — set to 0 to disable spawning",
         artwork_author="New artwork author name (leave blank to keep existing)",
         logo_url="Logo name (e.g. ICONS) or URL — leave blank to keep existing",
         tradeable="Change tradeability (leave blank to keep existing)",
@@ -901,7 +901,7 @@ class Admin(commands.Cog):
         bat_score: int | None = None,
         ball_score: int | None = None,
         rarity: float | None = None,
-        spawn_chance: app_commands.Range[float, 0.0, 100.0] | None = None,
+        spawn_chance: app_commands.Range[float, 0.0, 890.0] | None = None,
         artwork_author: str = "",
         logo_url: str = "",
         tradeable: bool | None = None,
