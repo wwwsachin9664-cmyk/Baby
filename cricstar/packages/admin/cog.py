@@ -603,6 +603,8 @@ class Admin(commands.Cog):
         credit_stroke="Whether to draw a stroke/outline on the credit and artwork author text (default True)",
         only_spawn_in_event="If True, this card only spawns while its assigned event is active. Once the event ends, it stops spawning.",
         credit_font="Font for 'Created by El Laggron' and 'Artwork' credit lines. Default = arial. optimus = Optimus Bold.",
+        weekly_chance="Weekly spawn chance % (e.g. 1 = 1%, 45 = 45%) — 0 disables weekly spawning",
+        daily_chance="Daily spawn chance % (e.g. 1 = 1%, 45 = 45%) — 0 disables daily spawning",
     )
     @app_commands.autocomplete(event=_event_autocomplete, background=_background_autocomplete)
     @app_commands.choices(credit_font=[
@@ -631,6 +633,8 @@ class Admin(commands.Cog):
         credit_stroke: bool = True,
         only_spawn_in_event: bool = False,
         credit_font: str = "default",
+        weekly_chance: app_commands.Range[float, 0.0, 100.0] = 0.0,
+        daily_chance: app_commands.Range[float, 0.0, 100.0] = 0.0,
     ):
         """
         Generate a Dembele-style cricket card and add it to the database.
@@ -783,6 +787,8 @@ class Admin(commands.Cog):
                     "credit_stroke": credit_stroke,
                     "only_spawn_in_event": only_spawn_in_event,
                     "credit_font": credit_font,
+                    "weekly_chance": weekly_chance,
+                    "daily_chance": daily_chance,
                     **({"display_name": card_name} if card_name != player_name else {}),
                 },
                 regime=regime,
@@ -841,7 +847,7 @@ class Admin(commands.Cog):
             try:
                 await ctx.send(
                     f"✅ **{player_name}** card created!{event_text}\n"
-                    f"`{filename}` | Badge Rarity: `{rarity}` | Spawn Chance: `{spawn_chance}%` | Tradeable: `{tradeable}` | Spawnable: `{spawnable}`\n"
+                    f"`{filename}` | Badge Rarity: `{rarity}` | Spawn Chance: `{spawn_chance}%` | Weekly: `{weekly_chance}%` | Daily: `{daily_chance}%` | Tradeable: `{tradeable}` | Spawnable: `{spawnable}`\n"
                     f"BAT: `{bat_score}` | BALL: `{ball_score}` | Artwork: {artwork_author}\n"
                     f"Foreground saved as preset `{slug}` for future reuse.",
                     file=preview_file,
@@ -874,6 +880,8 @@ class Admin(commands.Cog):
         only_spawn_in_event="If True, card only spawns while its event is active. Set False to allow spawning anytime.",
         credit_font="Font for credit lines. Leave blank to keep existing. 'Default (Arial)' or 'Optimus Bold'.",
         event="Assign or change the special event for this card. Choose 'none' to remove the current event.",
+        weekly_chance="New weekly spawn chance % — leave blank to keep existing. 0 disables weekly spawning.",
+        daily_chance="New daily spawn chance % — leave blank to keep existing. 0 disables daily spawning.",
     )
     @app_commands.autocomplete(background=_background_autocomplete, event=_event_autocomplete)
     @app_commands.choices(credit_font=[
@@ -901,6 +909,8 @@ class Admin(commands.Cog):
         only_spawn_in_event: bool | None = None,
         credit_font: str = "",
         event: str = "",
+        weekly_chance: app_commands.Range[float, 0.0, 100.0] | None = None,
+        daily_chance: app_commands.Range[float, 0.0, 100.0] | None = None,
     ):
         """
         Edit an existing cricket card. Only supply the fields you want to change.
@@ -1129,6 +1139,14 @@ class Admin(commands.Cog):
             ball.capacity_logic = {**(ball.capacity_logic or {}), "credit_font": credit_font}
             if "capacity_logic" not in changed_fields:
                 changed_fields.append("capacity_logic")
+        if weekly_chance is not None:
+            ball.capacity_logic = {**(ball.capacity_logic or {}), "weekly_chance": weekly_chance}
+            if "capacity_logic" not in changed_fields:
+                changed_fields.append("capacity_logic")
+        if daily_chance is not None:
+            ball.capacity_logic = {**(ball.capacity_logic or {}), "daily_chance": daily_chance}
+            if "capacity_logic" not in changed_fields:
+                changed_fields.append("capacity_logic")
 
         event_summary = ""
         if event.strip():
@@ -1213,6 +1231,12 @@ class Admin(commands.Cog):
             summary_parts.append(f"Author → `{ball.credits}`")
         if tradeable is not None:
             summary_parts.append(f"Tradeable → `{ball.tradeable}`")
+        if weekly_chance is not None:
+            weekly_label = f"Weekly chance → `{weekly_chance}%`" + (" *(disabled)*" if weekly_chance == 0 else "")
+            summary_parts.append(weekly_label)
+        if daily_chance is not None:
+            daily_label = f"Daily chance → `{daily_chance}%`" + (" *(disabled)*" if daily_chance == 0 else "")
+            summary_parts.append(daily_label)
         if event_summary:
             summary_parts.append(event_summary)
 

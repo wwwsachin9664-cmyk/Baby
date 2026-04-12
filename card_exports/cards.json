@@ -677,5 +677,33 @@
       "display_name": "LARA",
       "forced_special": 4
     }
+  },
+  "Arshdeep Singh": {
+    "player_name": "Arshdeep Singh",
+    "card_name": "Arshdeep",
+    "slug": "arshdeep_singh",
+    "codename": "Arsh",
+    "description": "Arshdeep Singh is a skillful left arm fast bowler known for accurate yorkers smart variations and composure under pressure especially in death overs situations",
+    "bat_score": 20,
+    "ball_score": 85,
+    "rarity": 5.0,
+    "spawn_chance": 40.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "arshdeep singh",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_arshdeep_singh.png",
+    "wild_card_filename": "premade_arshdeep_singh.png",
+    "capacity_logic": {
+      "badge_rarity": 5.0,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "display_name": "Arshdeep"
+    }
   }
 }
