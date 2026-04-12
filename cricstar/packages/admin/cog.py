@@ -15,7 +15,15 @@ from discord import app_commands
 from discord.ext import commands, tasks
 from discord.ui import ActionRow, Button, Container, Section, TextDisplay
 
-from cricstar.card_sync import export_card as _export_card, export_event as _export_event, delete_card_export as _delete_card_export
+from cricstar.card_sync import (
+    export_card as _export_card,
+    export_event as _export_event,
+    delete_card_export as _delete_card_export,
+    has_custom_spawn_image as _has_custom_spawn_image,
+    export_spawn_image as _export_spawn_image,
+    remove_spawn_image as _remove_spawn_image,
+    list_spawn_images as _list_spawn_images,
+)
 from cricstar.core.bot import impersonations
 from cricstar.core.discord import LayoutView
 from cricstar.core.image_generator.image_gen import draw_premade_card, get_neon_color, save_neon_color
@@ -1270,6 +1278,15 @@ class Admin(commands.Cog):
         media_dir = Path("admin_panel/media")
         slug = re.sub(r"[^a-z0-9]+", "_", player_name.lower().strip()).strip("_")
 
+        # Block if a custom spawn image is already set for this cricketer
+        if _has_custom_spawn_image(slug):
+            await ctx.send(
+                f"❌ **{ball.country}** already has a custom spawn image set.\n"
+                f"Use `/removespawnpath` to remove it first before setting a new one.",
+                ephemeral=True,
+            )
+            return
+
         def _download(src_url: str, dest: str) -> bool:
             try:
                 req = urllib.request.Request(src_url, headers={"User-Agent": "CricStar-Bot/1.0"})
@@ -1366,19 +1383,129 @@ class Admin(commands.Cog):
         await ball.asave(update_fields=["wild_card"])
         balls_cache[ball.id] = ball
 
+        # Persist to card_exports/spawns/ so image survives restarts/remixes
+        _export_spawn_image(ball.country, slug, dest_path)
+
         extra = f"\n• Preset saved as `{saved_preset}` — reuse with `path_name:{path_name}`" if saved_preset else ""
         preview_file = discord.File(dest_path, filename=filename)
         try:
             await ctx.send(
-                f"✅ Spawn image updated for **{ball.country}** (from {source_label})!\n"
-                f"• Assigned file: `{filename}`{extra}",
+                f"✅ Spawn image permanently set for **{ball.country}** (from {source_label})!\n"
+                f"• Assigned file: `{filename}`{extra}\n"
+                f"• Use `/removespawnpath` to remove it if you ever want to change it.",
                 file=preview_file,
             )
         except Exception as send_err:
             log.error(f"setspawnimg: preview send failed: {send_err}")
             await ctx.send(
-                f"✅ Spawn image updated for **{ball.country}**! Saved as `{filename}`."
+                f"✅ Spawn image permanently set for **{ball.country}**! Saved as `{filename}`.\n"
+                f"• Use `/removespawnpath` to remove it if you ever want to change it."
             )
+
+    async def _spawn_path_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        """Autocomplete listing all custom spawn images from card_exports/spawns/."""
+        all_spawns = _list_spawn_images()
+        current_lower = current.lower()
+        matches = [
+            app_commands.Choice(name=name, value=name)
+            for name in all_spawns
+            if current_lower in name.lower()
+        ]
+        return matches[:25]
+
+    @commands.hybrid_command(name="removespawnpath")
+    @app_commands.default_permissions(administrator=True)
+    @checks.is_superuser()
+    @app_commands.describe(
+        path_name="Select the spawn image path to remove (all existing paths are listed here)",
+    )
+    @app_commands.autocomplete(path_name=_spawn_path_autocomplete)
+    async def removespawnpath(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        path_name: str,
+    ):
+        """
+        Remove a custom spawn image. All existing spawn paths are shown in the dropdown.
+        After removal the cricketer will use its collection card image when spawning.
+        """
+        await ctx.defer(ephemeral=True)
+
+        path_name = path_name.strip()
+        if not path_name:
+            await ctx.send("❌ Please select a spawn path from the dropdown.", ephemeral=True)
+            return
+
+        # Validate the file exists in card_exports/spawns/
+        all_spawns = _list_spawn_images()
+        if path_name not in all_spawns:
+            if all_spawns:
+                listing = "\n".join(f"• `{n}`" for n in all_spawns)
+                await ctx.send(
+                    f"❌ `{path_name}` not found in spawn paths. Currently saved paths:\n{listing}",
+                    ephemeral=True,
+                )
+            else:
+                await ctx.send("❌ No custom spawn images are currently saved.", ephemeral=True)
+            return
+
+        # Derive slug from filename: "spawn_{slug}.ext" → "{slug}"
+        stem = Path(path_name).stem  # e.g. "spawn_virat_kohli"
+        if stem.startswith("spawn_"):
+            slug = stem[len("spawn_"):]
+        else:
+            slug = stem
+
+        # Find matching ball in DB
+        ball: Ball | None = None
+        for b in balls_cache.values():
+            b_slug = re.sub(r"[^a-z0-9]+", "_", b.country.lower().strip()).strip("_")
+            if b_slug == slug:
+                ball = b
+                break
+
+        media_dir = Path("admin_panel/media")
+
+        # Remove from card_exports/spawns/ and update cards.json
+        player_name_key = ball.country if ball else slug
+        removed = _remove_spawn_image(player_name_key, slug)
+
+        # Reset the ball's wild_card in DB to the collection_card
+        if ball:
+            collection_filename = str(ball.collection_card)
+            ball.wild_card = collection_filename
+            await ball.asave(update_fields=["wild_card"])
+            balls_cache[ball.id] = ball
+
+            # Also delete from media/ if it exists there
+            media_spawn = media_dir / path_name
+            if media_spawn.exists():
+                media_spawn.unlink()
+
+            await ctx.send(
+                f"✅ Spawn image `{path_name}` removed for **{ball.country}**.\n"
+                f"The cricketer will now use its collection card image when spawning.\n"
+                f"You can now set a new spawn image with `/setspawnimg`.",
+                ephemeral=True,
+            )
+        else:
+            # Ball not found in cache but file was removed from card_exports
+            if removed:
+                await ctx.send(
+                    f"✅ Spawn path `{path_name}` removed from permanent storage.\n"
+                    f"⚠️ Could not find matching cricketer in cache — the DB wild_card was not updated.\n"
+                    f"Restart the bot to resync if needed.",
+                    ephemeral=True,
+                )
+            else:
+                await ctx.send(
+                    f"❌ Could not remove `{path_name}` — file may have already been deleted.",
+                    ephemeral=True,
+                )
+
+        log.info(f"removespawnpath: removed '{path_name}' by {ctx.author}")
 
     @commands.hybrid_command(name="createevent")
     @app_commands.default_permissions(administrator=True)

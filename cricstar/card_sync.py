@@ -132,6 +132,69 @@ def export_card(
     log.info("card_sync: saved export for %r", player_name)
 
 
+def has_custom_spawn_image(slug: str) -> bool:
+    """Return True if a custom spawn image exists in card_exports/spawns/ for this slug."""
+    _ensure_dirs()
+    for ext in (".png", ".jpg", ".jpeg", ".webp", ".gif"):
+        if (SPAWNS_DIR / f"spawn_{slug}{ext}").exists():
+            return True
+    return False
+
+
+def export_spawn_image(player_name: str, slug: str, src_path: str) -> str:
+    """
+    Persist a spawn image to card_exports/spawns/ and update wild_card_filename in cards.json.
+    Returns the filename used (e.g. 'spawn_virat_kohli.jpg').
+    """
+    _ensure_dirs()
+    src = Path(src_path)
+    ext = src.suffix or ".jpg"
+    filename = f"spawn_{slug}{ext}"
+    dest = SPAWNS_DIR / filename
+    shutil.copy2(str(src), str(dest))
+    log.info("card_sync: exported spawn image %s for %r", filename, player_name)
+
+    records = _load_json(CARDS_JSON)
+    if player_name in records:
+        records[player_name]["wild_card_filename"] = filename
+        CARDS_JSON.write_text(json.dumps(records, indent=2, ensure_ascii=False))
+
+    return filename
+
+
+def remove_spawn_image(player_name: str, slug: str) -> str | None:
+    """
+    Delete a custom spawn image from card_exports/spawns/ and reset wild_card_filename in
+    cards.json back to the collection image filename. Returns the removed filename or None.
+    """
+    _ensure_dirs()
+    removed_filename: str | None = None
+
+    for ext in (".png", ".jpg", ".jpeg", ".webp", ".gif"):
+        target = SPAWNS_DIR / f"spawn_{slug}{ext}"
+        if target.exists():
+            target.unlink()
+            removed_filename = target.name
+            log.info("card_sync: removed spawn image %s for %r", target.name, player_name)
+            break
+
+    records = _load_json(CARDS_JSON)
+    if player_name in records:
+        records[player_name]["wild_card_filename"] = records[player_name].get("filename")
+        CARDS_JSON.write_text(json.dumps(records, indent=2, ensure_ascii=False))
+
+    return removed_filename
+
+
+def list_spawn_images() -> list[str]:
+    """Return all custom spawn filenames (spawn_*.ext) in card_exports/spawns/."""
+    _ensure_dirs()
+    return sorted(
+        f.name for f in SPAWNS_DIR.iterdir()
+        if f.is_file() and f.name.startswith("spawn_")
+    )
+
+
 def delete_card_export(player_name: str, filename: str, wild_card_filename: str | None, slug: str) -> list[str]:
     """
     Remove a card from card_exports/ entirely.
