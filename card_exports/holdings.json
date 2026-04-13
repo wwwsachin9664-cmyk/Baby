@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-13T12:52:06.662472+00:00",
-  "count": 151,
+  "exported_at": "2026-04-13T13:34:22.437964+00:00",
+  "count": 155,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -1962,6 +1962,58 @@
       "tradeable": true,
       "server_id": null,
       "catch_date": "2026-04-13T11:06:53.257765+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1387054957152174191,
+      "ball_player_name": "Muhammad Waseem",
+      "special_name": null,
+      "health_bonus": -8,
+      "attack_bonus": 15,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-13T13:01:55.971699+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1387054957152174191,
+      "ball_player_name": "Joe Root",
+      "special_name": null,
+      "health_bonus": 6,
+      "attack_bonus": 2,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-13T13:02:03.067505+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 820893612489179136,
+      "ball_player_name": "Joe Root",
+      "special_name": null,
+      "health_bonus": 14,
+      "attack_bonus": 15,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-13T13:06:12.291261+00:00",
+      "spawned_time": "2026-04-13T13:05:49.502000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Hardik Pandya (IPL2026)",
+      "special_name": null,
+      "health_bonus": -6,
+      "attack_bonus": -10,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-13T13:10:05.734620+00:00",
       "spawned_time": null,
       "extra_data": {}
     }
