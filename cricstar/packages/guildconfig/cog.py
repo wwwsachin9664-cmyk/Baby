@@ -6,11 +6,29 @@ from discord.ext import commands
 
 from bd_models.models import GuildConfig
 from settings.models import settings
+from cricstar.core.utils.checks import BOT_OWNER_ID
 
 from .components import AcceptTOSView
 
 if TYPE_CHECKING:
     from cricstar.core.bot import CricStarBot
+
+
+async def _manager_or_owner(interaction: discord.Interaction) -> bool:
+    """Allow server managers, server admins, and the bot owner."""
+    if interaction.user.id == BOT_OWNER_ID:
+        return True
+    if await interaction.client.is_owner(interaction.user):  # type: ignore[attr-defined]
+        return True
+    if isinstance(interaction.user, discord.Member) and (
+        interaction.user.guild_permissions.manage_guild
+        or interaction.user.guild_permissions.administrator
+    ):
+        return True
+    await interaction.response.send_message(
+        "You need the **Manage Server** permission to use this command.", ephemeral=True
+    )
+    return False
 
 activation_embed = discord.Embed(
     colour=0x00D936,
@@ -37,7 +55,7 @@ class Config(commands.GroupCog):
         self.bot = bot
 
     @app_commands.command()
-    @app_commands.checks.has_permissions(manage_guild=True)
+    @app_commands.check(_manager_or_owner)
     @app_commands.checks.bot_has_permissions(read_messages=True, send_messages=True, embed_links=True)
     async def channel(
         self, interaction: discord.Interaction["CricStarBot"], channel: Optional[discord.TextChannel] = None
