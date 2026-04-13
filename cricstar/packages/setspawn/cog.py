@@ -7,6 +7,7 @@ from discord.ext import commands
 
 from bd_models.models import GuildConfig
 from settings.models import settings
+from cricstar.core.utils.checks import is_developer
 
 if TYPE_CHECKING:
     from cricstar.core.bot import CricStarBot
@@ -15,27 +16,8 @@ if TYPE_CHECKING:
 log = logging.getLogger("cricstar.packages.setspawn")
 
 
-async def owner_only(interaction: discord.Interaction["CricStarBot"]) -> bool:
-    is_owner = await interaction.client.is_owner(interaction.user)
-    if not is_owner:
-        await interaction.response.send_message(
-            "Only the bot owner can use this command.", ephemeral=True
-        )
-    return is_owner
-
-
-async def admin_or_owner(interaction: discord.Interaction["CricStarBot"]) -> bool:
-    if await interaction.client.is_owner(interaction.user):
-        return True
-    if isinstance(interaction.user, discord.Member) and interaction.user.guild_permissions.manage_guild:
-        return True
-    await interaction.response.send_message(
-        "You need the **Manage Server** permission to use this command.", ephemeral=True
-    )
-    return False
-
-
 @app_commands.guild_only()
+@app_commands.default_permissions()
 class SetSpawn(commands.GroupCog, group_name="setspawn"):
     """
     Manage cricketer spawn settings for your server.
@@ -48,7 +30,7 @@ class SetSpawn(commands.GroupCog, group_name="setspawn"):
     # /setspawn channel [channel]   — server admin OR owner
     # ------------------------------------------------------------------
     @app_commands.command(name="channel")
-    @app_commands.check(admin_or_owner)
+    @app_commands.check(is_developer)
     @app_commands.checks.bot_has_permissions(read_messages=True, send_messages=True, embed_links=True)
     async def set_channel(
         self,
@@ -95,7 +77,7 @@ class SetSpawn(commands.GroupCog, group_name="setspawn"):
     # /setspawn remove   — server admin OR owner
     # ------------------------------------------------------------------
     @app_commands.command(name="remove")
-    @app_commands.check(admin_or_owner)
+    @app_commands.check(is_developer)
     async def remove_channel(
         self,
         interaction: discord.Interaction["CricStarBot"],
@@ -126,7 +108,7 @@ class SetSpawn(commands.GroupCog, group_name="setspawn"):
     # /setspawn enable [guild_id]   — owner only
     # ------------------------------------------------------------------
     @app_commands.command(name="enable")
-    @app_commands.check(owner_only)
+    @app_commands.check(is_developer)
     async def enable_spawn(
         self,
         interaction: discord.Interaction["CricStarBot"],
@@ -173,7 +155,7 @@ class SetSpawn(commands.GroupCog, group_name="setspawn"):
     # /setspawn disable [guild_id]   — owner only
     # ------------------------------------------------------------------
     @app_commands.command(name="disable")
-    @app_commands.check(owner_only)
+    @app_commands.check(is_developer)
     async def disable_spawn(
         self,
         interaction: discord.Interaction["CricStarBot"],
@@ -213,7 +195,7 @@ class SetSpawn(commands.GroupCog, group_name="setspawn"):
     # /setspawn cooldown <min> <max>   — owner only
     # ------------------------------------------------------------------
     @app_commands.command(name="cooldown")
-    @app_commands.check(owner_only)
+    @app_commands.check(is_developer)
     async def set_cooldown(
         self,
         interaction: discord.Interaction["CricStarBot"],
@@ -264,7 +246,7 @@ class SetSpawn(commands.GroupCog, group_name="setspawn"):
     # /setspawn reset [guild_id]   — owner only
     # ------------------------------------------------------------------
     @app_commands.command(name="reset")
-    @app_commands.check(owner_only)
+    @app_commands.check(is_developer)
     async def reset_cooldown(
         self,
         interaction: discord.Interaction["CricStarBot"],
@@ -317,7 +299,7 @@ class SetSpawn(commands.GroupCog, group_name="setspawn"):
     # /setspawn status [guild_id]   — owner only
     # ------------------------------------------------------------------
     @app_commands.command(name="status")
-    @app_commands.check(owner_only)
+    @app_commands.check(is_developer)
     async def spawn_status(
         self,
         interaction: discord.Interaction["CricStarBot"],

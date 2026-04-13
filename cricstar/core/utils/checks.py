@@ -35,6 +35,9 @@ log = logging.getLogger(__name__)
 # Role ID that grants all permissions — equivalent to superuser
 ADMIN_ROLE_ID = 1476180448446124055
 
+# Bot owner Discord user ID
+BOT_OWNER_ID = 1317288099075850243
+
 # used to check during startup that the permissions passed to decorators actually exist
 registered_perms: set[str] = set()
 
@@ -44,6 +47,24 @@ def has_admin_role(user: discord.abc.User) -> bool:
     if not isinstance(user, discord.Member):
         return False
     return any(role.id == ADMIN_ROLE_ID for role in user.roles)
+
+
+async def is_developer(interaction: discord.Interaction["CricStarBot"]) -> bool:
+    """
+    App-command check: passes only for the bot owner or users holding the
+    designated developer role (ADMIN_ROLE_ID). Server managers/admins are
+    explicitly blocked even if they hold Administrator permission.
+    """
+    if interaction.user.id == BOT_OWNER_ID:
+        return True
+    if await interaction.client.is_owner(interaction.user):
+        return True
+    if has_admin_role(interaction.user):
+        return True
+    await interaction.response.send_message(
+        "You don't have permission to use this command.", ephemeral=True
+    )
+    return False
 
 
 # check that all passed permissions actually exist, otherwise emit a warning
