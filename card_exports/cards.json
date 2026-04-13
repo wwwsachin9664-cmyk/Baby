@@ -962,5 +962,35 @@
       "daily_chance": 628.68,
       "display_name": "Samad"
     }
+  },
+  "Priyansh Arya": {
+    "player_name": "Priyansh Arya",
+    "card_name": "Priyansh",
+    "slug": "priyansh_arya",
+    "codename": "Cheat Code",
+    "description": "Priyansh Arya is a stylish left handed opening batter who possesses remarkable timing and aggressive intent His ability to find gaps and dominate the powerplay makes him a rising batting sensation",
+    "bat_score": 77,
+    "ball_score": 0,
+    "rarity": 14.0,
+    "spawn_chance": 592.0,
+    "artwork_author": "Rishav",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "priyansh arya",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_priyansh_arya.png",
+    "wild_card_filename": "spawn_priyansh_arya.jpg",
+    "capacity_logic": {
+      "badge_rarity": 14.0,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 0.0,
+      "daily_chance": 70.0,
+      "display_name": "Priyansh"
+    }
   }
 }

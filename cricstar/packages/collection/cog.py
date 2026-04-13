@@ -328,12 +328,9 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
                     continue
                 emoji_id, country = entry
                 # Player emoji from emojis.json takes priority
-                player_eid = player_emoji_map.get(country.strip().lower())
-                if player_eid:
-                    if player_eid.isdigit():
-                        text += f"<:e:{player_eid}> "
-                    else:
-                        text += f"{player_eid} "
+                player_emoji_str = player_emoji_map.get(country.strip().lower())
+                if player_emoji_str:
+                    text += f"{player_emoji_str} "
                     found_any = True
                 else:
                     # Fall back to the ball's uploaded Discord emoji
