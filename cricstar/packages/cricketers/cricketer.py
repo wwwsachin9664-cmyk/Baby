@@ -184,8 +184,8 @@ class BallSpawnView(View):
         Get a new instance with a random cricketer. Rarity values are taken into account.
 
         Spawn weight rules:
-          - weight = spawn_chance directly (e.g. 1.0 = 1%, 45.0 = 45%, 80.0 = 80%)
-          - Cards with spawn_chance = 0 are excluded automatically.
+          - weight = spawn_chance directly on a 0–1000 scale.
+          - 1000 is the maximum weight and 0 disables random spawning.
 
         Cards with only_spawn_in_event=True are excluded when their event is not active.
         """

@@ -22,17 +22,6 @@ MEDIA_DIR    = Path("admin_panel/media")
 WEEKLY_DAYS  = 7
 
 
-# ── Rarity weight tables ──────────────────────────────────────────────────────
-
-WEEKLY_BADGE_RARITY_WEIGHTS = {
-    0.2: 1.0,
-    0.5: 2.0,
-    1.0: 90.0,
-    1.5: 20.0,
-    5.0: 20.0,
-}
-
-
 def _badge_rarity(ball: Ball) -> float | None:
     logic = ball.capacity_logic or {}
     raw = logic.get("badge_rarity")
@@ -44,24 +33,12 @@ def _badge_rarity(ball: Ball) -> float | None:
         return None
 
 
-# Daily weights by spawn_chance tier
-#   < 1%             → 0   (never — too rare for daily)
-#   1  – 5%          → 2   (rare cards, very small daily chance)
-#   6  – 15%         → 15  (medium-rare, occasional)
-#   16 – 35%         → 50  (common, frequently given in daily)
-#   36 – 100%        → 85  (very common, most frequent daily reward)
-def _get_daily_weight(rarity: float) -> float:
-    if rarity < 1.0:
+def _logic_chance(ball: Ball, key: str) -> float:
+    logic = ball.capacity_logic or {}
+    try:
+        return max(0.0, min(float(logic.get(key, 0) or 0), 1000.0))
+    except (TypeError, ValueError):
         return 0.0
-    if 1.0 <= rarity <= 5.0:
-        return 2.0
-    if 6.0 <= rarity <= 15.0:
-        return 15.0
-    if 16.0 <= rarity <= 35.0:
-        return 50.0
-    if rarity > 35.0:
-        return 85.0
-    return 0.0
 
 
 # ── Claims file helpers ───────────────────────────────────────────────────────
@@ -94,7 +71,7 @@ def pick_daily_card() -> Ball | None:
     eligible = [b for b in balls_cache.values() if b.enabled]
     if not eligible:
         return None
-    filtered = [(b, _get_daily_weight(b.rarity)) for b in eligible]
+    filtered = [(b, _logic_chance(b, "daily_chance")) for b in eligible]
     filtered = [(b, w) for b, w in filtered if w > 0]
     if not filtered:
         return None
@@ -106,18 +83,12 @@ def pick_weekly_card() -> Ball | None:
     eligible = [b for b in balls_cache.values() if b.enabled]
     if not eligible:
         return None
-    grouped: dict[float, list[Ball]] = {}
-    for ball in eligible:
-        badge_rarity = _badge_rarity(ball)
-        if badge_rarity not in WEEKLY_BADGE_RARITY_WEIGHTS:
-            continue
-        grouped.setdefault(badge_rarity, []).append(ball)
-    if not grouped:
+    filtered = [(b, _logic_chance(b, "weekly_chance")) for b in eligible]
+    filtered = [(b, w) for b, w in filtered if w > 0]
+    if not filtered:
         return None
-    rarity_tiers = list(grouped.keys())
-    weights = [WEEKLY_BADGE_RARITY_WEIGHTS[tier] for tier in rarity_tiers]
-    selected_tier = random.choices(rarity_tiers, weights=weights, k=1)[0]
-    return random.choice(grouped[selected_tier])
+    balls_list, weights_list = zip(*filtered)
+    return random.choices(balls_list, weights=weights_list, k=1)[0]
 
 
 # ── Special helper ────────────────────────────────────────────────────────────

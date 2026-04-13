@@ -8,14 +8,19 @@
     "bat_score": 55,
     "ball_score": 55,
     "rarity": 19.0,
-    "spawn_chance": 808.0,
+    "spawn_chance": 900.0,
     "artwork_author": "Sachin",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "naseem shah",
     "event_id": null,
     "filename": "premade_naseem_shah.png",
-    "wild_card_filename": "spawn_naseem_shah.jpg"
+    "wild_card_filename": "spawn_naseem_shah.jpg",
+    "capacity_logic": {
+      "badge_rarity": 19.0,
+      "daily_chance": 900.0,
+      "weekly_chance": 0.0
+    }
   },
   "Brendon Mccullum": {
     "player_name": "Brendon Mccullum",
@@ -39,7 +44,9 @@
       "badge_rarity": 0.5,
       "forced_special": 4,
       "bg_preset": "Icons_2",
-      "credit_font": "optimus"
+      "credit_font": "optimus",
+      "daily_chance": 0.0,
+      "weekly_chance": 0.0
     }
   },
   "Naveen ul Haq": {
@@ -51,14 +58,19 @@
     "bat_score": 45,
     "ball_score": 60,
     "rarity": 19.0,
-    "spawn_chance": 808.0,
+    "spawn_chance": 900.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "naveen ul haq",
     "event_id": null,
     "filename": "premade_naveen_ul_haq.png",
-    "wild_card_filename": "spawn_naveen_ul_haq.jpg"
+    "wild_card_filename": "spawn_naveen_ul_haq.jpg",
+    "capacity_logic": {
+      "badge_rarity": 19.0,
+      "daily_chance": 900.0,
+      "weekly_chance": 0.0
+    }
   },
   "Shivam Dube": {
     "player_name": "Shivam Dube",
@@ -69,14 +81,19 @@
     "bat_score": 80,
     "ball_score": 58,
     "rarity": 5.0,
-    "spawn_chance": 134.0,
+    "spawn_chance": 300.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "shivam dube",
     "event_id": null,
     "filename": "premade_shivam_dube.png",
-    "wild_card_filename": "spawn_shivam_dube.jpg"
+    "wild_card_filename": "spawn_shivam_dube.jpg",
+    "capacity_logic": {
+      "badge_rarity": 5.0,
+      "daily_chance": 600.0,
+      "weekly_chance": 100.0
+    }
   },
   "Sanju Samson": {
     "player_name": "Sanju Samson",
@@ -87,14 +104,19 @@
     "bat_score": 85,
     "ball_score": 30,
     "rarity": 5.0,
-    "spawn_chance": 134.0,
+    "spawn_chance": 300.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "sanju samson",
     "event_id": null,
     "filename": "premade_sanju_samson.png",
-    "wild_card_filename": "spawn_sanju_samson.jpg"
+    "wild_card_filename": "spawn_sanju_samson.jpg",
+    "capacity_logic": {
+      "badge_rarity": 5.0,
+      "daily_chance": 600.0,
+      "weekly_chance": 100.0
+    }
   },
   "Kane Williamson": {
     "player_name": "Kane Williamson",
@@ -105,14 +127,19 @@
     "bat_score": 90,
     "ball_score": 35,
     "rarity": 1.0,
-    "spawn_chance": 89.0,
+    "spawn_chance": 150.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "kane williamson",
     "event_id": null,
     "filename": "premade_kane_williamson.png",
-    "wild_card_filename": "spawn_kane_williamson.jpg"
+    "wild_card_filename": "spawn_kane_williamson.jpg",
+    "capacity_logic": {
+      "badge_rarity": 1.0,
+      "daily_chance": 30.0,
+      "weekly_chance": 900.0
+    }
   },
   "Tilak Varma": {
     "player_name": "Tilak Varma",
@@ -123,14 +150,19 @@
     "bat_score": 82,
     "ball_score": 0,
     "rarity": 5.0,
-    "spawn_chance": 134.0,
+    "spawn_chance": 300.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "tilak varma",
     "event_id": null,
     "filename": "premade_tilak_varma.png",
-    "wild_card_filename": "spawn_tilak_varma.jpg"
+    "wild_card_filename": "spawn_tilak_varma.jpg",
+    "capacity_logic": {
+      "badge_rarity": 5.0,
+      "daily_chance": 600.0,
+      "weekly_chance": 100.0
+    }
   },
   "Virat Kohli": {
     "player_name": "Virat Kohli",
@@ -141,14 +173,19 @@
     "bat_score": 94,
     "ball_score": 17,
     "rarity": 1.0,
-    "spawn_chance": 89.0,
+    "spawn_chance": 150.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "virat kohli",
     "event_id": null,
     "filename": "premade_virat_kohli.png",
-    "wild_card_filename": "spawn_virat_kohli.jpg"
+    "wild_card_filename": "spawn_virat_kohli.jpg",
+    "capacity_logic": {
+      "badge_rarity": 1.0,
+      "daily_chance": 30.0,
+      "weekly_chance": 900.0
+    }
   },
   "Rinku Singh": {
     "player_name": "Rinku Singh",
@@ -159,14 +196,19 @@
     "bat_score": 84,
     "ball_score": 20,
     "rarity": 5.0,
-    "spawn_chance": 134.0,
+    "spawn_chance": 300.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "rinku singh",
     "event_id": null,
     "filename": "premade_rinku_singh.png",
-    "wild_card_filename": "spawn_rinku_singh.jpg"
+    "wild_card_filename": "spawn_rinku_singh.jpg",
+    "capacity_logic": {
+      "badge_rarity": 5.0,
+      "daily_chance": 600.0,
+      "weekly_chance": 100.0
+    }
   },
   "Ms Dhoni": {
     "player_name": "Ms Dhoni",
@@ -177,7 +219,7 @@
     "bat_score": 96,
     "ball_score": 0,
     "rarity": 0.2,
-    "spawn_chance": 5.0,
+    "spawn_chance": 10.0,
     "artwork_author": "NASH",
     "tradeable": true,
     "spawnable": true,
@@ -190,7 +232,9 @@
       "bg_preset": "icons_9",
       "credit_font": "optimus",
       "badge_rarity": 0.2,
-      "forced_special": 4
+      "forced_special": 4,
+      "daily_chance": 0.0,
+      "weekly_chance": 0.0
     }
   },
   "Kuldeep Yadav": {
@@ -202,14 +246,19 @@
     "bat_score": 30,
     "ball_score": 85,
     "rarity": 5.0,
-    "spawn_chance": 134.0,
+    "spawn_chance": 300.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "kuldeep yadav",
     "event_id": null,
     "filename": "premade_kuldeep_yadav.png",
-    "wild_card_filename": "spawn_kuldeep_yadav.jpg"
+    "wild_card_filename": "spawn_kuldeep_yadav.jpg",
+    "capacity_logic": {
+      "badge_rarity": 5.0,
+      "daily_chance": 600.0,
+      "weekly_chance": 100.0
+    }
   },
   "Joe Root": {
     "player_name": "Joe Root",
@@ -220,14 +269,19 @@
     "bat_score": 90,
     "ball_score": 47,
     "rarity": 1.0,
-    "spawn_chance": 89.0,
+    "spawn_chance": 150.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "joe root",
     "event_id": null,
     "filename": "premade_joe_root.png",
-    "wild_card_filename": "spawn_joe_root.jpg"
+    "wild_card_filename": "spawn_joe_root.jpg",
+    "capacity_logic": {
+      "badge_rarity": 1.0,
+      "daily_chance": 30.0,
+      "weekly_chance": 900.0
+    }
   },
   "Kwena Maphaka": {
     "player_name": "Kwena Maphaka",
@@ -238,14 +292,19 @@
     "bat_score": 50,
     "ball_score": 55,
     "rarity": 19.0,
-    "spawn_chance": 808.0,
+    "spawn_chance": 900.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "kwena maphaka",
     "event_id": null,
     "filename": "premade_kwena_maphaka.png",
-    "wild_card_filename": "spawn_kwena_maphaka.jpg"
+    "wild_card_filename": "spawn_kwena_maphaka.jpg",
+    "capacity_logic": {
+      "badge_rarity": 19.0,
+      "daily_chance": 900.0,
+      "weekly_chance": 0.0
+    }
   },
   "Steve Smith": {
     "player_name": "Steve Smith",
@@ -256,14 +315,19 @@
     "bat_score": 90,
     "ball_score": 35,
     "rarity": 1.0,
-    "spawn_chance": 89.0,
+    "spawn_chance": 150.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "steve smith",
     "event_id": null,
     "filename": "premade_steve_smith.png",
-    "wild_card_filename": "spawn_steve_smith.jpg"
+    "wild_card_filename": "spawn_steve_smith.jpg",
+    "capacity_logic": {
+      "badge_rarity": 1.0,
+      "daily_chance": 30.0,
+      "weekly_chance": 900.0
+    }
   },
   "Muhammad Waseem": {
     "player_name": "Muhammad Waseem",
@@ -274,14 +338,19 @@
     "bat_score": 50,
     "ball_score": 55,
     "rarity": 19.0,
-    "spawn_chance": 808.0,
+    "spawn_chance": 900.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "muhammad waseem",
     "event_id": null,
     "filename": "premade_muhammad_waseem.png",
-    "wild_card_filename": "spawn_muhammad_waseem.jpg"
+    "wild_card_filename": "spawn_muhammad_waseem.jpg",
+    "capacity_logic": {
+      "badge_rarity": 19.0,
+      "daily_chance": 900.0,
+      "weekly_chance": 0.0
+    }
   },
   "Brett Lee": {
     "player_name": "Brett Lee",
@@ -305,7 +374,9 @@
       "badge_rarity": 0.5,
       "forced_special": 4,
       "bg_preset": "icons_9",
-      "credit_font": "optimus"
+      "credit_font": "optimus",
+      "daily_chance": 0.0,
+      "weekly_chance": 0.0
     }
   },
   "Viv Richards": {
@@ -317,7 +388,7 @@
     "bat_score": 99,
     "ball_score": 0,
     "rarity": 0.2,
-    "spawn_chance": 5.0,
+    "spawn_chance": 10.0,
     "artwork_author": "NashX",
     "tradeable": true,
     "spawnable": true,
@@ -330,7 +401,9 @@
       "bg_preset": "icons_9",
       "badge_rarity": 0.2,
       "forced_special": 4,
-      "credit_font": "optimus"
+      "credit_font": "optimus",
+      "daily_chance": 0.0,
+      "weekly_chance": 0.0
     }
   },
   "Rohit Sharma": {
@@ -342,14 +415,19 @@
     "bat_score": 90,
     "ball_score": 30,
     "rarity": 1.0,
-    "spawn_chance": 89.0,
+    "spawn_chance": 150.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "rohit sharma",
     "event_id": null,
     "filename": "premade_rohit_sharma.png",
-    "wild_card_filename": "spawn_rohit_sharma.jpg"
+    "wild_card_filename": "spawn_rohit_sharma.jpg",
+    "capacity_logic": {
+      "badge_rarity": 1.0,
+      "daily_chance": 30.0,
+      "weekly_chance": 900.0
+    }
   },
   "Vaibhav Sooryawanshi (IPL2026)": {
     "player_name": "Vaibhav Sooryawanshi (IPL2026)",
@@ -360,7 +438,7 @@
     "bat_score": 76,
     "ball_score": 23,
     "rarity": 1.0,
-    "spawn_chance": 89.0,
+    "spawn_chance": 50.0,
     "artwork_author": "Legendos",
     "tradeable": true,
     "spawnable": true,
@@ -373,7 +451,7 @@
       "bg_preset": "IPL2026",
       "credit_font": "optimus",
       "badge_rarity": 1.0,
-      "daily_chance": 0.0,
+      "daily_chance": 10.0,
       "display_name": "Vaibhav",
       "credit_stroke": true,
       "weekly_chance": 20.0,
@@ -391,12 +469,12 @@
     "bat_score": 83,
     "ball_score": 19,
     "rarity": 1.0,
-    "spawn_chance": 89.0,
+    "spawn_chance": 50.0,
     "artwork_author": "Sachin",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "yashasvi jaiswal",
-    "event_id": 5,
+    "event_id": 3,
     "event_name": "IPL2026",
     "filename": "premade_yashasvi_jaiswal_ipl2026.png",
     "wild_card_filename": "spawn_yashasvi_jaiswal_ipl2026.jpg",
@@ -407,7 +485,9 @@
       "credit_stroke": true,
       "only_spawn_in_event": true,
       "credit_font": "optimus",
-      "forced_special": 5
+      "forced_special": 3,
+      "daily_chance": 10.0,
+      "weekly_chance": 20.0
     }
   },
   "Jasprit Bumrah": {
@@ -419,7 +499,7 @@
     "bat_score": 30,
     "ball_score": 94,
     "rarity": 1.0,
-    "spawn_chance": 89.0,
+    "spawn_chance": 150.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
@@ -434,7 +514,9 @@
       "foreground_border": true,
       "credit_stroke": true,
       "only_spawn_in_event": false,
-      "credit_font": "default"
+      "credit_font": "default",
+      "daily_chance": 30.0,
+      "weekly_chance": 900.0
     }
   },
   "Hardik Pandya": {
@@ -500,7 +582,7 @@
     "bat_score": 86,
     "ball_score": 20,
     "rarity": 5.0,
-    "spawn_chance": 134.0,
+    "spawn_chance": 300.0,
     "artwork_author": "Sachin",
     "tradeable": true,
     "spawnable": true,
@@ -515,7 +597,9 @@
       "foreground_border": true,
       "credit_stroke": false,
       "only_spawn_in_event": false,
-      "credit_font": "optimus"
+      "credit_font": "optimus",
+      "daily_chance": 600.0,
+      "weekly_chance": 100.0
     }
   },
   "Shubman Gill": {
@@ -527,7 +611,7 @@
     "bat_score": 86,
     "ball_score": 20,
     "rarity": 5.0,
-    "spawn_chance": 134.0,
+    "spawn_chance": 300.0,
     "artwork_author": "Sachin",
     "tradeable": true,
     "spawnable": true,
@@ -542,7 +626,9 @@
       "badge_rarity": 5.0,
       "credit_stroke": false,
       "foreground_border": true,
-      "only_spawn_in_event": false
+      "only_spawn_in_event": false,
+      "daily_chance": 600.0,
+      "weekly_chance": 100.0
     }
   },
   "Sachin Tendulkar": {
@@ -599,7 +685,9 @@
       "only_spawn_in_event": false,
       "credit_font": "optimus",
       "display_name": "De Villiers",
-      "forced_special": 4
+      "forced_special": 4,
+      "daily_chance": 0.0,
+      "weekly_chance": 0.0
     }
   },
   "Brian Lara": {
@@ -611,7 +699,7 @@
     "bat_score": 98,
     "ball_score": 29,
     "rarity": 0.2,
-    "spawn_chance": 5.0,
+    "spawn_chance": 10.0,
     "artwork_author": "NASH",
     "tradeable": true,
     "spawnable": true,
@@ -628,7 +716,9 @@
       "only_spawn_in_event": false,
       "credit_font": "optimus",
       "display_name": "LARA",
-      "forced_special": 4
+      "forced_special": 4,
+      "daily_chance": 0.0,
+      "weekly_chance": 0.0
     }
   },
   "Arshdeep Singh": {
@@ -640,7 +730,7 @@
     "bat_score": 20,
     "ball_score": 85,
     "rarity": 5.0,
-    "spawn_chance": 134.0,
+    "spawn_chance": 300.0,
     "artwork_author": "Sachin",
     "tradeable": true,
     "spawnable": true,
@@ -656,7 +746,9 @@
       "credit_stroke": true,
       "only_spawn_in_event": false,
       "credit_font": "optimus",
-      "display_name": "Arshdeep"
+      "display_name": "Arshdeep",
+      "daily_chance": 600.0,
+      "weekly_chance": 100.0
     }
   },
   "Rishabh Pant": {
@@ -698,7 +790,7 @@
     "bat_score": 0,
     "ball_score": 97,
     "rarity": 0.2,
-    "spawn_chance": 2.0,
+    "spawn_chance": 10.0,
     "artwork_author": "Nash",
     "tradeable": true,
     "spawnable": true,
@@ -714,8 +806,8 @@
       "credit_stroke": true,
       "only_spawn_in_event": false,
       "credit_font": "optimus",
-      "weekly_chance": 1.0,
-      "daily_chance": 1.0,
+      "weekly_chance": 0.0,
+      "daily_chance": 0.0,
       "display_name": "Steyn",
       "forced_special": 4
     }
@@ -759,7 +851,7 @@
     "bat_score": 96,
     "ball_score": 24,
     "rarity": 1.0,
-    "spawn_chance": 150.0,
+    "spawn_chance": 50.0,
     "artwork_author": "Marco",
     "tradeable": true,
     "spawnable": true,
@@ -775,7 +867,7 @@
       "credit_stroke": true,
       "only_spawn_in_event": true,
       "credit_font": "optimus",
-      "weekly_chance": 25.0,
+      "weekly_chance": 20.0,
       "daily_chance": 10.0,
       "display_name": "Virat",
       "forced_special": 3

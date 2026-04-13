@@ -2,7 +2,14 @@
 
 ## Overview
 
-pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
+pnpm workspace monorepo using TypeScript. Each package manages its own dependencies. This workspace also contains CricStar, a Python/Django + discord.py cricket card Discord bot.
+
+## CricStar Bot Notes
+
+- Discord workflow: `python run.py`
+- Chance fields use a 0–1000 scale for normal spawn, daily, and weekly values.
+- `spawn_chance` is stored on `Ball.rarity`; `daily_chance` and `weekly_chance` are stored in `Ball.capacity_logic`.
+- Current rarity defaults: 19.0 = spawn 900/daily 900/weekly 0, 5.0 = spawn 300/daily 600/weekly 100, 1.0 = spawn 150/daily 30/weekly 900, ICONS 0.5/0.2 = spawn 10/daily 0/weekly 0, IPL2026 event cards = spawn 50/daily 10/weekly 20.
 
 ## Stack
 
