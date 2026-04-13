@@ -992,5 +992,36 @@
       "daily_chance": 70.0,
       "display_name": "Priyansh"
     }
+  },
+  "Hardik Pandya (IPL2026)": {
+    "player_name": "Hardik Pandya (IPL2026)",
+    "card_name": "Hardik",
+    "slug": "hardik_pandya_ipl2026",
+    "codename": "Kung Fu Pandya",
+    "description": "Hardik Pandya is pure swagger and power a fearless match winner who destroys bowlers with explosive hitting delivers breakthroughs with the ball and dominates games with confidence",
+    "bat_score": 89,
+    "ball_score": 83,
+    "rarity": 1.0,
+    "spawn_chance": 40.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "hardik pandya",
+    "event_id": 3,
+    "event_name": "IPL2026",
+    "filename": "premade_hardik_pandya_ipl2026.png",
+    "wild_card_filename": "premade_hardik_pandya_ipl2026.png",
+    "capacity_logic": {
+      "badge_rarity": 1.0,
+      "bg_preset": "IPL2026",
+      "foreground_border": false,
+      "credit_stroke": true,
+      "only_spawn_in_event": true,
+      "credit_font": "optimus",
+      "weekly_chance": 10.0,
+      "daily_chance": 1.0,
+      "display_name": "Hardik",
+      "forced_special": 3
+    }
   }
 }

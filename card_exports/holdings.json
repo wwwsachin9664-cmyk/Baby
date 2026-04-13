@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-13T09:14:10.239261+00:00",
-  "count": 149,
+  "exported_at": "2026-04-13T12:52:06.662472+00:00",
+  "count": 151,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -1936,6 +1936,32 @@
       "tradeable": true,
       "server_id": null,
       "catch_date": "2026-04-13T07:51:24.663301+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 820893612489179136,
+      "ball_player_name": "Sherfane Rutherford",
+      "special_name": null,
+      "health_bonus": 12,
+      "attack_bonus": -17,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-13T09:50:43.690997+00:00",
+      "spawned_time": "2026-04-13T09:49:28.592000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Hardik Pandya",
+      "special_name": null,
+      "health_bonus": -8,
+      "attack_bonus": -16,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-13T11:06:53.257765+00:00",
       "spawned_time": null,
       "extra_data": {}
     }
