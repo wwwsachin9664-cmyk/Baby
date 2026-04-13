@@ -11,7 +11,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from bd_models.models import Ball
+from bd_models.models import Ball, BallInstance, Player
 from bd_models.models import balls as balls_cache
 from cricstar.core.utils.emojis import get_player_emoji
 from cricstar.core.image_generator.image_gen import patch_card_stats
@@ -50,12 +50,29 @@ class Upgrade(commands.Cog):
         self, interaction: discord.Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         current_lower = current.lower()
-        matches = [
-            app_commands.Choice(name=ball.country, value=ball.country)
-            for ball in balls_cache.values()
-            if current_lower in ball.country.lower()
-        ]
-        return matches[:25]
+        try:
+            player = await Player.objects.aget(discord_id=interaction.user.id)
+            seen_ball_ids: set[int] = set()
+            choices: list[app_commands.Choice[str]] = []
+            async for instance in (
+                BallInstance.objects.filter(player=player, deleted=False)
+                .select_related("ball")
+                .order_by("ball__country")
+            ):
+                ball = instance.ball
+                if ball.pk in seen_ball_ids:
+                    continue
+                seen_ball_ids.add(ball.pk)
+                if current_lower and current_lower not in ball.country.lower():
+                    continue
+                card_id = f"#{ball.pk:0X}"
+                display_name = f"{card_id} - {ball.country}"
+                choices.append(app_commands.Choice(name=display_name, value=ball.country))
+                if len(choices) >= 25:
+                    break
+            return choices
+        except Player.DoesNotExist:
+            return []
 
     @cricket.command(name="upgrade", description="Upgrade a cricketer's bat and bowl stats")
     @app_commands.describe(player_name="Name of the cricketer to upgrade")

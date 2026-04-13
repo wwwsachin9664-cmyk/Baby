@@ -2054,6 +2054,7 @@ class Admin(commands.Cog):
     @checks.is_superuser()
     @app_commands.describe(
         emoji="Paste the emoji directly (e.g. <:dhoni:123456>) or give a raw numeric ID / unicode char",
+        emoji_pathname="The emoji's name/pathname (e.g. 'dhoni'). Used to display it correctly. Auto-detected if you paste the emoji directly.",
         player_name="Cricketer name to link this emoji to — autocomplete shows existing cards",
         show_in_list="Also show this emoji randomly in /list output (default True)",
         show_in_bet="Also show this emoji randomly in bet proposals (default True)",
@@ -2063,6 +2064,7 @@ class Admin(commands.Cog):
         self,
         ctx: commands.Context["CricStarBot"],
         emoji: str,
+        emoji_pathname: str = "",
         player_name: str = "",
         show_in_list: bool = True,
         show_in_bet: bool = True,
@@ -2074,6 +2076,9 @@ class Admin(commands.Cog):
         ----------
         emoji: str
             Paste the Discord emoji directly (<:name:id>), or provide a raw numeric ID or unicode char.
+        emoji_pathname: str
+            The emoji's name (e.g. dhoni). If you paste the emoji directly, this is detected automatically.
+            This name is shown when users hover over or click the emoji.
         player_name: str
             Cricketer name (e.g. Ms Dhoni). Autocomplete lists existing cards.
             The emoji will show next to that player everywhere their card appears.
@@ -2082,7 +2087,7 @@ class Admin(commands.Cog):
         show_in_bet: bool
             If True, this emoji may also appear randomly next to cards in bet proposals. Default True.
         """
-        emoji_id = parse_emoji_input(emoji)
+        parsed_name, emoji_id = parse_emoji_input(emoji)
         if not emoji_id:
             await ctx.send("❌ Please provide a valid emoji — paste it directly or give a numeric ID.", ephemeral=True)
             return
@@ -2096,7 +2101,16 @@ class Admin(commands.Cog):
             )
             return
 
-        add_emoji(emoji_id, show_in_list=show_in_list, show_in_bet=show_in_bet, player_name=player_name.strip())
+        # Prefer the explicitly provided emoji_pathname, fall back to auto-detected name
+        final_name = emoji_pathname.strip() if emoji_pathname.strip() else parsed_name
+
+        add_emoji(
+            emoji_id,
+            show_in_list=show_in_list,
+            show_in_bet=show_in_bet,
+            player_name=player_name.strip(),
+            emoji_name=final_name,
+        )
 
         flags = []
         if show_in_list:
@@ -2105,11 +2119,13 @@ class Admin(commands.Cog):
             flags.append("bet")
         flags_str = " + ".join(flags) if flags else "none"
 
-        display = f"<:e:{emoji_id}>" if emoji_id.isdigit() else emoji_id
+        name_for_display = final_name if final_name else "e"
+        display = f"<:{name_for_display}:{emoji_id}>" if emoji_id.isdigit() else emoji_id
         player_line = f"\nLinked to player: **{player_name.strip()}**" if player_name.strip() else ""
 
         registry_lines = "\n".join(
             f"• {format_emoji(e)} `{e['id']}`"
+            + (f" [{e['name']}]" if e.get("name") else "")
             + (f" → **{e['player']}**" if e.get("player") else "")
             + f" — list: {'✅' if e.get('list') else '❌'} | bet: {'✅' if e.get('bet') else '❌'}"
             for e in list_emojis()

@@ -2,9 +2,10 @@
 Emoji registry for CricStar.
 
 Emojis are stored in admin_panel/media/emojis.json as a list of objects:
-  [{"id": "1234567890", "player": "Virat Kohli", "list": true, "bet": true}, ...]
+  [{"id": "1234567890", "name": "dhoni", "player": "Virat Kohli", "list": true, "bet": true}, ...]
 
 - "id"     : Discord emoji ID (string of digits) or a raw unicode character
+- "name"   : Discord emoji name (e.g. "dhoni") — used to render <:dhoni:ID>
 - "player" : optional player name — if set, this emoji is shown next to that player
 - "list"   : if true, the emoji may appear randomly in /list output
 - "bet"    : if true, the emoji may appear randomly next to cards in bet display
@@ -48,6 +49,7 @@ def add_emoji(
     show_in_list: bool,
     show_in_bet: bool,
     player_name: str = "",
+    emoji_name: str = "",
 ) -> None:
     """Add or update an emoji entry."""
     data = _load()
@@ -56,14 +58,19 @@ def add_emoji(
             entry["list"] = show_in_list
             entry["bet"] = show_in_bet
             entry["player"] = player_name.strip()
+            if emoji_name.strip():
+                entry["name"] = emoji_name.strip()
             _save(data)
             return
-    data.append({
+    record: dict = {
         "id": emoji_id,
         "list": show_in_list,
         "bet": show_in_bet,
         "player": player_name.strip(),
-    })
+    }
+    if emoji_name.strip():
+        record["name"] = emoji_name.strip()
+    data.append(record)
     _save(data)
 
 
@@ -77,12 +84,18 @@ def remove_emoji(emoji_id: str) -> bool:
     return True
 
 
+def _fmt_id(eid: str, ename: str = "") -> str:
+    """Format a raw emoji ID or unicode char into a Discord-renderable string."""
+    if eid.isdigit():
+        name = ename.strip() if ename.strip() else "e"
+        return f"<:{name}:{eid}> "
+    return f"{eid} "
+
+
 def get_player_emoji(player_name: str) -> str:
     """
     Return the formatted emoji string for a specific player, or empty string.
     Lookup is case-insensitive.
-    Only returns unicode / text emojis safely. For Discord custom emoji IDs use
-    get_player_emoji_id() instead.
     """
     name_lower = player_name.strip().lower()
     if not name_lower:
@@ -91,9 +104,8 @@ def get_player_emoji(player_name: str) -> str:
         p = entry.get("player", "").strip().lower()
         if p and p == name_lower:
             eid = entry["id"]
-            if eid.isdigit():
-                return f"<:e:{eid}> "
-            return f"{eid} "
+            ename = entry.get("name", "")
+            return _fmt_id(eid, ename)
     return ""
 
 
@@ -118,7 +130,8 @@ def get_random_bet_emoji() -> str:
     bet_emojis = [e for e in _load() if e.get("bet")]
     if not bet_emojis:
         return ""
-    return _fmt_id(random.choice(bet_emojis)["id"])
+    entry = random.choice(bet_emojis)
+    return _fmt_id(entry["id"], entry.get("name", ""))
 
 
 def get_random_list_emoji() -> str:
@@ -126,21 +139,17 @@ def get_random_list_emoji() -> str:
     list_emojis = [e for e in _load() if e.get("list")]
     if not list_emojis:
         return ""
-    return _fmt_id(random.choice(list_emojis)["id"])
-
-
-def _fmt_id(eid: str) -> str:
-    """Format a raw emoji ID or unicode char into a Discord-renderable string."""
-    if eid.isdigit():
-        return f"<:e:{eid}> "
-    return f"{eid} "
+    entry = random.choice(list_emojis)
+    return _fmt_id(entry["id"], entry.get("name", ""))
 
 
 def format_emoji(entry: dict) -> str:
     """Format an emoji entry for display in Discord (no trailing space)."""
     eid = entry["id"]
+    ename = entry.get("name", "")
     if eid.isdigit():
-        return f"<:e:{eid}>"
+        name = ename.strip() if ename.strip() else "e"
+        return f"<:{name}:{eid}>"
     return eid
 
 
@@ -153,14 +162,15 @@ def get_player_emoji_map() -> dict[str, str]:
     }
 
 
-def parse_emoji_input(raw: str) -> str:
+def parse_emoji_input(raw: str) -> tuple[str, str]:
     """
-    Accept a Discord emoji in any format and return the bare ID or unicode char.
+    Accept a Discord emoji in any format and return (emoji_name, emoji_id_or_char).
     Handles: '<:name:123456>', '<a:name:123456>', '123456', or a raw unicode emoji.
+    Returns (name, id) where name may be empty for raw IDs / unicode chars.
     """
     import re
     raw = raw.strip()
-    m = re.match(r"<a?:[\w~]+:(\d+)>", raw)
+    m = re.match(r"<a?:([\w~]+):(\d+)>", raw)
     if m:
-        return m.group(1)
-    return raw
+        return m.group(1), m.group(2)
+    return "", raw
