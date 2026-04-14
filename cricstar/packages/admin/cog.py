@@ -2276,6 +2276,8 @@ class Admin(commands.Cog):
         name="csdeletepath",
         description="[Owner] Delete a saved background image file.",
     )
+    @app_commands.default_permissions()
+    @app_commands.check(checks.is_developer)
     @app_commands.describe(background="Background name to delete, or 'none' to cancel")
     @app_commands.autocomplete(background=_background_autocomplete)
     async def csdeletepath(
@@ -2325,6 +2327,8 @@ class Admin(commands.Cog):
         name="csresetcooldown",
         description="[Owner] Reset all daily, weekly, and upgrade cooldowns.",
     )
+    @app_commands.default_permissions()
+    @app_commands.check(checks.is_developer)
     async def csresetcooldown(self, interaction: discord.Interaction["CricStarBot"]):
         if not await self.bot.is_owner(interaction.user):
             await interaction.response.send_message(
@@ -2353,6 +2357,8 @@ class Admin(commands.Cog):
         name="adminsync",
         description="[Owner] Force-sync all global slash commands.",
     )
+    @app_commands.default_permissions()
+    @app_commands.check(checks.is_developer)
     async def adminsync(self, interaction: discord.Interaction["CricStarBot"]):
         if not await self.bot.is_owner(interaction.user):
             await interaction.response.send_message(
@@ -2721,6 +2727,8 @@ class Admin(commands.Cog):
         name="cscleanup",
         description="[Owner] Delete all card instances obtained via trade/bet older than 15 days.",
     )
+    @app_commands.default_permissions()
+    @app_commands.check(checks.is_developer)
     async def cscleanup(self, interaction: discord.Interaction["CricStarBot"]):
         if not await self.bot.is_owner(interaction.user):
             await interaction.response.send_message(
@@ -2769,6 +2777,8 @@ class Admin(commands.Cog):
         name="csmultispawn",
         description="[Owner] Select up to 20 cricketers from a menu and spawn them all at once.",
     )
+    @app_commands.default_permissions()
+    @app_commands.check(checks.is_developer)
     async def csmultispawn(self, interaction: discord.Interaction["CricStarBot"]):
         if not await self.bot.is_owner(interaction.user):
             await interaction.response.send_message(

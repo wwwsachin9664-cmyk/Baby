@@ -667,8 +667,8 @@
     "description": "One of most destructive batter in cricketing history and probably best South African Cricketer in 2010s decade and one of best overseas batsman in IPL too",
     "bat_score": 97,
     "ball_score": 10,
-    "rarity": 0.5,
-    "spawn_chance": 10.0,
+    "rarity": 0.3,
+    "spawn_chance": 1.0,
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
@@ -678,16 +678,16 @@
     "filename": "premade_ab_de_villiers.png",
     "wild_card_filename": "spawn_ab_de_villiers.jpg",
     "capacity_logic": {
-      "badge_rarity": 0.5,
       "bg_preset": "icons_9",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
       "credit_font": "optimus",
-      "display_name": "De Villiers",
-      "forced_special": 4,
+      "badge_rarity": 0.3,
       "daily_chance": 0.0,
-      "weekly_chance": 0.0
+      "display_name": "De Villiers",
+      "credit_stroke": true,
+      "weekly_chance": 0.0,
+      "forced_special": 4,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   },
   "Brian Lara": {
@@ -779,37 +779,6 @@
       "weekly_chance": 45.0,
       "foreground_border": true,
       "only_spawn_in_event": false
-    }
-  },
-  "Dale Steyn": {
-    "player_name": "Dale Steyn",
-    "card_name": "Steyn",
-    "slug": "dale_steyn",
-    "codename": "Steyn Gun",
-    "description": "Dale Steyn is widely regarded as one of the greatest and most feared fast bowlers in modern cricket history",
-    "bat_score": 0,
-    "ball_score": 97,
-    "rarity": 0.2,
-    "spawn_chance": 10.0,
-    "artwork_author": "Nash",
-    "tradeable": true,
-    "spawnable": true,
-    "catch_name": "dale steyn",
-    "event_id": 4,
-    "event_name": "ICONS",
-    "filename": "premade_dale_steyn.png",
-    "wild_card_filename": "premade_dale_steyn.png",
-    "capacity_logic": {
-      "badge_rarity": 0.2,
-      "bg_preset": "icons_9",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
-      "credit_font": "optimus",
-      "weekly_chance": 0.0,
-      "daily_chance": 0.0,
-      "display_name": "Steyn",
-      "forced_special": 4
     }
   },
   "Travis Head": {
@@ -1010,7 +979,7 @@
     "event_id": 3,
     "event_name": "IPL2026",
     "filename": "premade_hardik_pandya_ipl2026.png",
-    "wild_card_filename": "premade_hardik_pandya_ipl2026.png",
+    "wild_card_filename": "spawn_hardik_pandya_ipl2026.jpg",
     "capacity_logic": {
       "badge_rarity": 1.0,
       "bg_preset": "IPL2026",
@@ -1022,6 +991,36 @@
       "daily_chance": 1.0,
       "display_name": "Hardik",
       "forced_special": 3
+    }
+  },
+  "Roston Chase": {
+    "player_name": "Roston Chase",
+    "card_name": "Chase",
+    "slug": "roston_chase",
+    "codename": "Crisis Man",
+    "description": "Roston Chase Barbadian all rounder who represents the West Indies in international cricket  Known for his right arm off break bowling and solid middle order right handed batting",
+    "bat_score": 68,
+    "ball_score": 79,
+    "rarity": 18.0,
+    "spawn_chance": 800.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "roston chase",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_roston_chase.png",
+    "wild_card_filename": "spawn_roston_chase.jpg",
+    "capacity_logic": {
+      "badge_rarity": 18.0,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 0.0,
+      "daily_chance": 800.0,
+      "display_name": "Chase"
     }
   }
 }
