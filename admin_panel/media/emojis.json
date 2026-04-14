@@ -138,5 +138,26 @@
     "bet": true,
     "player": "Brendon Mccullum",
     "name": "Brendom_mccullum"
+  },
+  {
+    "id": "1493561793682079885",
+    "list": true,
+    "bet": true,
+    "player": "Brian Lara",
+    "name": "Brian_Lara"
+  },
+  {
+    "id": "1493561790397681765",
+    "list": true,
+    "bet": true,
+    "player": "Viv Richards",
+    "name": "Viv_richards"
+  },
+  {
+    "id": "1493561796458450954",
+    "list": true,
+    "bet": true,
+    "player": "AB de Villiers",
+    "name": "Abd_Icons"
   }
 ]
