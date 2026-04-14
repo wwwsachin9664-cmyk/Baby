@@ -33,5 +33,12 @@
     "bet": true,
     "player": "Virat Kohli (IPL2026)",
     "name": "Virat_IPL"
+  },
+  {
+    "id": "1493528394342862939",
+    "list": true,
+    "bet": true,
+    "player": "Mitchell Starc (AUS)",
+    "name": "Starc_Aus"
   }
 ]

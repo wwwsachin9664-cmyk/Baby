@@ -24,7 +24,7 @@
   },
   "Brendon Mccullum": {
     "player_name": "Brendon Mccullum",
-    "card_name": "Brendon Mccullum",
+    "card_name": "Mccullum",
     "slug": "brendon_mccullum",
     "codename": "BAZ",
     "description": "McCullum was a high octane wicketkeeper batsman who treated every format like a T20  He was defined by his raw power and a win at all costs aggression that redefined New Zealands cricket culture",
@@ -41,12 +41,13 @@
     "filename": "premade_brendon_mccullum.png",
     "wild_card_filename": "spawn_brendon_mccullum.jpg",
     "capacity_logic": {
-      "badge_rarity": 0.5,
-      "forced_special": 4,
-      "bg_preset": "Icons_2",
+      "bg_preset": "Icon_10",
       "credit_font": "optimus",
+      "badge_rarity": 0.5,
       "daily_chance": 0.0,
-      "weekly_chance": 0.0
+      "weekly_chance": 0.0,
+      "forced_special": 4,
+      "display_name": "Mccullum"
     }
   },
   "Naveen ul Haq": {
@@ -229,12 +230,12 @@
     "filename": "premade_ms_dhoni.png",
     "wild_card_filename": "spawn_ms_dhoni.jpg",
     "capacity_logic": {
-      "bg_preset": "icons_9",
+      "bg_preset": "Icon_10",
       "credit_font": "optimus",
       "badge_rarity": 0.2,
-      "forced_special": 4,
       "daily_chance": 0.0,
-      "weekly_chance": 0.0
+      "weekly_chance": 0.0,
+      "forced_special": 4
     }
   },
   "Kuldeep Yadav": {
@@ -371,12 +372,12 @@
     "filename": "premade_brett_lee.png",
     "wild_card_filename": "spawn_brett_lee.jpg",
     "capacity_logic": {
-      "badge_rarity": 0.5,
-      "forced_special": 4,
-      "bg_preset": "icons_9",
+      "bg_preset": "Icon_10",
       "credit_font": "optimus",
+      "badge_rarity": 0.5,
       "daily_chance": 0.0,
-      "weekly_chance": 0.0
+      "weekly_chance": 0.0,
+      "forced_special": 4
     }
   },
   "Viv Richards": {
@@ -398,12 +399,12 @@
     "filename": "premade_viv_richards.png",
     "wild_card_filename": "spawn_viv_richards.jpg",
     "capacity_logic": {
-      "bg_preset": "icons_9",
-      "badge_rarity": 0.2,
-      "forced_special": 4,
+      "bg_preset": "Icon_10",
       "credit_font": "optimus",
+      "badge_rarity": 0.2,
       "daily_chance": 0.0,
-      "weekly_chance": 0.0
+      "weekly_chance": 0.0,
+      "forced_special": 4
     }
   },
   "Rohit Sharma": {
@@ -650,13 +651,13 @@
     "filename": "premade_sachin_tendulkar.png",
     "wild_card_filename": "spawn_sachin_tendulkar.jpg",
     "capacity_logic": {
-      "badge_rarity": 0.1,
-      "bg_preset": "icons_9",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
+      "bg_preset": "Icon_10",
       "credit_font": "optimus",
-      "forced_special": 4
+      "badge_rarity": 0.1,
+      "credit_stroke": true,
+      "forced_special": 4,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   },
   "AB de Villiers": {
@@ -678,7 +679,7 @@
     "filename": "premade_ab_de_villiers.png",
     "wild_card_filename": "spawn_ab_de_villiers.jpg",
     "capacity_logic": {
-      "bg_preset": "icons_9",
+      "bg_preset": "Icon_10",
       "credit_font": "optimus",
       "badge_rarity": 0.3,
       "daily_chance": 0.0,
@@ -709,16 +710,16 @@
     "filename": "premade_brian_lara.png",
     "wild_card_filename": "spawn_brian_lara.jpg",
     "capacity_logic": {
-      "badge_rarity": 0.2,
-      "bg_preset": "icons_9",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
+      "bg_preset": "Icon_10",
       "credit_font": "optimus",
-      "display_name": "LARA",
-      "forced_special": 4,
+      "badge_rarity": 0.2,
       "daily_chance": 0.0,
-      "weekly_chance": 0.0
+      "display_name": "LARA",
+      "credit_stroke": true,
+      "weekly_chance": 0.0,
+      "forced_special": 4,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   },
   "Arshdeep Singh": {
@@ -1021,6 +1022,96 @@
       "weekly_chance": 0.0,
       "daily_chance": 800.0,
       "display_name": "Chase"
+    }
+  },
+  "KL Rahul": {
+    "player_name": "KL Rahul",
+    "card_name": "Rahul",
+    "slug": "kl_rahul",
+    "codename": "KLR",
+    "description": "Rahul was in India 2010 Under 19 World Cup squad and made his first class debut later that year He enjoyed a breakthrough season in 2013 14",
+    "bat_score": 89,
+    "ball_score": 20,
+    "rarity": 1.5,
+    "spawn_chance": 300.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "kl rahul",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_kl_rahul.png",
+    "wild_card_filename": "spawn_kl_rahul.jpg",
+    "capacity_logic": {
+      "badge_rarity": 1.5,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 300.0,
+      "daily_chance": 1.0,
+      "display_name": "Rahul"
+    }
+  },
+  "Mitchell Starc": {
+    "player_name": "Mitchell Starc",
+    "card_name": "Starc",
+    "slug": "mitchell_starc",
+    "codename": "Starcy",
+    "description": "An elite left arm speedster Mitchell Starc is renowned for his blistering pace and lethal yorkers His ability to swing the ball early and dismantle batting lineups makes him a premier fast bowling force",
+    "bat_score": 45,
+    "ball_score": 90,
+    "rarity": 1.2,
+    "spawn_chance": 150.0,
+    "artwork_author": "Rishav",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "mitchell starc",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_mitchell_starc.png",
+    "wild_card_filename": "spawn_mitchell_starc.jpg",
+    "capacity_logic": {
+      "badge_rarity": 1.2,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 480.0,
+      "daily_chance": 250.0,
+      "display_name": "Starc"
+    }
+  },
+  "Mitchell Starc (AUS)": {
+    "player_name": "Mitchell Starc (AUS)",
+    "card_name": "Starc",
+    "slug": "mitchell_starc_aus",
+    "codename": "Float",
+    "description": "Mitchell Starc is a premier Australian leftarm fast bowler known for his searing pace sharp swing and lethal yorkers A cornerstone of Australias attack across all formats",
+    "bat_score": 40,
+    "ball_score": 90,
+    "rarity": 0.4,
+    "spawn_chance": 3.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "mitchell starc",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_mitchell_starc_aus.png",
+    "wild_card_filename": "spawn_mitchell_starc_aus.jpg",
+    "capacity_logic": {
+      "badge_rarity": 0.4,
+      "bg_preset": "Australia",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 3.0,
+      "daily_chance": 0.0,
+      "display_name": "Starc"
     }
   }
 }

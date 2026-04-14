@@ -2336,6 +2336,54 @@ class Admin(commands.Cog):
             ephemeral=True,
         )
 
+    # ── /cscooldown ───────────────────────────────────────────────────────────
+    @app_commands.command(
+        name="cscooldown",
+        description="[Owner] Set the global spawn message cooldown (min/max messages between spawns).",
+    )
+    @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
+    @app_commands.check(checks.is_developer)
+    @app_commands.describe(
+        min_messages="Minimum messages needed before a cricketer can spawn.",
+        max_messages="Maximum messages (threshold is random between min and max).",
+    )
+    async def cscooldown(
+        self,
+        interaction: discord.Interaction["CricStarBot"],
+        min_messages: int,
+        max_messages: int,
+    ):
+        if min_messages < 1:
+            await interaction.response.send_message(
+                "❌ Minimum must be at least 1.", ephemeral=True
+            )
+            return
+        if max_messages <= min_messages:
+            await interaction.response.send_message(
+                "❌ Maximum must be greater than minimum.", ephemeral=True
+            )
+            return
+
+        old_min = settings.spawn_chance_min
+        old_max = settings.spawn_chance_max
+
+        settings.spawn_chance_min = min_messages  # type: ignore
+        settings.spawn_chance_max = max_messages  # type: ignore
+        await settings.asave(update_fields=["spawn_chance_min", "spawn_chance_max"])
+
+        await interaction.response.send_message(
+            f"✅ Global spawn cooldown updated.\n"
+            f"**Before:** {old_min}–{old_max} messages\n"
+            f"**After:** {min_messages}–{max_messages} messages\n\n"
+            f"-# New thresholds apply to every server on the next spawn cycle.",
+            ephemeral=True,
+        )
+        log.info(
+            f"Spawn cooldown changed from {old_min}-{old_max} to "
+            f"{min_messages}-{max_messages} by {interaction.user}"
+        )
+
     # ── /csresetcooldown ──────────────────────────────────────────────────────
     @app_commands.command(
         name="csresetcooldown",
