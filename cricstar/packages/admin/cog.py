@@ -2474,7 +2474,7 @@ class Admin(commands.Cog):
                 val = float(raw)
             except (TypeError, ValueError):
                 continue
-            key = f"{val:g}"
+            key = f"{val:.1f}"
             if key in seen:
                 continue
             if current and current not in key:
@@ -2488,14 +2488,11 @@ class Admin(commands.Cog):
 
     @app_commands.command(
         name="csrarity",
-        description="[Admin] View or bulk-update spawn chance for a badge rarity tier.",
+        description="View the rarity tiers of all cards. Admins can also update spawn chance.",
     )
-    @app_commands.default_permissions()
-    @app_commands.guilds(checks.ADMIN_GUILD_ID)
-    @app_commands.check(checks.is_developer)
     @app_commands.describe(
-        badge_rarity="Badge rarity tier to inspect/edit (e.g. 0.2, 1.0, 5.0). Leave blank for full list.",
-        spawn_chance="New spawn weight from 0 to 1000 to apply to ALL cards of this rarity. Leave blank to just view.",
+        badge_rarity="Rarity tier to inspect (e.g. 1.0, 5.0). Leave blank for full list.",
+        spawn_chance="[Admin] New spawn weight from 0 to 1000 to apply to ALL cards of this rarity.",
     )
     @app_commands.autocomplete(badge_rarity=_badge_rarity_autocomplete)
     async def csrarity(
@@ -2523,7 +2520,7 @@ class Admin(commands.Cog):
             lines: list[str] = []
             for ball in all_balls:
                 br = _get_badge(ball)
-                br_str = f"{br:g}" if br is not None else "?"
+                br_str = f"{br:.1f}" if br is not None else "?"
                 lines.append(f"Rarity {br_str:>5}  |  {ball.country}")
             header = f"{'Rarity':>10}  |  Card\n" + "─" * 40 + "\n"
             text = header + "\n".join(lines)
@@ -2553,20 +2550,26 @@ class Admin(commands.Cog):
 
         if not tier_balls:
             await interaction.followup.send(
-                f"❌ No cards found with badge rarity `{target_br:g}`.",
+                f"❌ No cards found with badge rarity `{target_br:.1f}`.",
                 ephemeral=True,
             )
             return
 
         # ── view-only (no spawn_chance given) ──────────────────────────────
         if spawn_chance is None:
-            lines = [f"Cards with badge rarity **{target_br:g}**:\n"]
+            lines = [f"Cards with badge rarity **{target_br:.1f}**:\n"]
             for ball in sorted(tier_balls, key=lambda b: b.country):
                 lines.append(f"• **{ball.country}**")
             await interaction.followup.send("\n".join(lines), ephemeral=True)
             return
 
-        # ── bulk update spawn chance ────────────────────────────────────────
+        # ── bulk update spawn chance (admin only) ──────────────────────────
+        if not await checks.is_developer(interaction):
+            await interaction.followup.send(
+                "❌ Only admins can update spawn chances.", ephemeral=True
+            )
+            return
+
         if spawn_chance < 0 or spawn_chance > 1000:
             await interaction.followup.send(
                 "❌ Spawn chance must be between `0` and `1000`.", ephemeral=True
@@ -2602,7 +2605,7 @@ class Admin(commands.Cog):
 
         names_list = ", ".join(f"**{n}**" for n in sorted(updated_names))
         await interaction.followup.send(
-            f"✅ Updated **{len(updated_names)} card(s)** with badge rarity `{target_br:g}` "
+            f"✅ Updated **{len(updated_names)} card(s)** with badge rarity `{target_br:.1f}` "
             f"→ spawn chance set to `{spawn_chance:.4g}/1000`\n\n"
             f"Cards updated: {names_list}",
             ephemeral=True,
