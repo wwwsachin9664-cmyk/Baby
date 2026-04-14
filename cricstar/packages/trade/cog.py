@@ -133,12 +133,12 @@ class Trade(commands.GroupCog):
 
         await interaction.response.defer(ephemeral=True)
         trade = TradeInstance.configure(self, (player1, interaction.user), (player2, user))
+        trade.invite_mention = f"Hey {user.mention}, **{interaction.user.display_name}** is proposing a trade with you!"
         self.trades[interaction.channel.id][interaction.user.id] = trade
         self.trades[interaction.channel.id][user.id] = trade
         try:
             await trade._rebuild_view()
             trade.message = await interaction.channel.send(  # type: ignore
-                content=f"Hey {user.mention}, **{interaction.user.display_name}** is proposing a trade with you!",
                 view=trade,
             )
         except Exception:

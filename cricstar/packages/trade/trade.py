@@ -301,6 +301,7 @@ class TradeInstance(LayoutView):
         self.trader1: TradingUser
         self.trader2: TradingUser
         self.message: discord.Message
+        self.invite_mention: str = ""
 
         self.confirmation_lock = asyncio.Lock()
         self.edit_lock = asyncio.Lock()
@@ -522,8 +523,9 @@ class TradeInstance(LayoutView):
             container.accent_colour = discord.Colour.blue()
             add_cmd = self.cog.add.extras.get("mention", "`/trade add`")
             del_cmd = self.cog.remove.extras.get("mention", "`/trade remove`")
+            invite_prefix = f"{self.invite_mention}\n\n" if self.invite_mention else ""
             header = (
-                f"**Cricketers trading**\n"
+                f"{invite_prefix}**Cricketers trading**\n"
                 f"Add or remove cricketers you want to propose to the other player using the "
                 f"{add_cmd} and {del_cmd} commands. Once you're finished, click the lock button "
                 f"below to confirm your proposal. You can also lock with nothing if you're receiving a gift.\n\n"

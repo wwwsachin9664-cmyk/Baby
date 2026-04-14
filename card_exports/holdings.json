@@ -1,5 +1,5 @@
 {
-  "exported_at": "2026-04-14T11:31:06.338032+00:00",
+  "exported_at": "2026-04-14T11:41:34.220059+00:00",
   "count": 261,
   "holdings": [
     {
@@ -420,19 +420,6 @@
     },
     {
       "player_discord_id": 1317288099075850243,
-      "ball_player_name": "Viv Richards",
-      "special_name": null,
-      "health_bonus": -17,
-      "attack_bonus": -15,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": null,
-      "catch_date": "2026-04-14T11:14:56.307063+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
-    {
-      "player_discord_id": 1317288099075850243,
       "ball_player_name": "Brett Lee",
       "special_name": null,
       "health_bonus": -2,
@@ -467,19 +454,6 @@
       "tradeable": true,
       "server_id": null,
       "catch_date": "2026-04-14T11:14:56.315285+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
-    {
-      "player_discord_id": 1317288099075850243,
-      "ball_player_name": "Ms Dhoni",
-      "special_name": null,
-      "health_bonus": 5,
-      "attack_bonus": -11,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": null,
-      "catch_date": "2026-04-14T11:14:56.318253+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -949,6 +923,19 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-14T11:14:56.450564+00:00",
       "spawned_time": "2026-04-12T09:39:26.250000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Viv Richards",
+      "special_name": null,
+      "health_bonus": -17,
+      "attack_bonus": -15,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-14T11:14:56.307063+00:00",
+      "spawned_time": null,
       "extra_data": {}
     },
     {
@@ -3392,6 +3379,19 @@
       "tradeable": true,
       "server_id": 928536817001721906,
       "catch_date": "2026-04-14T11:14:57.107629+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Ms Dhoni",
+      "special_name": null,
+      "health_bonus": 5,
+      "attack_bonus": -11,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-14T11:14:56.318253+00:00",
       "spawned_time": null,
       "extra_data": {}
     }
