@@ -40,5 +40,82 @@
     "bet": true,
     "player": "Mitchell Starc (AUS)",
     "name": "Starc_Aus"
+  },
+  {
+    "id": "1493546405128835194",
+    "list": true,
+    "bet": true,
+    "player": "Rinku Singh",
+    "name": "Rinku_Singh"
+  },
+  {
+    "id": "1493546400569622649",
+    "list": true,
+    "bet": true,
+    "player": "Shivam Dube",
+    "name": "Shivam_ddube"
+  },
+  {
+    "id": "1493546971892289627",
+    "list": true,
+    "bet": true,
+    "player": "Shreyas Iyer",
+    "name": "Shreyas_Iyer"
+  },
+  {
+    "id": "1493546426742083625",
+    "list": true,
+    "bet": true,
+    "player": "Naveen ul Haq",
+    "name": "naveen_ul_haq"
+  },
+  {
+    "id": "1493546423881302086",
+    "list": true,
+    "bet": true,
+    "player": "Kwena Maphaka",
+    "name": "Kwena_mapakha"
+  },
+  {
+    "id": "1493546420958007347",
+    "list": true,
+    "bet": true,
+    "player": "Muhammad Waseem",
+    "name": "muhammad_waseem"
+  },
+  {
+    "id": "1493546418168922153",
+    "list": true,
+    "bet": true,
+    "player": "Naseem Shah",
+    "name": "Naseem_Shah"
+  },
+  {
+    "id": "1493546415681699910",
+    "list": true,
+    "bet": true,
+    "player": "Abdul Samad",
+    "name": "Abdul_samad"
+  },
+  {
+    "id": "1493546412821053530",
+    "list": true,
+    "bet": true,
+    "player": "Roston Chase",
+    "name": "Roston_chase"
+  },
+  {
+    "id": "1493546410405134407",
+    "list": true,
+    "bet": true,
+    "player": "Shubman Gill",
+    "name": "Shubman_gill"
+  },
+  {
+    "id": "1493546407733493891",
+    "list": true,
+    "bet": true,
+    "player": "Kuldeep Yadav",
+    "name": "kuldeep_yadav"
   }
 ]

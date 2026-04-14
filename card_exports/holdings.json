@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-14T09:17:28.147159+00:00",
-  "count": 250,
+  "exported_at": "2026-04-14T10:01:12.587519+00:00",
+  "count": 252,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -3250,6 +3250,32 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-14T09:03:24.271328+00:00",
       "spawned_time": "2026-04-14T09:02:58.007000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Shivam Dube",
+      "special_name": null,
+      "health_bonus": -10,
+      "attack_bonus": -10,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-14T09:32:29.324306+00:00",
+      "spawned_time": "2026-04-14T09:32:05.996000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Tilak Varma",
+      "special_name": null,
+      "health_bonus": 0,
+      "attack_bonus": 9,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-14T09:43:46.677987+00:00",
+      "spawned_time": "2026-04-14T09:43:37.772000+00:00",
       "extra_data": {}
     }
   ]

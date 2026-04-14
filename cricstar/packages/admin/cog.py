@@ -2145,19 +2145,33 @@ class Admin(commands.Cog):
         display = f"<:{name_for_display}:{emoji_id}>" if emoji_id.isdigit() else emoji_id
         player_line = f"\nLinked to player: **{player_name.strip()}**" if player_name.strip() else ""
 
-        registry_lines = "\n".join(
+        all_emojis = list_emojis()
+        registry_lines_all = [
             f"• {format_emoji(e)} `{e['id']}`"
             + (f" [{e['name']}]" if e.get("name") else "")
             + (f" → **{e['player']}**" if e.get("player") else "")
             + f" — list: {'✅' if e.get('list') else '❌'} | bet: {'✅' if e.get('bet') else '❌'}"
-            for e in list_emojis()
-        )
+            for e in all_emojis
+        ]
 
-        await ctx.send(
+        header = (
             f"✅ Emoji {display} (`{emoji_id}`) registered.{player_line}\n"
             f"Also shown in: **{flags_str}**\n\n"
-            f"**Current emoji registry ({len(list_emojis())} total):**\n"
-            + (registry_lines or "*Empty*"),
+            f"**Current emoji registry ({len(all_emojis)} total):**\n"
+        )
+
+        # Build registry text, truncating if it would exceed Discord's 2000 char limit
+        max_body = 1990 - len(header)
+        registry_text = ""
+        for line in registry_lines_all:
+            if len(registry_text) + len(line) + 1 > max_body:
+                remaining = len(registry_lines_all) - registry_lines_all.index(line)
+                registry_text += f"*… and {remaining} more*"
+                break
+            registry_text += line + "\n"
+
+        await ctx.send(
+            header + (registry_text.strip() or "*Empty*"),
             ephemeral=True,
         )
 
