@@ -38,6 +38,9 @@ ADMIN_ROLE_ID = 1476180448446124055
 # Bot owner Discord user ID
 BOT_OWNER_ID = 1317288099075850243
 
+# Private guild where admin slash commands are registered
+ADMIN_GUILD_ID = 1476180448030756928
+
 # used to check during startup that the permissions passed to decorators actually exist
 registered_perms: set[str] = set()
 

@@ -338,6 +338,7 @@ class Admin(commands.Cog):
     @commands.hybrid_group()
     @app_commands.guilds(0)
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @checks.is_staff()
     async def admin(self, ctx: commands.Context):
@@ -583,6 +584,7 @@ class Admin(commands.Cog):
 
     @commands.hybrid_command(name="cardmaker")
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @checks.is_superuser()
     @app_commands.describe(
@@ -863,6 +865,7 @@ class Admin(commands.Cog):
                 
     @commands.hybrid_command(name="editcard")
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @checks.is_superuser()
     @app_commands.describe(
@@ -1274,6 +1277,7 @@ class Admin(commands.Cog):
 
     @commands.hybrid_command(name="setspawnimg")
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @checks.is_superuser()
     @app_commands.describe(
@@ -1476,6 +1480,7 @@ class Admin(commands.Cog):
 
     @commands.hybrid_command(name="removespawnpath")
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @checks.is_superuser()
     @app_commands.describe(
@@ -1569,6 +1574,7 @@ class Admin(commands.Cog):
 
     @commands.hybrid_command(name="createevent")
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @checks.is_superuser()
     @app_commands.describe(
@@ -1721,6 +1727,7 @@ class Admin(commands.Cog):
 
     @commands.hybrid_command(name="evmake")
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @checks.is_superuser()
     @app_commands.describe(
@@ -1784,6 +1791,7 @@ class Admin(commands.Cog):
 
     @commands.hybrid_command(name="evremover")
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @checks.is_superuser()
     @app_commands.describe(
@@ -1821,6 +1829,7 @@ class Admin(commands.Cog):
 
     @commands.hybrid_command(name="removecard")
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @commands.is_owner()
     @app_commands.describe(
@@ -2001,6 +2010,7 @@ class Admin(commands.Cog):
 
     @commands.hybrid_command(name="admincolorset")
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @checks.is_superuser()
     @app_commands.describe(
@@ -2061,6 +2071,7 @@ class Admin(commands.Cog):
 
     @commands.hybrid_command(name="addemoji")
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @checks.is_superuser()
     @app_commands.describe(
@@ -2152,6 +2163,7 @@ class Admin(commands.Cog):
 
     @app_commands.command(name="removeemoji")
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @checks.is_superuser()
     @app_commands.describe(
@@ -2189,6 +2201,7 @@ class Admin(commands.Cog):
 
     @commands.hybrid_command(name="imageadd")
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @checks.is_superuser()
     @app_commands.describe(
@@ -2277,6 +2290,7 @@ class Admin(commands.Cog):
         description="[Owner] Delete a saved background image file.",
     )
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @app_commands.describe(background="Background name to delete, or 'none' to cancel")
     @app_commands.autocomplete(background=_background_autocomplete)
@@ -2328,6 +2342,7 @@ class Admin(commands.Cog):
         description="[Owner] Reset all daily, weekly, and upgrade cooldowns.",
     )
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     async def csresetcooldown(self, interaction: discord.Interaction["CricStarBot"]):
         if not await self.bot.is_owner(interaction.user):
@@ -2358,6 +2373,7 @@ class Admin(commands.Cog):
         description="[Owner] Force-sync all global slash commands.",
     )
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     async def adminsync(self, interaction: discord.Interaction["CricStarBot"]):
         if not await self.bot.is_owner(interaction.user):
@@ -2368,9 +2384,12 @@ class Admin(commands.Cog):
 
         await interaction.response.defer(ephemeral=True)
         try:
-            synced = await self.bot.tree.sync()
+            synced_global = await self.bot.tree.sync()
+            admin_guild = discord.Object(id=checks.ADMIN_GUILD_ID)
+            synced_guild = await self.bot.tree.sync(guild=admin_guild)
             await interaction.followup.send(
-                f"✅ Synced **{len(synced)} global commands** successfully.",
+                f"✅ Synced **{len(synced_global)} global commands** and "
+                f"**{len(synced_guild)} admin guild commands** successfully.",
                 ephemeral=True,
             )
         except Exception as e:
@@ -2410,6 +2429,7 @@ class Admin(commands.Cog):
         description="[Admin] View or bulk-update spawn chance for a badge rarity tier.",
     )
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @app_commands.describe(
         badge_rarity="Badge rarity tier to inspect/edit (e.g. 0.2, 1.0, 5.0). Leave blank for full list.",
@@ -2531,6 +2551,7 @@ class Admin(commands.Cog):
         description="[Admin] View or change one player's spawn chance.",
     )
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @app_commands.describe(
         player_name="Player/card to inspect or update.",
@@ -2653,6 +2674,7 @@ class Admin(commands.Cog):
         description="[Admin] View spawn chance for cards by badge rarity tier.",
     )
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     @app_commands.describe(
         badge_rarity="Badge rarity tier to inspect (e.g. 0.2, 1.0, 5.0). Leave blank for full list.",
@@ -2728,6 +2750,7 @@ class Admin(commands.Cog):
         description="[Owner] Delete all card instances obtained via trade/bet older than 15 days.",
     )
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     async def cscleanup(self, interaction: discord.Interaction["CricStarBot"]):
         if not await self.bot.is_owner(interaction.user):
@@ -2778,6 +2801,7 @@ class Admin(commands.Cog):
         description="[Owner] Select up to 20 cricketers from a menu and spawn them all at once.",
     )
     @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
     @app_commands.check(checks.is_developer)
     async def csmultispawn(self, interaction: discord.Interaction["CricStarBot"]):
         if not await self.bot.is_owner(interaction.user):
