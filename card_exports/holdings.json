@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-14T10:01:12.587519+00:00",
-  "count": 252,
+  "exported_at": "2026-04-14T10:53:13.052706+00:00",
+  "count": 259,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -3276,6 +3276,97 @@
       "server_id": 1371364151728799856,
       "catch_date": "2026-04-14T09:43:46.677987+00:00",
       "spawned_time": "2026-04-14T09:43:37.772000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 946731189128003594,
+      "ball_player_name": "Shreyas Iyer",
+      "special_name": null,
+      "health_bonus": -19,
+      "attack_bonus": 4,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-14T10:45:03.152330+00:00",
+      "spawned_time": "2026-04-14T10:44:54.949000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 765597019493367818,
+      "ball_player_name": "Virat Kohli",
+      "special_name": null,
+      "health_bonus": 7,
+      "attack_bonus": 18,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-14T10:51:11.076128+00:00",
+      "spawned_time": "2026-04-14T10:50:59.298000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 765597019493367818,
+      "ball_player_name": "Naseem Shah",
+      "special_name": null,
+      "health_bonus": -17,
+      "attack_bonus": -7,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-14T10:52:23.591066+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 765597019493367818,
+      "ball_player_name": "Kane Williamson",
+      "special_name": null,
+      "health_bonus": -11,
+      "attack_bonus": 8,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-14T10:52:28.326793+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 728324197285101648,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": 13,
+      "attack_bonus": 9,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-14T10:52:39.176565+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 728324197285101648,
+      "ball_player_name": "Mitchell Starc",
+      "special_name": null,
+      "health_bonus": -11,
+      "attack_bonus": -3,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-14T10:52:46.898050+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1248939782298669193,
+      "ball_player_name": "Joe Root",
+      "special_name": null,
+      "health_bonus": 14,
+      "attack_bonus": -16,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-14T10:53:03.232668+00:00",
+      "spawned_time": null,
       "extra_data": {}
     }
   ]

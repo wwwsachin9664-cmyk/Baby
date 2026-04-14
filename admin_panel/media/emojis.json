@@ -117,5 +117,33 @@
     "bet": true,
     "player": "Kuldeep Yadav",
     "name": "kuldeep_yadav"
+  },
+  {
+    "id": "1493553027724869774",
+    "list": true,
+    "bet": true,
+    "player": "Sherfane Rutherford",
+    "name": "Sherfane_rutherford"
+  },
+  {
+    "id": "1493553024461836379",
+    "list": true,
+    "bet": true,
+    "player": "Tilak Varma",
+    "name": "tilak_varma"
+  },
+  {
+    "id": "1493561783779197068",
+    "list": true,
+    "bet": true,
+    "player": "Ms Dhoni",
+    "name": "Ms_Dhoni"
+  },
+  {
+    "id": "1493561787726041099",
+    "list": true,
+    "bet": true,
+    "player": "Brendon Mccullum",
+    "name": "Brendom_mccullum"
   }
 ]
