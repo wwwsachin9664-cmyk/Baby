@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-14T10:53:13.052706+00:00",
-  "count": 259,
+  "exported_at": "2026-04-14T11:03:13.112856+00:00",
+  "count": 261,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -3366,6 +3366,32 @@
       "tradeable": true,
       "server_id": 928536817001721906,
       "catch_date": "2026-04-14T10:53:03.232668+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "KL Rahul",
+      "special_name": null,
+      "health_bonus": 5,
+      "attack_bonus": -17,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-14T10:53:18.389597+00:00",
+      "spawned_time": "2026-04-14T10:51:55.901000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1248939782298669193,
+      "ball_player_name": "Shivam Dube",
+      "special_name": null,
+      "health_bonus": 10,
+      "attack_bonus": 1,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-14T10:53:21.896983+00:00",
       "spawned_time": null,
       "extra_data": {}
     }
