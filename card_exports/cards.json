@@ -1195,15 +1195,15 @@
     "filename": "premade_sir_aalastair_cook.png",
     "wild_card_filename": "premade_sir_aalastair_cook.png",
     "capacity_logic": {
-      "badge_rarity": 0.5,
       "bg_preset": "icons_9",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
       "credit_font": "optimus",
-      "weekly_chance": 300.0,
+      "badge_rarity": 0.5,
       "daily_chance": 0.01,
-      "display_name": "Cook"
+      "display_name": "Cook",
+      "credit_stroke": true,
+      "weekly_chance": 300.0,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   }
 }

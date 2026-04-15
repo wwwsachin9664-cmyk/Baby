@@ -215,5 +215,12 @@
     "bet": true,
     "player": "Viv Richards",
     "name": "VivRichards"
+  },
+  {
+    "id": "1493869644145233931",
+    "list": true,
+    "bet": true,
+    "player": "Yashasvi Jaiswal (IPL2026)",
+    "name": "Yashasvi_IPL"
   }
 ]

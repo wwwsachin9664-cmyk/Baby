@@ -577,8 +577,12 @@ class BetInstance(LayoutView):
         # Build result header
         self._result_header = (
             f"## CricStar Betting\n"
-            f"The winner is **{winner.user.display_name}**!"
+            f"🏆 **{winner.user.display_name}** wins!"
         )
+
+        # Gather card text before rendering
+        winner_kept_text = await winner.card_list_text(self.cog.bot)
+        loser_lost_text = await loser.card_list_text(self.cog.bot)
 
         # Render final state (no buttons)
         self.clear_items()
@@ -587,11 +591,27 @@ class BetInstance(LayoutView):
         container.add_item(TextDisplay(self._result_header))
         container.add_item(Separator())
 
-        container.add_item(TextDisplay(f"**✅ {winner.user.display_name}**"))
-        container.add_item(TextDisplay(await winner.card_list_text(self.cog.bot)))
+        # Winner section — show their kept cards AND the cards won from the loser
+        container.add_item(TextDisplay(f"**🏆 {winner.user.display_name} (Winner)**"))
+        if loser.proposal:
+            container.add_item(TextDisplay(
+                f"**Cards won from {loser.user.display_name}:**\n{loser_lost_text}"
+            ))
+        if winner.proposal:
+            container.add_item(TextDisplay(
+                f"**Cards kept:**\n{winner_kept_text}"
+            ))
+
         container.add_item(Separator())
-        container.add_item(TextDisplay(f"**✅ {loser.user.display_name}**"))
-        container.add_item(TextDisplay(await loser.card_list_text(self.cog.bot)))
+
+        # Loser section — show what they lost
+        container.add_item(TextDisplay(f"**❌ {loser.user.display_name} (Loser)**"))
+        if loser.proposal:
+            container.add_item(TextDisplay(
+                f"**Lost to {winner.user.display_name}:**\n{loser_lost_text}"
+            ))
+        else:
+            container.add_item(TextDisplay("*No cards were staked.*"))
 
         self.add_item(container)
         if msg:
