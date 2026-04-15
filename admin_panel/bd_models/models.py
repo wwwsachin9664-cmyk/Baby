@@ -301,6 +301,10 @@ class Ball(models.Model):
         help_text="If False, this ball will never spawn randomly (even if enabled). Set via /cardmaker or /editcard.",
         default=True,
     )
+    unobtainable = models.BooleanField(
+        help_text="If True, this card cannot be obtained from random spawn, daily, or weekly rewards.",
+        default=False,
+    )
     economy = models.ForeignKey(
         Economy, on_delete=models.SET_NULL, blank=True, null=True, help_text="Economical regime of this country"
     )

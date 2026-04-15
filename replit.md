@@ -9,6 +9,9 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - Discord workflow: `python run.py`
 - Chance fields use a 0–1000 scale for normal spawn, daily, and weekly values.
 - `spawn_chance` is stored on `Ball.rarity`; `daily_chance` and `weekly_chance` are stored in `Ball.capacity_logic`.
+- `Ball.unobtainable=True` blocks a card from random spawn, `/csdaily`, and `/csweekly`.
+- Cards assigned to a special event with `start_date`/`end_date` are only obtainable while the event window is active.
+- `/csrarity` is public and lists enabled cards sorted by badge rarity from rarest upward, including unobtainable status; `/adminrarity` has been removed.
 - Current rarity defaults: 19.0 = spawn 900/daily 900/weekly 0, 5.0 = spawn 300/daily 600/weekly 100, 1.0 = spawn 150/daily 30/weekly 900, ICONS 0.5/0.2 = spawn 10/daily 0/weekly 0, IPL2026 event cards = spawn 50/daily 10/weekly 20.
 
 ## Stack

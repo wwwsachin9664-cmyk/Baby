@@ -570,6 +570,7 @@ class Admin(commands.Cog):
         logo_url="Logo name (e.g. ICONS) or direct image URL shown on the card",
         event="Assign card to a special event (always spawns with it)",
         tradeable="Whether this card can be traded (default True)",
+        unobtainable="If True, this card cannot be obtained from spawn, daily, or weekly rewards",
         catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
         foreground_border="Whether to draw a white border around the foreground image (default True)",
         credit_stroke="Whether to draw a stroke/outline on the credit and artwork author text (default True)",
@@ -599,6 +600,7 @@ class Admin(commands.Cog):
         logo_url: str = "",
         event: str = "none",
         tradeable: bool = True,
+        unobtainable: bool = False,
         display_name: str = "",
         catch_name: str = "",
         foreground_border: bool = True,
@@ -766,6 +768,7 @@ class Admin(commands.Cog):
                 regime=regime,
                 tradeable=tradeable,
                 spawnable=spawnable,
+                unobtainable=unobtainable,
                 catch_names=catch_name.strip().lower() or None,
             )
 
@@ -805,6 +808,7 @@ class Admin(commands.Cog):
                     artwork_author=artwork_author,
                     tradeable=tradeable,
                     spawnable=spawnable,
+                    unobtainable=unobtainable,
                     catch_name=catch_name.strip().lower() or None,
                     event_id=event_id,
                     event_name=event if event != "none" else "",
@@ -819,7 +823,7 @@ class Admin(commands.Cog):
             try:
                 await ctx.send(
                     f"✅ **{player_name}** card created!{event_text}\n"
-                    f"`{filename}` | Badge Rarity: `{rarity}` | Spawn: `{spawn_chance}/1000` | Weekly: `{weekly_chance}/1000` | Daily: `{daily_chance}/1000` | Tradeable: `{tradeable}` | Spawnable: `{spawnable}`\n"
+                    f"`{filename}` | Badge Rarity: `{rarity}` | Spawn: `{spawn_chance}/1000` | Weekly: `{weekly_chance}/1000` | Daily: `{daily_chance}/1000` | Tradeable: `{tradeable}` | Spawnable: `{spawnable}` | Unobtainable: `{unobtainable}`\n"
                     f"BAT: `{bat_score}` | BALL: `{ball_score}` | Artwork: {artwork_author}\n"
                     f"Foreground saved as preset `{slug}` for future reuse.",
                     file=preview_file,
@@ -850,6 +854,7 @@ class Admin(commands.Cog):
         artwork_author="New artwork author name (leave blank to keep existing)",
         logo_url="Logo name (e.g. ICONS) or URL — leave blank to keep existing",
         tradeable="Change tradeability (leave blank to keep existing)",
+        unobtainable="Change unobtainable status. True blocks spawn, daily, and weekly rewards.",
         catch_name="Name(s) players must type to catch this card. Separate multiples with semicolons (e.g. virat;vk;king)",
         only_spawn_in_event="If True, card only spawns while its event is active. Set False to allow spawning anytime.",
         credit_font="Font for credit lines. Leave blank to keep existing. 'Default (Arial)' or 'Optimus Bold'.",
@@ -879,6 +884,7 @@ class Admin(commands.Cog):
         artwork_author: str = "",
         logo_url: str = "",
         tradeable: bool | None = None,
+        unobtainable: bool | None = None,
         catch_name: str = "",
         only_spawn_in_event: bool | None = None,
         credit_font: str = "",
@@ -1099,6 +1105,9 @@ class Admin(commands.Cog):
         if tradeable is not None:
             ball.tradeable = tradeable
             changed_fields.append("tradeable")
+        if unobtainable is not None:
+            ball.unobtainable = unobtainable
+            changed_fields.append("unobtainable")
         if spawn_chance is not None:
             ball.spawnable = (spawn_chance > 0)
             changed_fields.append("spawnable")
@@ -1175,6 +1184,7 @@ class Admin(commands.Cog):
                 artwork_author=ball.credits or "",
                 tradeable=ball.tradeable,
                 spawnable=ball.spawnable,
+                unobtainable=ball.unobtainable,
                 catch_name=ball.catch_names or None,
                 event_id=_ev_id,
                 event_name=_ev_name,
@@ -1205,6 +1215,8 @@ class Admin(commands.Cog):
             summary_parts.append(f"Author → `{ball.credits}`")
         if tradeable is not None:
             summary_parts.append(f"Tradeable → `{ball.tradeable}`")
+        if unobtainable is not None:
+            summary_parts.append(f"Unobtainable → `{ball.unobtainable}`")
         if weekly_chance is not None:
             weekly_label = f"Weekly chance → `{weekly_chance}/1000`" + (" *(disabled)*" if weekly_chance == 0 else "")
             summary_parts.append(weekly_label)
@@ -2442,7 +2454,7 @@ class Admin(commands.Cog):
                 val = float(raw)
             except (TypeError, ValueError):
                 continue
-            key = f"{val:.1f}"
+            key = self._format_badge_rarity(val)
             if key in seen:
                 continue
             if current and current not in key:
@@ -2454,20 +2466,30 @@ class Admin(commands.Cog):
         choices.sort(key=lambda c: float(c.value))
         return choices
 
+    @staticmethod
+    def _format_badge_rarity(value: float | int | str | None) -> str:
+        if value is None:
+            return "?"
+        try:
+            numeric = float(value)
+        except (TypeError, ValueError):
+            return "?"
+        if numeric.is_integer():
+            return f"{numeric:.1f}"
+        return f"{numeric:g}"
+
     @app_commands.command(
         name="csrarity",
-        description="View the rarity tiers of all cards. Admins can also update spawn chance.",
+        description="View rarity tiers for all cricketer cards.",
     )
     @app_commands.describe(
-        badge_rarity="Rarity tier to inspect (e.g. 1.0, 5.0). Leave blank for full list.",
-        spawn_chance="[Admin] New spawn weight from 0 to 1000 to apply to ALL cards of this rarity.",
+        badge_rarity="Rarity tier to inspect (e.g. 0.2, 1.0). Leave blank for the full list.",
     )
     @app_commands.autocomplete(badge_rarity=_badge_rarity_autocomplete)
     async def csrarity(
         self,
         interaction: discord.Interaction["CricStarBot"],
         badge_rarity: str = "",
-        spawn_chance: float | None = None,
     ):
         await interaction.response.defer(ephemeral=True)
 
@@ -2482,13 +2504,14 @@ class Admin(commands.Cog):
 
         all_balls: list[Ball] = [b async for b in Ball.objects.filter(enabled=True)]
 
-        # ── no badge_rarity given → show summary list sorted rarest first ─────
         if not badge_rarity.strip():
-            all_balls.sort(key=lambda b: (_get_badge(b) or 9999))
+            all_balls.sort(key=lambda b: (_get_badge(b) if _get_badge(b) is not None else 9999, b.country.lower()))
             lines: list[str] = []
             for ball in all_balls:
-                lines.append(f"• {ball.country}")
-            text = "Cards (rarest first):\n" + "\n".join(lines)
+                br = self._format_badge_rarity(_get_badge(ball))
+                suffix = " (Unobtainable)" if getattr(ball, "unobtainable", False) else ""
+                lines.append(f"{br} - {ball.country}{suffix}")
+            text = "\n".join(lines) or "No cards found."
             view = discord.ui.LayoutView()
             text_display = discord.ui.TextDisplay("")
             view.add_item(text_display)
@@ -2501,7 +2524,6 @@ class Admin(commands.Cog):
             await interaction.followup.send(view=view, ephemeral=True)
             return
 
-        # ── parse the requested badge rarity ───────────────────────────────
         try:
             target_br = float(badge_rarity.strip())
         except ValueError:
@@ -2515,66 +2537,16 @@ class Admin(commands.Cog):
 
         if not tier_balls:
             await interaction.followup.send(
-                f"❌ No cards found with badge rarity `{target_br:.1f}`.",
+                f"❌ No cards found with badge rarity `{self._format_badge_rarity(target_br)}`.",
                 ephemeral=True,
             )
             return
 
-        # ── view-only (no spawn_chance given) ──────────────────────────────
-        if spawn_chance is None:
-            lines = [f"Cards with badge rarity **{target_br:.1f}**:\n"]
-            for ball in sorted(tier_balls, key=lambda b: b.country):
-                lines.append(f"• **{ball.country}**")
-            await interaction.followup.send("\n".join(lines), ephemeral=True)
-            return
-
-        # ── bulk update spawn chance (admin only) ──────────────────────────
-        if not await checks.is_developer(interaction):
-            await interaction.followup.send(
-                "❌ Only admins can update spawn chances.", ephemeral=True
-            )
-            return
-
-        if spawn_chance < 0 or spawn_chance > 1000:
-            await interaction.followup.send(
-                "❌ Spawn chance must be between `0` and `1000`.", ephemeral=True
-            )
-            return
-
-        updated_names: list[str] = []
-        for ball in tier_balls:
-            ball.rarity = spawn_chance
-            await ball.asave(update_fields=["rarity"])
-            # keep balls cache in sync
-            from bd_models.models import balls as balls_cache
-            if ball.pk in balls_cache:
-                balls_cache[ball.pk].rarity = spawn_chance
-            updated_names.append(ball.country)
-
-        # also update cards.json for persistence
-        import json as _json
-        from pathlib import Path as _Path
-        _cards_path = _Path("card_exports/cards.json")
-        if _cards_path.exists():
-            try:
-                _records: dict = _json.loads(_cards_path.read_text())
-                changed = False
-                for name, data in _records.items():
-                    if float(data.get("rarity", -1)) == target_br:
-                        data["spawn_chance"] = spawn_chance
-                        changed = True
-                if changed:
-                    _cards_path.write_text(_json.dumps(_records, indent=2, ensure_ascii=False))
-            except Exception as _e:
-                log.warning("csrarity: could not update cards.json: %s", _e)
-
-        names_list = ", ".join(f"**{n}**" for n in sorted(updated_names))
-        await interaction.followup.send(
-            f"✅ Updated **{len(updated_names)} card(s)** with badge rarity `{target_br:.1f}` "
-            f"→ spawn chance set to `{spawn_chance:.4g}/1000`\n\n"
-            f"Cards updated: {names_list}",
-            ephemeral=True,
-        )
+        lines = [f"Cards with rarity {self._format_badge_rarity(target_br)}:\n"]
+        for ball in sorted(tier_balls, key=lambda b: b.country.lower()):
+            status = "true" if getattr(ball, "unobtainable", False) else "false"
+            lines.append(f"{self._format_badge_rarity(target_br)} - {ball.country} | unobtainable: {status}")
+        await interaction.followup.send("```" + "\n".join(lines) + "```", ephemeral=True)
 
     @app_commands.command(
         name="csspawnchance",
@@ -2697,82 +2669,6 @@ class Admin(commands.Cog):
             f"Current random-spawn share: `{current_percent:.2f}%`",
             ephemeral=True,
         )
-
-    # ── /adminrarity ──────────────────────────────────────────────────────────
-    @app_commands.command(
-        name="adminrarity",
-        description="[Admin] View spawn chance for cards by badge rarity tier.",
-    )
-    @app_commands.default_permissions()
-    @app_commands.guilds(checks.ADMIN_GUILD_ID)
-    @app_commands.check(checks.is_developer)
-    @app_commands.describe(
-        badge_rarity="Badge rarity tier to inspect (e.g. 0.2, 1.0, 5.0). Leave blank for full list.",
-    )
-    @app_commands.autocomplete(badge_rarity=_badge_rarity_autocomplete)
-    async def adminrarity(
-        self,
-        interaction: discord.Interaction["CricStarBot"],
-        badge_rarity: str = "",
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        def _get_badge(b: Ball) -> float | None:
-            raw = (b.capacity_logic or {}).get("badge_rarity")
-            if raw is None:
-                return None
-            try:
-                return float(raw)
-            except (TypeError, ValueError):
-                return None
-
-        all_balls: list[Ball] = [b async for b in Ball.objects.filter(enabled=True)]
-
-        if not badge_rarity.strip():
-            all_balls.sort(key=lambda b: (_get_badge(b) or 0))
-            lines: list[str] = []
-            for ball in all_balls:
-                br = _get_badge(ball)
-                br_str = f"{br:g}" if br is not None else "?"
-                lines.append(
-                    f"Rarity {br_str:>5}  |  spawn {ball.rarity:>5.2f}%  |  {ball.country}"
-                )
-            header = f"{'Rarity':>10}  |  {'Spawn%':>7}  |  Card\n" + "─" * 50 + "\n"
-            text = header + "\n".join(lines)
-            view = discord.ui.LayoutView()
-            text_display = discord.ui.TextDisplay("")
-            view.add_item(text_display)
-            menu = Menu(
-                self.bot, view,
-                TextSource(text, prefix="```\n", suffix="```"),
-                TextFormatter(text_display),
-            )
-            await menu.init()
-            await interaction.followup.send(view=view, ephemeral=True)
-            return
-
-        try:
-            target_br = float(badge_rarity.strip())
-        except ValueError:
-            await interaction.followup.send(
-                f"❌ Invalid badge rarity `{badge_rarity}` — enter a number like `0.2` or `5.0`.",
-                ephemeral=True,
-            )
-            return
-
-        tier_balls = [b for b in all_balls if _get_badge(b) == target_br]
-
-        if not tier_balls:
-            await interaction.followup.send(
-                f"❌ No cards found with badge rarity `{target_br:g}`.",
-                ephemeral=True,
-            )
-            return
-
-        lines = [f"Cards with badge rarity **{target_br:g}** — spawn chance:\n"]
-        for ball in sorted(tier_balls, key=lambda b: b.country):
-            lines.append(f"• **{ball.country}** → `{ball.rarity:.4g}%`")
-        await interaction.followup.send("\n".join(lines), ephemeral=True)
 
     # ── /cscleanup ────────────────────────────────────────────────────────────
     @app_commands.command(

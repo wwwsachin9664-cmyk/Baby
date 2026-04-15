@@ -29,7 +29,7 @@ from cricstar.core.commands import Core
 from cricstar.core.dev import Dev
 from cricstar.core.help import HelpCommand
 from cricstar.core.metrics import PrometheusServer
-from cricstar.core.utils.checks import check_perms
+from cricstar.core.utils.checks import ADMIN_GUILD_ID, check_perms
 from bd_models.models import (
     Ball,
     BlacklistedGuild,
@@ -375,6 +375,10 @@ class CricStarBot(commands.AutoShardedBot):
             log.info("Syncing global commands...")
             synced_commands = await self.tree.sync()
             log.info(f"Synced {len(synced_commands)} global commands.")
+            admin_guild = discord.Object(id=ADMIN_GUILD_ID)
+            log.info("Syncing admin guild commands...")
+            synced_admin_commands = await self.tree.sync(guild=admin_guild)
+            log.info(f"Synced {len(synced_admin_commands)} admin guild commands.")
         else:
             log.warning("Skipping command synchronization.")
 

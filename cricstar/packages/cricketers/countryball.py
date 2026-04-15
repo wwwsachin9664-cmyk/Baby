@@ -13,6 +13,7 @@ from django.utils import timezone
 
 from cricstar.core.discord import Modal, View
 from cricstar.core.metrics import caught_balls
+from cricstar.core.utils.availability import is_ball_obtainable
 from cricstar.core.utils.emojis import get_player_emoji
 from cricstar.core.utils.utils import can_mention
 from bd_models.models import Ball, BallInstance, Player, Special, Trade, TradeObject, balls, specials
@@ -183,7 +184,13 @@ class BallSpawnView(View):
         """
         Get a new instance with a random cricketer. Rarity values are taken into account.
         """
-        cricketers = list(filter(lambda m: m.enabled and m.rarity > 0, balls.values()))
+        now = timezone.now()
+        cricketers = list(
+            filter(
+                lambda m: m.enabled and m.spawnable and m.rarity > 0 and is_ball_obtainable(m, specials.get, now),
+                balls.values(),
+            )
+        )
         if not cricketers:
             raise RuntimeError("No ball to spawn")
         rarities = [x.rarity for x in cricketers]

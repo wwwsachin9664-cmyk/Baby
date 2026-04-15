@@ -9,6 +9,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from cricstar.core.utils.availability import is_ball_obtainable
 from bd_models.models import Ball, BallInstance, Player, Special, balls as balls_cache, specials
 from settings.models import settings
 
@@ -68,7 +69,7 @@ def reset_all_cooldowns():
 # ── Card pickers ─────────────────────────────────────────────────────────────
 
 def pick_daily_card() -> Ball | None:
-    eligible = [b for b in balls_cache.values() if b.enabled]
+    eligible = [b for b in balls_cache.values() if b.enabled and is_ball_obtainable(b, specials.get)]
     if not eligible:
         return None
     filtered = [(b, _logic_chance(b, "daily_chance")) for b in eligible]
@@ -80,7 +81,7 @@ def pick_daily_card() -> Ball | None:
 
 
 def pick_weekly_card() -> Ball | None:
-    eligible = [b for b in balls_cache.values() if b.enabled]
+    eligible = [b for b in balls_cache.values() if b.enabled and is_ball_obtainable(b, specials.get)]
     if not eligible:
         return None
     filtered = [(b, _logic_chance(b, "weekly_chance")) for b in eligible]

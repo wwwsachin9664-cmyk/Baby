@@ -81,6 +81,7 @@ def export_card(
     capacity_logic: dict | None = None,
     wild_card_filename: str | None = None,
     event_name: str | None = None,
+    unobtainable: bool = False,
 ) -> None:
     """Called after /cardmaker creates or /editcard modifies a card."""
     _ensure_dirs()
@@ -100,6 +101,7 @@ def export_card(
         "artwork_author": artwork_author,
         "tradeable": tradeable,
         "spawnable": spawnable,
+        "unobtainable": unobtainable,
         "catch_name": catch_name or "",
         "event_id": event_id,
         "event_name": event_name or "",
@@ -329,6 +331,7 @@ def import_all_cards() -> int:
             regime=regime,
             tradeable=data["tradeable"],
             spawnable=data["spawnable"],
+            unobtainable=data.get("unobtainable", False),
             catch_names=data["catch_name"] or None,
         )
         log.info("card_sync: imported card %r", player_name)
