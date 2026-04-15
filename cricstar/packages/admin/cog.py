@@ -441,38 +441,6 @@ class Admin(commands.Cog):
             )
 
     @admin.command()
-    @checks.has_permissions("bd_models.view_ball")
-    async def rarity(self, ctx: commands.Context["CricStarBot"], *, flags: RarityFlags):
-        """
-        Generate a list of cricketers ranked by rarity.
-        """
-        text = ""
-        balls_queryset = Ball.objects.all().order_by("rarity")
-        if not flags.include_disabled:
-            balls_queryset = balls_queryset.filter(rarity__gt=0, enabled=True)
-        sorted_balls = [x async for x in balls_queryset]
-
-        if flags.chunked:
-            indexes: dict[float, list[Ball]] = defaultdict(list)
-            for ball in sorted_balls:
-                indexes[ball.rarity].append(ball)
-            i = 1
-            for chunk in indexes.values():
-                for ball in chunk:
-                    text += f"{i}. {ball.country}\n"
-                i += len(chunk)
-        else:
-            for i, ball in enumerate(sorted_balls, start=1):
-                text += f"{i}. {ball.country}\n"
-
-        view = discord.ui.LayoutView()
-        text_display = discord.ui.TextDisplay("")
-        view.add_item(text_display)
-        menu = Menu(self.bot, view, TextSource(text, prefix="```md\n", suffix="```"), TextFormatter(text_display))
-        await menu.init()
-        await ctx.send(view=view)
-
-    @admin.command()
     @checks.is_superuser()
     async def cooldown(self, ctx: commands.Context["CricStarBot"], guild_id: str | None = None):
         """
@@ -2514,16 +2482,13 @@ class Admin(commands.Cog):
 
         all_balls: list[Ball] = [b async for b in Ball.objects.filter(enabled=True)]
 
-        # ── no badge_rarity given → show summary table ─────────────────────
+        # ── no badge_rarity given → show summary list sorted rarest first ─────
         if not badge_rarity.strip():
-            all_balls.sort(key=lambda b: (_get_badge(b) or 0))
+            all_balls.sort(key=lambda b: (_get_badge(b) or 9999))
             lines: list[str] = []
             for ball in all_balls:
-                br = _get_badge(ball)
-                br_str = f"{br:.1f}" if br is not None else "?"
-                lines.append(f"Rarity {br_str:>5}  |  {ball.country}")
-            header = f"{'Rarity':>10}  |  Card\n" + "─" * 40 + "\n"
-            text = header + "\n".join(lines)
+                lines.append(f"• {ball.country}")
+            text = "Cards (rarest first):\n" + "\n".join(lines)
             view = discord.ui.LayoutView()
             text_display = discord.ui.TextDisplay("")
             view.add_item(text_display)

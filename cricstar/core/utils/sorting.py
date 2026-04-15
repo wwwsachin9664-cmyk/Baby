@@ -46,7 +46,18 @@ def sort_balls[QS: QuerySet[BallInstance]](sort: SortingChoices, queryset: QS) -
             .order_by("-stats", "-id")
         )
     elif sort == SortingChoices.rarity:
-        return queryset.order_by(sort.value, "ball__country", "-id")
+        # Sort by badge_rarity stored in capacity_logic JSON (lower = rarer = first).
+        # Cards without badge_rarity fall to the end (9999 sentinel).
+        return (
+            queryset.select_related("ball")
+            .annotate(
+                cs_rarity_sort=RawSQL(
+                    "CAST(COALESCE(ball.capacity_logic->>'badge_rarity', '9999') AS FLOAT)",
+                    (),
+                )
+            )
+            .order_by("cs_rarity_sort", "ball__country", "-id")
+        )
     else:
         return queryset.order_by(sort.value, "-id")
 
