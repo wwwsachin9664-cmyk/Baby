@@ -306,12 +306,12 @@ class BetInstance(LayoutView):
             container.add_item(Separator())
             container.add_item(
                 TextDisplay(
-                    "-# This message is updated every time you interact with the buttons."
+                    "-# This message is updated every 15 seconds, but you can keep on editing your proposal."
                 )
             )
 
     def _winner_prefix(self, bettor: BettingUser) -> str:
-        return getattr(self, "_winner_user_id", None) == bettor.user.id and "✅ " or "❌ "
+        return "✅ "
 
     def _build_button_row(self) -> ActionRow:
         row = ActionRow()
@@ -334,8 +334,8 @@ class BetInstance(LayoutView):
         else:
             lock = Button(
                 label="Lock proposal",
-                emoji="\N{LOCK}",
-                style=discord.ButtonStyle.primary,
+                emoji="\N{HEAVY CHECK MARK}\N{VARIATION SELECTOR-16}",
+                style=discord.ButtonStyle.success,
             )
             lock.callback = self._lock_callback
             row.add_item(lock)
@@ -574,45 +574,13 @@ class BetInstance(LayoutView):
                 await msg.edit(view=self)
             return
 
-        # Build result header
+        # Set result header — italic sentence, bold-italic winner name (like FootDex style)
         self._result_header = (
             f"## CricStar Betting\n"
-            f"🏆 **{winner.user.display_name}** wins!"
+            f"*The winner is* ***{winner.user.display_name}***"
         )
 
-        # Gather card text before rendering
-        winner_kept_text = await winner.card_list_text(self.cog.bot)
-        loser_lost_text = await loser.card_list_text(self.cog.bot)
-
-        # Render final state (no buttons)
-        self.clear_items()
-        container = Container(accent_colour=discord.Colour.green())
-
-        container.add_item(TextDisplay(self._result_header))
-        container.add_item(Separator())
-
-        # Winner section — show their kept cards AND the cards won from the loser
-        container.add_item(TextDisplay(f"**🏆 {winner.user.display_name} (Winner)**"))
-        if loser.proposal:
-            container.add_item(TextDisplay(
-                f"**Cards won from {loser.user.display_name}:**\n{loser_lost_text}"
-            ))
-        if winner.proposal:
-            container.add_item(TextDisplay(
-                f"**Cards kept:**\n{winner_kept_text}"
-            ))
-
-        container.add_item(Separator())
-
-        # Loser section — show what they lost
-        container.add_item(TextDisplay(f"**❌ {loser.user.display_name} (Loser)**"))
-        if loser.proposal:
-            container.add_item(TextDisplay(
-                f"**Lost to {winner.user.display_name}:**\n{loser_lost_text}"
-            ))
-        else:
-            container.add_item(TextDisplay("*No cards were staked.*"))
-
-        self.add_item(container)
+        # Re-render the full view using the standard pipeline (buttons are hidden since _resolved=True)
+        await self._build_view()
         if msg:
             await msg.edit(view=self)
