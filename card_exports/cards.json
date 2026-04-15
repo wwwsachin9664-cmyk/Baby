@@ -1145,5 +1145,65 @@
       "display_name": "Starc (F)",
       "forced_special": 6
     }
+  },
+  "Avesh Khan": {
+    "player_name": "Avesh Khan",
+    "card_name": "Avesh",
+    "slug": "avesh_khan",
+    "codename": "Indore Express",
+    "description": "Indian international fast bowler known for his high arm action consistent 140 to 145 kmh pace and aggressive hit the deck bowling style",
+    "bat_score": 38,
+    "ball_score": 80,
+    "rarity": 17.0,
+    "spawn_chance": 700.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "avesh khan",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_avesh_khan.png",
+    "wild_card_filename": "spawn_avesh_khan.jpg",
+    "capacity_logic": {
+      "badge_rarity": 17.0,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 0.0,
+      "daily_chance": 700.0,
+      "display_name": "Avesh"
+    }
+  },
+  "Sir Aalastair Cook": {
+    "player_name": "Sir Aalastair Cook",
+    "card_name": "Cook",
+    "slug": "sir_aalastair_cook",
+    "codename": "Cooky",
+    "description": "Alastair Cook is a legendary left handed opening batter defined by his unwavering focus and classical technique A monumental figure in Test cricket he remains Englands most prolific run scorer and greatest endurance athlete",
+    "bat_score": 93,
+    "ball_score": 0,
+    "rarity": 0.5,
+    "spawn_chance": 50.0,
+    "artwork_author": "Marco",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "alastair cook",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_sir_aalastair_cook.png",
+    "wild_card_filename": "premade_sir_aalastair_cook.png",
+    "capacity_logic": {
+      "badge_rarity": 0.5,
+      "bg_preset": "icons_9",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 300.0,
+      "daily_chance": 0.01,
+      "display_name": "Cook"
+    }
   }
 }

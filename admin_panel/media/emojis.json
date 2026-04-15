@@ -112,13 +112,6 @@
     "name": "kuldeep_yadav"
   },
   {
-    "id": "1493553027724869774",
-    "list": true,
-    "bet": true,
-    "player": "Sherfane Rutherford",
-    "name": "Sherfane_rutherford"
-  },
-  {
     "id": "1493553024461836379",
     "list": true,
     "bet": true,
@@ -147,13 +140,6 @@
     "name": "Brian_Lara"
   },
   {
-    "id": "1493561790397681765",
-    "list": true,
-    "bet": true,
-    "player": "Viv Richards",
-    "name": "Viv_richards"
-  },
-  {
     "id": "1493561796458450954",
     "list": true,
     "bet": true,
@@ -180,5 +166,47 @@
     "bet": true,
     "player": "Pat Cummins",
     "name": "PatCummins"
+  },
+  {
+    "id": "1493850439429394523",
+    "list": true,
+    "bet": true,
+    "player": "Avesh Khan",
+    "name": "AveshKhan"
+  },
+  {
+    "id": "1493851681094500412",
+    "list": true,
+    "bet": true,
+    "player": "Sanju Samson",
+    "name": "SanjuSamson"
+  },
+  {
+    "id": "1493853602165297202",
+    "list": true,
+    "bet": true,
+    "player": "KL Rahul",
+    "name": "KlRahul"
+  },
+  {
+    "id": "1493853605726523393",
+    "list": true,
+    "bet": true,
+    "player": "Surya Kumar Yadav",
+    "name": "SuryaKumar"
+  },
+  {
+    "id": "1493854757066899577",
+    "list": true,
+    "bet": true,
+    "player": "Sherfane Rutherford",
+    "name": "SherfaneRutherFord"
+  },
+  {
+    "id": "1493859136650350732",
+    "list": true,
+    "bet": true,
+    "player": "Sachin Tendulkar",
+    "name": "SRT_ICON"
   }
 ]
