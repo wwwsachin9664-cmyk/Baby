@@ -9,5 +9,16 @@
     "credits": "",
     "start_date": "2026-04-11T00:00:00+00:00",
     "end_date": "2026-05-31T00:00:00+00:00"
+  },
+  "FlashBack": {
+    "name": "FlashBack",
+    "catch_phrase": "*You caught an **FlashBack** card!*",
+    "rarity": 0.0,
+    "emoji": "",
+    "tradeable": true,
+    "hidden": false,
+    "credits": "",
+    "start_date": null,
+    "end_date": null
   }
 }

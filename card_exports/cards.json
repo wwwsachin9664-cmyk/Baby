@@ -41,13 +41,13 @@
     "filename": "premade_brendon_mccullum.png",
     "wild_card_filename": "spawn_brendon_mccullum.jpg",
     "capacity_logic": {
-      "bg_preset": "Icon_10",
+      "bg_preset": "icons_9",
       "credit_font": "optimus",
       "badge_rarity": 0.5,
       "daily_chance": 0.0,
+      "display_name": "Mccullum",
       "weekly_chance": 0.0,
-      "forced_special": 4,
-      "display_name": "Mccullum"
+      "forced_special": 4
     }
   },
   "Naveen ul Haq": {
@@ -230,7 +230,7 @@
     "filename": "premade_ms_dhoni.png",
     "wild_card_filename": "spawn_ms_dhoni.jpg",
     "capacity_logic": {
-      "bg_preset": "Icon_10",
+      "bg_preset": "icons_9",
       "credit_font": "optimus",
       "badge_rarity": 0.2,
       "daily_chance": 0.0,
@@ -399,7 +399,7 @@
     "filename": "premade_viv_richards.png",
     "wild_card_filename": "spawn_viv_richards.jpg",
     "capacity_logic": {
-      "bg_preset": "Icon_10",
+      "bg_preset": "icons_9",
       "credit_font": "optimus",
       "badge_rarity": 0.2,
       "daily_chance": 0.0,
@@ -679,7 +679,7 @@
     "filename": "premade_ab_de_villiers.png",
     "wild_card_filename": "spawn_ab_de_villiers.jpg",
     "capacity_logic": {
-      "bg_preset": "Icon_10",
+      "bg_preset": "icons_9",
       "credit_font": "optimus",
       "badge_rarity": 0.3,
       "daily_chance": 0.0,
@@ -710,7 +710,7 @@
     "filename": "premade_brian_lara.png",
     "wild_card_filename": "spawn_brian_lara.jpg",
     "capacity_logic": {
-      "bg_preset": "Icon_10",
+      "bg_preset": "icons_9",
       "credit_font": "optimus",
       "badge_rarity": 0.2,
       "daily_chance": 0.0,
@@ -1084,22 +1084,53 @@
       "display_name": "Starc"
     }
   },
+  "Sanju Samson (IPL2026)": {
+    "player_name": "Sanju Samson (IPL2026)",
+    "card_name": "Sanju",
+    "slug": "sanju_samson_ipl2026",
+    "codename": "Chetta",
+    "description": "Sanju Samson is pure class in IPL a stylish stroke maker and fearless captain who turns games with elegant hitting calm mindset and explosive finishing making him one of the most exciting players to watch every season",
+    "bat_score": 89,
+    "ball_score": 0,
+    "rarity": 1.0,
+    "spawn_chance": 9.0,
+    "artwork_author": "Marco",
+    "tradeable": true,
+    "spawnable": true,
+    "catch_name": "sanju samson",
+    "event_id": 3,
+    "event_name": "IPL2026",
+    "filename": "premade_sanju_samson_ipl2026.png",
+    "wild_card_filename": "premade_sanju_samson_ipl2026.png",
+    "capacity_logic": {
+      "badge_rarity": 1.0,
+      "bg_preset": "IPL2026",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": true,
+      "credit_font": "default",
+      "weekly_chance": 9.0,
+      "daily_chance": 0.0,
+      "display_name": "Sanju",
+      "forced_special": 3
+    }
+  },
   "Mitchell Starc (AUS)": {
     "player_name": "Mitchell Starc (AUS)",
-    "card_name": "Starc",
+    "card_name": "Starc (F)",
     "slug": "mitchell_starc_aus",
     "codename": "Float",
     "description": "Mitchell Starc is a premier Australian leftarm fast bowler known for his searing pace sharp swing and lethal yorkers A cornerstone of Australias attack across all formats",
     "bat_score": 40,
-    "ball_score": 90,
+    "ball_score": 96,
     "rarity": 0.4,
     "spawn_chance": 3.0,
     "artwork_author": "Sachin",
     "tradeable": true,
     "spawnable": true,
     "catch_name": "mitchell starc",
-    "event_id": null,
-    "event_name": "",
+    "event_id": 6,
+    "event_name": "FlashBack",
     "filename": "premade_mitchell_starc_aus.png",
     "wild_card_filename": "spawn_mitchell_starc_aus.jpg",
     "capacity_logic": {
@@ -1111,7 +1142,8 @@
       "credit_font": "optimus",
       "weekly_chance": 3.0,
       "daily_chance": 0.0,
-      "display_name": "Starc"
+      "display_name": "Starc (F)",
+      "forced_special": 6
     }
   }
 }
