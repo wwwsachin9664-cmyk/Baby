@@ -948,25 +948,35 @@ class Admin(commands.Cog):
         is_premade = wild_card_name.startswith("premade_")
         regen = bool(background.strip() or foreground.strip()) or (is_premade and _visual_fields_changing)
 
+        logic = dict(ball.capacity_logic or {})
+
         # Use the stored background preset from when the card was created (via cardmaker),
         # so changing only codename/text never accidentally swaps the background.
-        _stored_bg = (ball.capacity_logic or {}).get("bg_preset", "custom_bg") or "custom_bg"
+        _stored_bg = logic.get("bg_preset", "custom_bg") or "custom_bg"
         bg_source = background.strip() or _stored_bg
         fg_source = foreground.strip() or slug
 
         # Retrieve stored foreground_border / credit_stroke / credit_font so they are preserved on regen
-        _stored_fg_border = (ball.capacity_logic or {}).get("foreground_border", True)
-        _stored_credit_stroke = (ball.capacity_logic or {}).get("credit_stroke", True)
-        _stored_credit_font = (ball.capacity_logic or {}).get("credit_font", "default")
+        _stored_fg_border = logic.get("foreground_border", True)
+        _stored_credit_stroke = logic.get("credit_stroke", True)
+        _stored_credit_font = logic.get("credit_font", "default")
 
-        filename = f"premade_{slug}.png"
+        existing_collection_name = ball.collection_card.name if ball.collection_card else ""
+        existing_wild_name = ball.wild_card.name if ball.wild_card else ""
+        filename = existing_collection_name or f"premade_{slug}.png"
+        output_filename = filename if filename.startswith("premade_") else f"premade_{slug}.png"
         changed_fields: list[str] = []
 
-        def _fetch_image(name_or_url: str, dest: str, max_bytes: int = 10 * 1024 * 1024) -> bool:
+        def _fetch_image(
+            name_or_url: str,
+            dest: str,
+            search_dirs: tuple[Path, ...],
+            max_bytes: int = 10 * 1024 * 1024,
+        ) -> bool:
             import shutil
             name_or_url = name_or_url.strip()
             if not name_or_url.startswith(("http://", "https://")):
-                for search_dir in (backgrounds_dir, foregrounds_dir):
+                for search_dir in search_dirs:
                     for ext in (".jpg", ".jpeg", ".png", ".webp", ""):
                         candidate = search_dir / f"{name_or_url}{ext}"
                         if candidate.exists():
@@ -1007,8 +1017,8 @@ class Admin(commands.Cog):
                     bg_ok, fg_ok = await self.bot.loop.run_in_executor(
                         pool,
                         lambda: (
-                            _fetch_image(bg_source, bg_path),
-                            _fetch_image(fg_source, fg_path),
+                            _fetch_image(bg_source, bg_path, (backgrounds_dir,)),
+                            _fetch_image(fg_source, fg_path, (foregrounds_dir,)),
                         ),
                     )
 
@@ -1027,16 +1037,16 @@ class Admin(commands.Cog):
                     )
                     return
 
-                # Save/update foreground preset for this player
-                fg_preset = foregrounds_dir / slug
-                import shutil as _shutil
-                _shutil.copy2(fg_path, str(fg_preset))
+                if foreground.strip():
+                    fg_preset = foregrounds_dir / slug
+                    import shutil as _shutil
+                    _shutil.copy2(fg_path, str(fg_preset))
 
                 # Resolve display values (use new value or fall back to existing DB value)
-                _card_name = display_name.strip() or (ball.capacity_logic or {}).get("display_name") or ball.country
+                _card_name = display_name.strip() or logic.get("display_name") or ball.country
                 _codename = codename.strip() or ball.capacity_name or ""
                 _description = description.strip() or ball.capacity_description or ""
-                _rarity = rarity if rarity is not None else (ball.capacity_logic or {}).get("badge_rarity", ball.rarity)
+                _rarity = rarity if rarity is not None else logic.get("badge_rarity", ball.rarity)
                 _bat = bat_score if bat_score is not None else ball.health
                 _ball = ball_score if ball_score is not None else ball.attack
                 _author = artwork_author.strip() or ball.credits or ""
@@ -1064,16 +1074,17 @@ class Admin(commands.Cog):
                 with ThreadPoolExecutor() as pool:
                     image, img_kwargs = await self.bot.loop.run_in_executor(pool, _generate)
 
-                card_path = media_dir / filename
+                card_path = media_dir / output_filename
                 image.save(str(card_path), **img_kwargs)
                 image.close()
 
-                ball.collection_card = filename
+                ball.collection_card = output_filename
                 changed_fields.append("collection_card")
 
         # --- Apply text / stat field changes ---
         if display_name.strip():
-            ball.capacity_logic = {**(ball.capacity_logic or {}), "display_name": display_name.strip()}
+            logic["display_name"] = display_name.strip()
+            ball.capacity_logic = logic
             if "capacity_logic" not in changed_fields:
                 changed_fields.append("capacity_logic")
         if codename.strip():
@@ -1092,11 +1103,13 @@ class Admin(commands.Cog):
             ball.rarity = spawn_chance
             changed_fields.append("rarity")
         if rarity is not None:
-            ball.capacity_logic = {**ball.capacity_logic, "badge_rarity": rarity}
+            logic["badge_rarity"] = rarity
+            ball.capacity_logic = logic
             if "capacity_logic" not in changed_fields:
                 changed_fields.append("capacity_logic")
         if background.strip():
-            ball.capacity_logic = {**(ball.capacity_logic or {}), "bg_preset": background.strip()}
+            logic["bg_preset"] = background.strip()
+            ball.capacity_logic = logic
             if "capacity_logic" not in changed_fields:
                 changed_fields.append("capacity_logic")
         if artwork_author.strip():
@@ -1115,19 +1128,23 @@ class Admin(commands.Cog):
             ball.catch_names = catch_name.strip().lower()
             changed_fields.append("catch_names")
         if only_spawn_in_event is not None:
-            ball.capacity_logic = {**(ball.capacity_logic or {}), "only_spawn_in_event": only_spawn_in_event}
+            logic["only_spawn_in_event"] = only_spawn_in_event
+            ball.capacity_logic = logic
             if "capacity_logic" not in changed_fields:
                 changed_fields.append("capacity_logic")
         if credit_font:
-            ball.capacity_logic = {**(ball.capacity_logic or {}), "credit_font": credit_font}
+            logic["credit_font"] = credit_font
+            ball.capacity_logic = logic
             if "capacity_logic" not in changed_fields:
                 changed_fields.append("capacity_logic")
         if weekly_chance is not None:
-            ball.capacity_logic = {**(ball.capacity_logic or {}), "weekly_chance": weekly_chance}
+            logic["weekly_chance"] = weekly_chance
+            ball.capacity_logic = logic
             if "capacity_logic" not in changed_fields:
                 changed_fields.append("capacity_logic")
         if daily_chance is not None:
-            ball.capacity_logic = {**(ball.capacity_logic or {}), "daily_chance": daily_chance}
+            logic["daily_chance"] = daily_chance
+            ball.capacity_logic = logic
             if "capacity_logic" not in changed_fields:
                 changed_fields.append("capacity_logic")
 
@@ -1145,7 +1162,8 @@ class Admin(commands.Cog):
             else:
                 try:
                     special = await Special.objects.aget(name=event.strip())
-                    ball.capacity_logic = {**(ball.capacity_logic or {}), "forced_special": special.id}
+                    logic["forced_special"] = special.id
+                    ball.capacity_logic = logic
                     if "capacity_logic" not in changed_fields:
                         changed_fields.append("capacity_logic")
                     specials_cache[special.id] = special
@@ -1188,8 +1206,8 @@ class Admin(commands.Cog):
                 catch_name=ball.catch_names or None,
                 event_id=_ev_id,
                 event_name=_ev_name,
-                filename=filename,
-                wild_card_filename=str(ball.wild_card) if ball.wild_card else filename,
+                filename=ball.collection_card.name if ball.collection_card else output_filename,
+                wild_card_filename=existing_wild_name or (ball.wild_card.name if ball.wild_card else output_filename),
                 capacity_logic=ball.capacity_logic,
             )
         except Exception as _export_err:
@@ -1213,6 +1231,20 @@ class Admin(commands.Cog):
             summary_parts.append(spawn_label)
         if artwork_author.strip():
             summary_parts.append(f"Author → `{ball.credits}`")
+        if background.strip():
+            summary_parts.append(f"Background → `{background.strip()}`")
+        if foreground.strip():
+            summary_parts.append(f"Foreground → `{foreground.strip()}`")
+        if rarity is not None:
+            summary_parts.append(f"Badge rarity → `{rarity}`")
+        if credit_font:
+            summary_parts.append(f"Credit font → `{credit_font}`")
+        if logo_url.strip():
+            summary_parts.append("Logo updated on regenerated image")
+        if catch_name.strip():
+            summary_parts.append("Catch name updated")
+        if only_spawn_in_event is not None:
+            summary_parts.append(f"Only spawn in event → `{only_spawn_in_event}`")
         if tradeable is not None:
             summary_parts.append(f"Tradeable → `{ball.tradeable}`")
         if unobtainable is not None:
@@ -1227,10 +1259,10 @@ class Admin(commands.Cog):
             summary_parts.append(event_summary)
 
         summary = " | ".join(summary_parts)
-        card_path = media_dir / filename
+        card_path = media_dir / output_filename
 
         if regen and card_path.exists():
-            preview_file = discord.File(str(card_path), filename=filename)
+            preview_file = discord.File(str(card_path), filename=output_filename)
             try:
                 await ctx.send(
                     f"✅ **{player_name}** updated!\n{summary}",

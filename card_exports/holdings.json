@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-15T14:25:42.238650+00:00",
-  "count": 326,
+  "exported_at": "2026-04-15T16:22:47.616487+00:00",
+  "count": 334,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -4238,6 +4238,110 @@
       "server_id": 1331925375420465162,
       "catch_date": "2026-04-15T13:32:22.727129+00:00",
       "spawned_time": "2026-04-15T13:07:16.749000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Vaibhav Sooryawanshi (IPL2026)",
+      "special_name": null,
+      "health_bonus": -7,
+      "attack_bonus": -10,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-15T15:02:34.737120+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Vaibhav Sooryawanshi (IPL2026)",
+      "special_name": "IPL2026",
+      "health_bonus": 19,
+      "attack_bonus": -16,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-15T15:45:23.324047+00:00",
+      "spawned_time": "2026-04-15T15:43:09.390000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Virat Kohli",
+      "special_name": null,
+      "health_bonus": -9,
+      "attack_bonus": -14,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-15T15:51:36.891766+00:00",
+      "spawned_time": "2026-04-15T15:48:45.229000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Yashasvi Jaiswal (IPL2026)",
+      "special_name": "IPL2026",
+      "health_bonus": -4,
+      "attack_bonus": -14,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-15T16:01:03.554806+00:00",
+      "spawned_time": "2026-04-15T15:59:12.066000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1170728448432553994,
+      "ball_player_name": "Josh Hazlewood (IPL2026)",
+      "special_name": "IPL2026",
+      "health_bonus": 8,
+      "attack_bonus": 3,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-15T16:13:53.519124+00:00",
+      "spawned_time": "2026-04-15T16:13:38.039000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1170728448432553994,
+      "ball_player_name": "Suryakumar Yadav (IPL2026)",
+      "special_name": "IPL2026",
+      "health_bonus": 5,
+      "attack_bonus": 9,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-15T16:15:16.157365+00:00",
+      "spawned_time": "2026-04-15T16:14:49.750000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Virat Kohli (IPL2026)",
+      "special_name": null,
+      "health_bonus": 4,
+      "attack_bonus": -15,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-15T16:17:58.070498+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1006928896484196362,
+      "ball_player_name": "Tilak Varma",
+      "special_name": null,
+      "health_bonus": 2,
+      "attack_bonus": -18,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-15T16:19:58.761740+00:00",
+      "spawned_time": "2026-04-15T16:19:39.420000+00:00",
       "extra_data": {}
     }
   ]
