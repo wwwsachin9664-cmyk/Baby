@@ -651,7 +651,7 @@
     "filename": "premade_sachin_tendulkar.png",
     "wild_card_filename": "spawn_sachin_tendulkar.jpg",
     "capacity_logic": {
-      "bg_preset": "Icon_10",
+      "bg_preset": "icons_9",
       "credit_font": "optimus",
       "badge_rarity": 0.1,
       "credit_stroke": true,

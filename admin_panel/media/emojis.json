@@ -208,5 +208,12 @@
     "bet": true,
     "player": "Sachin Tendulkar",
     "name": "SRT_ICON"
+  },
+  {
+    "id": "1493859199225171998",
+    "list": true,
+    "bet": true,
+    "player": "Viv Richards",
+    "name": "VivRichards"
   }
 ]

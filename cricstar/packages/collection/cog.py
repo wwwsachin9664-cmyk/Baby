@@ -271,14 +271,35 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
         }
 
         # Set of ball IDs owned by the player
-        filters = {"player__discord_id": user_obj.id, "ball__enabled": True}
+        filters: dict = {"player__discord_id": user_obj.id, "ball__enabled": True}
         if special:
-            filters["special"] = special
-            bot_cricketers = {
-                x: (y.emoji_id, y.country)
-                for x, y in balls.items()
-                if y.enabled and (special.end_date is None or y.created_at is None or y.created_at < special.end_date)
+            # Only include balls that force this specific special event
+            event_ball_ids = {
+                x for x, y in balls.items()
+                if y.enabled and (y.capacity_logic or {}).get("forced_special") == special.id
             }
+            if event_ball_ids:
+                # Show only event-specific balls; owned is matched by ball ID (not by
+                # BallInstance.special) so cards caught when the special cache was cold still count.
+                bot_cricketers = {
+                    x: (y.emoji_id, y.country)
+                    for x, y in balls.items()
+                    if x in event_ball_ids
+                }
+                filters["ball_id__in"] = list(event_ball_ids)
+            else:
+                # Fallback for events with no forced-special cards: use date-based scope
+                # and match on the BallInstance special field.
+                bot_cricketers = {
+                    x: (y.emoji_id, y.country)
+                    for x, y in balls.items()
+                    if y.enabled and (
+                        special.end_date is None
+                        or y.created_at is None
+                        or y.created_at < special.end_date
+                    )
+                }
+                filters["special"] = special
 
         if filter:
             query = filter_balls(filter, BallInstance.objects.filter(**filters), interaction.guild_id)
@@ -298,8 +319,8 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
         owned_cricketers = set(
             [
                 x[0]
-                async for x in query.filter(**filters)
-                .distinct()  # Do not query everything
+                async for x in query
+                .distinct()
                 .values_list("ball_id")
             ]
         )
@@ -333,7 +354,7 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
                     found_any = True
                 else:
                     # Fall back to the ball's uploaded Discord emoji
-                    emoji = self.bot.get_emoji(emoji_id) if emoji_id else None
+                    emoji = self.bot.get_emoji(emoji_id) if emoji_id and emoji_id > 0 else None
                     if emoji:
                         text += f"{emoji} "
                         found_any = True

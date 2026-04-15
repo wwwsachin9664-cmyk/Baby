@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-15T06:25:07.663617+00:00",
-  "count": 281,
+  "exported_at": "2026-04-15T06:45:06.935576+00:00",
+  "count": 286,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -1095,6 +1095,19 @@
       "extra_data": {}
     },
     {
+      "player_discord_id": 1170728448432553994,
+      "ball_player_name": "Joe Root",
+      "special_name": null,
+      "health_bonus": -2,
+      "attack_bonus": 3,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-15T06:29:15.860390+00:00",
+      "spawned_time": "2026-04-15T06:27:41.502000+00:00",
+      "extra_data": {}
+    },
+    {
       "player_discord_id": 1387054957152174191,
       "ball_player_name": "Shivam Dube",
       "special_name": null,
@@ -1407,6 +1420,19 @@
       "extra_data": {}
     },
     {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "AB de Villiers",
+      "special_name": null,
+      "health_bonus": 16,
+      "attack_bonus": 20,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-15T06:32:52.742402+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
       "player_discord_id": 1387054957152174191,
       "ball_player_name": "Muhammad Waseem",
       "special_name": null,
@@ -1443,6 +1469,19 @@
       "server_id": 928536817001721906,
       "catch_date": "2026-04-14T13:12:11.922655+00:00",
       "spawned_time": "2026-04-13T13:05:49.502000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "AB de Villiers",
+      "special_name": null,
+      "health_bonus": -13,
+      "attack_bonus": -11,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-15T06:34:33.750466+00:00",
+      "spawned_time": null,
       "extra_data": {}
     },
     {
@@ -1534,6 +1573,32 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-14T13:12:11.949213+00:00",
       "spawned_time": "2026-04-13T14:25:08.396000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Yashasvi Jaiswal (IPL2026)",
+      "special_name": null,
+      "health_bonus": 0,
+      "attack_bonus": 9,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-15T06:36:05.687669+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Naveen ul Haq",
+      "special_name": null,
+      "health_bonus": -11,
+      "attack_bonus": -1,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-15T06:41:12.764621+00:00",
+      "spawned_time": "2026-04-15T06:41:02.912000+00:00",
       "extra_data": {}
     },
     {
