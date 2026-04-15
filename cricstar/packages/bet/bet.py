@@ -82,11 +82,17 @@ class BettingUser:
         return BallInstance.objects.filter(id__in=self.proposal)
 
     async def card_list_text(self, bot: CricStarBot) -> str:
+        from cricstar.core.utils.emojis import get_player_emoji
         if not self.proposal:
             return "*Empty*"
         lines = []
-        async for ball in self.get_queryset().prefetch_related("special"):
-            lines.append(f"• {ball.description(include_emoji=True, bot=bot, is_trade=True)}")
+        async for ball in self.get_queryset().select_related("ball").prefetch_related("special"):
+            desc = ball.description(include_emoji=True, bot=bot, is_trade=True)
+            # Use emojis.json lookup (all cards have emoji_id=0, so only this source works)
+            emoji_str = get_player_emoji(ball.ball.country)
+            if emoji_str:
+                desc = f"{emoji_str}{desc}"
+            lines.append(f"• {desc}")
         return "\n".join(lines) if lines else "*Empty*"
 
     # ── API ──────────────────────────────────────────────────────
