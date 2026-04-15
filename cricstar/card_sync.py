@@ -5,6 +5,7 @@ Exports and imports:
   - Cards (Ball model)        → card_exports/cards.json + images + foregrounds + spawns
   - Special events (Special)  → card_exports/events.json
   - User holdings (BallInstance + Player) → card_exports/holdings.json
+  - Guild configs (GuildConfig)           → card_exports/guild_configs.json
 
 Everything in card_exports/ is committed to the repo, so the full bot state
 survives Replit remixes / forks with zero manual work.
@@ -25,9 +26,10 @@ EXPORTS_DIR   = BASE_DIR / "card_exports"
 IMAGES_DIR    = EXPORTS_DIR / "images"
 SPAWNS_DIR    = EXPORTS_DIR / "spawns"
 FOREGROUNDS_DIR = EXPORTS_DIR / "foregrounds"
-CARDS_JSON    = EXPORTS_DIR / "cards.json"
-EVENTS_JSON   = EXPORTS_DIR / "events.json"
-HOLDINGS_JSON = EXPORTS_DIR / "holdings.json"
+CARDS_JSON        = EXPORTS_DIR / "cards.json"
+EVENTS_JSON       = EXPORTS_DIR / "events.json"
+HOLDINGS_JSON     = EXPORTS_DIR / "holdings.json"
+GUILD_CONFIGS_JSON = EXPORTS_DIR / "guild_configs.json"
 MEDIA_DIR     = BASE_DIR / "admin_panel" / "media"
 
 
@@ -539,4 +541,104 @@ def import_all_holdings() -> int:
         imported += 1
 
     log.info("card_sync: imported %d holding(s) from holdings.json", imported)
+    return imported
+
+
+# ---------------------------------------------------------------------------
+# Guild Configs (GuildConfig)
+# ---------------------------------------------------------------------------
+
+def export_guild_config(guild_id: int, spawn_channel: int | None, enabled: bool) -> None:
+    """
+    Save a single server's spawn config to card_exports/guild_configs.json.
+    Called whenever a server sets or changes its spawn channel.
+    """
+    EXPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    records: dict = {}
+    if GUILD_CONFIGS_JSON.exists():
+        try:
+            records = json.loads(GUILD_CONFIGS_JSON.read_text())
+        except Exception:
+            records = {}
+
+    records[str(guild_id)] = {
+        "guild_id": guild_id,
+        "spawn_channel": spawn_channel,
+        "enabled": enabled,
+    }
+    GUILD_CONFIGS_JSON.write_text(json.dumps(records, indent=2, ensure_ascii=False))
+    log.info("card_sync: saved guild config for guild_id=%s", guild_id)
+
+
+def export_all_guild_configs() -> int:
+    """
+    Export every GuildConfig row to card_exports/guild_configs.json.
+    Called at startup so the file is always up to date.
+    Returns the number of configs exported.
+    """
+    import django
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "admin_panel.settings.cricstar")
+    try:
+        django.setup()
+    except RuntimeError:
+        pass
+
+    from bd_models.models import GuildConfig
+
+    records: dict = {}
+    for cfg in GuildConfig.objects.all():
+        records[str(cfg.guild_id)] = {
+            "guild_id": cfg.guild_id,
+            "spawn_channel": cfg.spawn_channel,
+            "enabled": cfg.enabled,
+        }
+
+    EXPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    GUILD_CONFIGS_JSON.write_text(json.dumps(records, indent=2, ensure_ascii=False))
+    log.info("card_sync: exported %d guild config(s) to guild_configs.json", len(records))
+    return len(records)
+
+
+def import_all_guild_configs() -> int:
+    """
+    Restore guild configs from card_exports/guild_configs.json.
+    Only creates missing rows — never overwrites existing ones so live changes are preserved.
+    Returns the number of configs imported.
+    """
+    if not GUILD_CONFIGS_JSON.exists():
+        return 0
+
+    try:
+        records = json.loads(GUILD_CONFIGS_JSON.read_text())
+    except Exception:
+        return 0
+
+    if not records:
+        return 0
+
+    import django
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "admin_panel.settings.cricstar")
+    try:
+        django.setup()
+    except RuntimeError:
+        pass
+
+    from bd_models.models import GuildConfig
+
+    imported = 0
+    for key, data in records.items():
+        guild_id = data.get("guild_id")
+        if not guild_id:
+            continue
+        _, created = GuildConfig.objects.get_or_create(
+            guild_id=guild_id,
+            defaults={
+                "spawn_channel": data.get("spawn_channel"),
+                "enabled": data.get("enabled", False),
+            },
+        )
+        if created:
+            log.info("card_sync: restored guild config for guild_id=%s", guild_id)
+            imported += 1
+
     return imported

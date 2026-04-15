@@ -137,6 +137,31 @@ result = subprocess.run([sys.executable, "-c", holdings_export_script], env=env,
 if result.returncode != 0:
     print("Holdings export step failed (non-critical, continuing).")
 
+# Step 7b: Restore guild configs so servers don't need to re-configure after a remix
+print("Restoring server configurations from card_exports/guild_configs.json...")
+guild_config_import_script = _PYTHON_HEADER + """
+from cricstar.card_sync import import_all_guild_configs
+count = import_all_guild_configs()
+if count:
+    print(f"Restored {count} server configuration(s) from guild_configs.json.")
+else:
+    print("No new server configurations to restore (already up to date).")
+"""
+result = subprocess.run([sys.executable, "-c", guild_config_import_script], env=env, cwd=BASE_DIR)
+if result.returncode != 0:
+    print("Guild config restore step failed (non-critical, continuing).")
+
+# Step 7c: Export current guild configs to keep the file up to date
+print("Exporting current server configurations to card_exports/guild_configs.json...")
+guild_config_export_script = _PYTHON_HEADER + """
+from cricstar.card_sync import export_all_guild_configs
+count = export_all_guild_configs()
+print(f"Exported {count} server configuration(s) to guild_configs.json.")
+"""
+result = subprocess.run([sys.executable, "-c", guild_config_export_script], env=env, cwd=BASE_DIR)
+if result.returncode != 0:
+    print("Guild config export step failed (non-critical, continuing).")
+
 # Step 8: Start the bot
 print("=" * 50)
 print("Starting CricStar bot...")

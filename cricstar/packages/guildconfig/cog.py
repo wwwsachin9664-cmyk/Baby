@@ -84,6 +84,14 @@ class Config(commands.GroupCog):
 
         guild = interaction.guild
         assert guild
+
+        if (guild.member_count or 0) < 50:
+            await interaction.response.send_message(
+                f"Your server must have at least **50 members** to configure {settings.bot_name}.",
+                ephemeral=True,
+            )
+            return
+
         if guild.unavailable:
             await interaction.response.send_message(
                 "The server is unavailable to the bot and will not work properly. "

@@ -159,5 +159,26 @@
     "bet": true,
     "player": "AB de Villiers",
     "name": "Abd_Icons"
+  },
+  {
+    "id": "1493820180722352199",
+    "list": true,
+    "bet": true,
+    "player": "Travis Head",
+    "name": "TravisHead"
+  },
+  {
+    "id": "1493820184614670336",
+    "list": true,
+    "bet": true,
+    "player": "Jasprit Bumrah",
+    "name": "JaspritBumrah"
+  },
+  {
+    "id": "1493820170374877275",
+    "list": true,
+    "bet": true,
+    "player": "Pat Cummins",
+    "name": "PatCummins"
   }
 ]

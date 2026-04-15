@@ -6,6 +6,7 @@ from discord.ui import Button, button
 from cricstar.core.discord import View
 from bd_models.models import GuildConfig
 from settings.models import settings
+from cricstar.card_sync import export_guild_config
 
 if TYPE_CHECKING:
     from cricstar.core.bot import CricStarBot
@@ -43,6 +44,10 @@ class AcceptTOSView(View):
         config.enabled = True
         await config.asave()
         interaction.client.dispatch("cricstar_settings_change", interaction.guild, channel=self.channel, enabled=True)
+        try:
+            export_guild_config(interaction.guild_id, self.channel.id, True)
+        except Exception:
+            pass
         self.stop()
         if self.message:
             button.disabled = True

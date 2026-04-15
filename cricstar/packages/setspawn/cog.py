@@ -8,6 +8,7 @@ from discord.ext import commands
 from bd_models.models import GuildConfig
 from settings.models import settings
 from cricstar.core.utils.checks import is_developer
+from cricstar.card_sync import export_guild_config
 
 if TYPE_CHECKING:
     from cricstar.core.bot import CricStarBot
@@ -63,6 +64,10 @@ class SetSpawn(commands.GroupCog, group_name="setspawn"):
         config.enabled = True
         await config.asave()
         self.bot.dispatch("cricstar_settings_change", guild, channel=target_channel, enabled=True)
+        try:
+            export_guild_config(guild.id, target_channel.id, True)
+        except Exception:
+            pass
 
         await interaction.response.send_message(
             f"Spawn channel set to {target_channel.mention}. Cricketers will start spawning here!",
@@ -97,6 +102,10 @@ class SetSpawn(commands.GroupCog, group_name="setspawn"):
         config.spawn_channel = None  # type: ignore
         config.enabled = False
         await config.asave()
+        try:
+            export_guild_config(guild.id, None, False)
+        except Exception:
+            pass
 
         await interaction.response.send_message(
             "Spawn channel removed. Spawning is now disabled in this server.",
