@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-16T06:21:33.121879+00:00",
-  "count": 348,
+  "exported_at": "2026-04-16T07:24:52.647826+00:00",
+  "count": 349,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -679,19 +679,6 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1274638398853742605,
-      "ball_player_name": "Mitchell Starc (F)",
-      "special_name": null,
-      "health_bonus": -3,
-      "attack_bonus": 0,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": null,
-      "catch_date": "2026-04-16T04:32:31.713310+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
-    {
       "player_discord_id": 537914557645979651,
       "ball_player_name": "Kane Williamson",
       "special_name": null,
@@ -1325,19 +1312,6 @@
       "tradeable": true,
       "server_id": 928536817001721906,
       "catch_date": "2026-04-16T04:32:31.904267+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
-    {
-      "player_discord_id": 820893612489179136,
-      "ball_player_name": "Mitchell Starc (F)",
-      "special_name": null,
-      "health_bonus": 15,
-      "attack_bonus": 19,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": null,
-      "catch_date": "2026-04-16T04:32:31.907649+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3175,19 +3149,6 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1170728448432553994,
-      "ball_player_name": "Mitchell Starc (F)",
-      "special_name": "FlashBack",
-      "health_bonus": 11,
-      "attack_bonus": 6,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 1476180448030756928,
-      "catch_date": "2026-04-16T04:32:32.463233+00:00",
-      "spawned_time": "2026-04-14T16:31:09.214000+00:00",
-      "extra_data": {}
-    },
-    {
       "player_discord_id": 1476265074749345872,
       "ball_player_name": "Virat Kohli (IPL2026)",
       "special_name": "IPL2026",
@@ -4501,29 +4462,81 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1317288099075850243,
-      "ball_player_name": "Mitchell Starc (F)",
+      "player_discord_id": 675084969596420099,
+      "ball_player_name": "Shivam Dube",
       "special_name": null,
-      "health_bonus": 13,
-      "attack_bonus": 10,
+      "health_bonus": 12,
+      "attack_bonus": -7,
       "favorite": false,
       "tradeable": true,
-      "server_id": null,
-      "catch_date": "2026-04-16T06:20:09.947851+00:00",
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-16T06:31:52.938687+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 675084969596420099,
+      "ball_player_name": "Rohit Sharma",
+      "special_name": null,
+      "health_bonus": -2,
+      "attack_bonus": -5,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-16T06:32:28.831804+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 675084969596420099,
+      "ball_player_name": "KL Rahul",
+      "special_name": null,
+      "health_bonus": 19,
+      "attack_bonus": 11,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-16T06:48:15.494302+00:00",
+      "spawned_time": "2026-04-16T06:47:39.917000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Roston Chase",
+      "special_name": null,
+      "health_bonus": 0,
+      "attack_bonus": 13,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-16T06:48:48.846952+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
     {
       "player_discord_id": 1317288099075850243,
-      "ball_player_name": "Mitchell Starc (F)",
+      "ball_player_name": "Shubman Gill",
       "special_name": null,
-      "health_bonus": -2,
+      "health_bonus": -10,
       "attack_bonus": 6,
       "favorite": false,
       "tradeable": true,
-      "server_id": null,
-      "catch_date": "2026-04-16T06:20:20.703807+00:00",
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-16T06:49:17.907546+00:00",
       "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1006928896484196362,
+      "ball_player_name": "Mitchell Starc",
+      "special_name": null,
+      "health_bonus": -7,
+      "attack_bonus": -20,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-16T07:05:57.493098+00:00",
+      "spawned_time": "2026-04-16T07:05:44.573000+00:00",
       "extra_data": {}
     }
   ]

@@ -1119,37 +1119,6 @@
       "forced_special": 3
     }
   },
-  "Mitchell Starc (F)": {
-    "player_name": "Mitchell Starc (F)",
-    "card_name": "Starc (F)",
-    "slug": "mitchell_starc_aus",
-    "codename": "Float",
-    "description": "Mitchell Starc is a premier Australian leftarm fast bowler known for his searing pace sharp swing and lethal yorkers A cornerstone of Australias attack across all formats",
-    "bat_score": 40,
-    "ball_score": 96,
-    "rarity": 0.4,
-    "spawn_chance": 3.0,
-    "artwork_author": "Sachin",
-    "tradeable": true,
-    "spawnable": true,
-    "catch_name": "mitchell starc",
-    "event_id": 6,
-    "event_name": "FlashBack",
-    "filename": "premade_mitchell_starc_aus.png",
-    "wild_card_filename": "spawn_mitchell_starc_aus.jpg",
-    "capacity_logic": {
-      "badge_rarity": 0.4,
-      "bg_preset": "Australia",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
-      "credit_font": "optimus",
-      "weekly_chance": 3.0,
-      "daily_chance": 0.0,
-      "display_name": "Starc (F)",
-      "forced_special": 6
-    }
-  },
   "Avesh Khan": {
     "player_name": "Avesh Khan",
     "card_name": "Avesh",
@@ -1336,6 +1305,37 @@
       "daily_chance": 0.0,
       "display_name": "Smith (F)",
       "forced_special": 5
+    }
+  },
+  "Mitchell Starc (F)": {
+    "player_name": "Mitchell Starc (F)",
+    "card_name": "Starc (F)",
+    "slug": "mitchell_starc_f",
+    "codename": "Float",
+    "description": "Mitchell Starc is a premier Australian leftarm fast bowler known for his searing pace sharp swing and lethal yorkers A cornerstone of Australias attack across all formats",
+    "bat_score": 40,
+    "ball_score": 96,
+    "rarity": 0.4,
+    "spawn_chance": 3.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": false,
+    "catch_name": "mitchell starc",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_mitchell_starc_f.png",
+    "wild_card_filename": "spawn_mitchell_starc_f.jpg",
+    "capacity_logic": {
+      "badge_rarity": 0.4,
+      "bg_preset": "Australia",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 3.0,
+      "daily_chance": 0.0,
+      "display_name": "Starc (F)"
     }
   }
 }
