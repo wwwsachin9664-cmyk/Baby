@@ -13,6 +13,8 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - Cards assigned to a special event with `start_date`/`end_date` are only obtainable while the event window is active.
 - `/csrarity` is public and lists enabled cards sorted by badge rarity from rarest upward, including unobtainable status; `/adminrarity` has been removed.
 - Current rarity defaults: 19.0 = spawn 900/daily 900/weekly 0, 5.0 = spawn 300/daily 600/weekly 100, 1.0 = spawn 150/daily 30/weekly 900, ICONS 0.5/0.2 = spawn 10/daily 0/weekly 0, IPL2026 event cards = spawn 50/daily 10/weekly 20.
+- Server spawn configuration is mirrored to `card_exports/guild_configs.json`; `/config disable`, `/config enable`, `/setspawn remove`, `/setspawn enable`, and `/setspawn disable` update this file so settings survive remix/restores.
+- CricStar uses a per-server in-process spawn lock to prevent overlapping message events from creating duplicate spawns in the same running bot process. If every server receives duplicate spawns at the same time, another Replit/remix is likely also running with the same Discord bot token.
 
 ## Stack
 

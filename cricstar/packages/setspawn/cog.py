@@ -102,6 +102,7 @@ class SetSpawn(commands.GroupCog, group_name="setspawn"):
         config.spawn_channel = None  # type: ignore
         config.enabled = False
         await config.asave()
+        self.bot.dispatch("cricstar_settings_change", guild, enabled=False)
         try:
             export_guild_config(guild.id, None, False)
         except Exception:
@@ -155,6 +156,13 @@ class SetSpawn(commands.GroupCog, group_name="setspawn"):
 
         config.enabled = True
         await config.asave()
+        target_guild = self.bot.get_guild(target_guild_id) if target_guild_id else None
+        if target_guild:
+            self.bot.dispatch("cricstar_settings_change", target_guild, enabled=True)
+        try:
+            export_guild_config(target_guild_id, config.spawn_channel, True)
+        except Exception:
+            pass
         await interaction.response.send_message(
             f"Spawning **enabled** for **{guild_name}**.", ephemeral=True
         )
@@ -195,6 +203,13 @@ class SetSpawn(commands.GroupCog, group_name="setspawn"):
         config, _ = await GuildConfig.objects.aget_or_create(guild_id=target_guild_id)
         config.enabled = False
         await config.asave()
+        target_guild = self.bot.get_guild(target_guild_id) if target_guild_id else None
+        if target_guild:
+            self.bot.dispatch("cricstar_settings_change", target_guild, enabled=False)
+        try:
+            export_guild_config(target_guild_id, config.spawn_channel, False)
+        except Exception:
+            pass
         await interaction.response.send_message(
             f"Spawning **disabled** for **{guild_name}**.", ephemeral=True
         )

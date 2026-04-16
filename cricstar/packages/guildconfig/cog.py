@@ -6,6 +6,7 @@ from discord.ext import commands
 
 from bd_models.models import GuildConfig
 from settings.models import settings
+from cricstar.card_sync import export_guild_config
 from cricstar.core.utils.checks import BOT_OWNER_ID
 
 from .components import AcceptTOSView
@@ -127,6 +128,7 @@ class Config(commands.GroupCog):
         if config.enabled:
             config.enabled = False  # type: ignore
             await config.asave()
+            export_guild_config(guild.id, config.spawn_channel, False)
             self.bot.dispatch("cricstar_settings_change", guild, enabled=False)
             await interaction.response.send_message(
                 f"{settings.bot_name} is now disabled in this server. Commands will still be "
@@ -136,6 +138,7 @@ class Config(commands.GroupCog):
         else:
             config.enabled = True  # type: ignore
             await config.asave()
+            export_guild_config(guild.id, config.spawn_channel, True)
             self.bot.dispatch("cricstar_settings_change", guild, enabled=True)
             if config.spawn_channel and (channel := guild.get_channel(config.spawn_channel)):
                 if channel:

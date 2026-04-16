@@ -1,3 +1,4 @@
+import asyncio
 import importlib
 import logging
 from typing import TYPE_CHECKING, cast
@@ -23,6 +24,7 @@ class CountryBallsSpawner(commands.Cog):
     def __init__(self, bot: "CricStarBot"):
         self.bot = bot
         self.cache: dict[int, int] = {}
+        self._spawn_locks: dict[int, asyncio.Lock] = {}
         self.cricketer_cls = BallSpawnView
 
         module_path, class_name = settings.spawn_manager.rsplit(".", 1)
@@ -54,23 +56,28 @@ class CountryBallsSpawner(commands.Cog):
         if guild.id in self.bot.blacklist_guild:
             return
 
-        result = await self.spawn_manager.handle_message(message)
-        if result is False:
+        lock = self._spawn_locks.setdefault(guild.id, asyncio.Lock())
+        if lock.locked():
             return
 
-        if isinstance(result, tuple):
-            result, algo = result
-        else:
-            algo = settings.spawn_manager
+        async with lock:
+            result = await self.spawn_manager.handle_message(message)
+            if result is False:
+                return
 
-        channel = guild.get_channel(self.cache[guild.id])
-        if not channel:
-            log.warning(f"Lost channel {self.cache[guild.id]} for guild {guild.name}.")
-            del self.cache[guild.id]
-            return
-        ball = await BallSpawnView.get_random(self.bot)
-        ball.algo = algo
-        await ball.spawn(cast(discord.TextChannel, channel))
+            if isinstance(result, tuple):
+                result, algo = result
+            else:
+                algo = settings.spawn_manager
+
+            channel = guild.get_channel(self.cache[guild.id])
+            if not channel:
+                log.warning(f"Lost channel {self.cache[guild.id]} for guild {guild.name}.")
+                del self.cache[guild.id]
+                return
+            ball = await BallSpawnView.get_random(self.bot)
+            ball.algo = algo
+            await ball.spawn(cast(discord.TextChannel, channel))
 
     @commands.Cog.listener()
     async def on_cricstar_settings_change(
