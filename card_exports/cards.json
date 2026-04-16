@@ -1119,8 +1119,8 @@
       "forced_special": 3
     }
   },
-  "Mitchell Starc (AUS)": {
-    "player_name": "Mitchell Starc (AUS)",
+  "Mitchell Starc (F)": {
+    "player_name": "Mitchell Starc (F)",
     "card_name": "Starc (F)",
     "slug": "mitchell_starc_aus",
     "codename": "Float",
@@ -1304,6 +1304,38 @@
       "daily_chance": 0.0,
       "display_name": "Suryakumar",
       "forced_special": 3
+    }
+  },
+  "Steve Smith (F)": {
+    "player_name": "Steve Smith (F)",
+    "card_name": "Smith (F)",
+    "slug": "steve_smith_f",
+    "codename": "Smitty",
+    "description": "Steven Peter Devereux Smith is a premier Australian Test batsman Renowned for his unique high scoring technique achieving top ICC Test rankings and over 10000 Test runs",
+    "bat_score": 95,
+    "ball_score": 0,
+    "rarity": 0.3,
+    "spawn_chance": 4.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": false,
+    "catch_name": "steve smith",
+    "event_id": 5,
+    "event_name": "FlashBack",
+    "filename": "premade_steve_smith_f.png",
+    "wild_card_filename": "premade_steve_smith_f.png",
+    "capacity_logic": {
+      "badge_rarity": 0.3,
+      "bg_preset": "Australia",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 2.0,
+      "daily_chance": 0.0,
+      "display_name": "Smith (F)",
+      "forced_special": 5
     }
   }
 }
