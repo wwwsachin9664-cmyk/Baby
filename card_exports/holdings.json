@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-16T05:51:33.121372+00:00",
-  "count": 345,
+  "exported_at": "2026-04-16T06:21:33.121879+00:00",
+  "count": 348,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -4484,6 +4484,45 @@
       "tradeable": true,
       "server_id": null,
       "catch_date": "2026-04-16T04:32:32.846607+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Steve Smith (F)",
+      "special_name": null,
+      "health_bonus": 17,
+      "attack_bonus": 2,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-16T05:52:34.457860+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Mitchell Starc (F)",
+      "special_name": null,
+      "health_bonus": 13,
+      "attack_bonus": 10,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-16T06:20:09.947851+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Mitchell Starc (F)",
+      "special_name": null,
+      "health_bonus": -2,
+      "attack_bonus": 6,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-16T06:20:20.703807+00:00",
       "spawned_time": null,
       "extra_data": {}
     }
