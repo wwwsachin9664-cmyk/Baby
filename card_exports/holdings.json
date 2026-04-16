@@ -1,5 +1,5 @@
 {
-  "exported_at": "2026-04-16T02:38:45.477985+00:00",
+  "exported_at": "2026-04-16T03:13:32.547596+00:00",
   "count": 345,
   "holdings": [
     {
@@ -11,7 +11,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.835339+00:00",
+      "catch_date": "2026-04-16T03:13:17.934537+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -24,7 +24,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.842494+00:00",
+      "catch_date": "2026-04-16T03:13:17.943123+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -37,7 +37,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:20.851321+00:00",
+      "catch_date": "2026-04-16T03:13:17.949800+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -50,7 +50,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:20.855956+00:00",
+      "catch_date": "2026-04-16T03:13:17.952967+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -63,7 +63,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.863924+00:00",
+      "catch_date": "2026-04-16T03:13:17.959317+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -76,7 +76,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.868845+00:00",
+      "catch_date": "2026-04-16T03:13:17.962529+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -89,7 +89,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.872745+00:00",
+      "catch_date": "2026-04-16T03:13:17.965732+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -102,7 +102,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.880963+00:00",
+      "catch_date": "2026-04-16T03:13:17.971475+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -115,7 +115,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.885163+00:00",
+      "catch_date": "2026-04-16T03:13:17.974286+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -128,7 +128,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.892340+00:00",
+      "catch_date": "2026-04-16T03:13:17.980037+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -141,7 +141,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:20.896994+00:00",
+      "catch_date": "2026-04-16T03:13:17.983253+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -154,7 +154,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.904020+00:00",
+      "catch_date": "2026-04-16T03:13:17.989506+00:00",
       "spawned_time": "2026-04-15T05:31:20.653000+00:00",
       "extra_data": {}
     },
@@ -167,7 +167,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.912063+00:00",
+      "catch_date": "2026-04-16T03:13:17.995067+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -180,7 +180,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:20.920199+00:00",
+      "catch_date": "2026-04-16T03:13:18.000893+00:00",
       "spawned_time": "2026-04-11T18:13:41.237000+00:00",
       "extra_data": {}
     },
@@ -193,7 +193,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:20.929451+00:00",
+      "catch_date": "2026-04-16T03:13:18.006427+00:00",
       "spawned_time": "2026-04-11T18:33:32.930000+00:00",
       "extra_data": {}
     },
@@ -206,7 +206,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:20.934542+00:00",
+      "catch_date": "2026-04-16T03:13:18.009495+00:00",
       "spawned_time": "2026-04-11T18:48:44.915000+00:00",
       "extra_data": {}
     },
@@ -219,7 +219,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:20.942101+00:00",
+      "catch_date": "2026-04-16T03:13:18.015270+00:00",
       "spawned_time": "2026-04-11T19:32:58.597000+00:00",
       "extra_data": {}
     },
@@ -232,7 +232,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:20.951197+00:00",
+      "catch_date": "2026-04-16T03:13:18.021169+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -245,7 +245,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:20.958198+00:00",
+      "catch_date": "2026-04-16T03:13:18.027388+00:00",
       "spawned_time": "2026-04-11T20:22:05.362000+00:00",
       "extra_data": {}
     },
@@ -258,7 +258,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:20.962121+00:00",
+      "catch_date": "2026-04-16T03:13:18.030598+00:00",
       "spawned_time": "2026-04-12T01:57:31.282000+00:00",
       "extra_data": {}
     },
@@ -271,7 +271,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:20.967710+00:00",
+      "catch_date": "2026-04-16T03:13:18.033645+00:00",
       "spawned_time": "2026-04-12T02:12:16.405000+00:00",
       "extra_data": {}
     },
@@ -284,7 +284,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:20.975567+00:00",
+      "catch_date": "2026-04-16T03:13:18.039247+00:00",
       "spawned_time": "2026-04-12T03:08:50.332000+00:00",
       "extra_data": {}
     },
@@ -297,7 +297,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:20.980219+00:00",
+      "catch_date": "2026-04-16T03:13:18.043135+00:00",
       "spawned_time": "2026-04-12T03:51:37.218000+00:00",
       "extra_data": {}
     },
@@ -310,7 +310,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.984451+00:00",
+      "catch_date": "2026-04-16T03:13:18.045760+00:00",
       "spawned_time": "2026-04-12T04:20:26.555000+00:00",
       "extra_data": {}
     },
@@ -323,7 +323,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.993196+00:00",
+      "catch_date": "2026-04-16T03:13:18.051255+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -336,7 +336,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:20.997853+00:00",
+      "catch_date": "2026-04-16T03:13:18.054544+00:00",
       "spawned_time": "2026-04-15T05:41:22.865000+00:00",
       "extra_data": {}
     },
@@ -349,7 +349,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1331925375420465162,
-      "catch_date": "2026-04-15T13:32:21.006889+00:00",
+      "catch_date": "2026-04-16T03:13:18.060520+00:00",
       "spawned_time": "2026-04-15T05:46:56.499000+00:00",
       "extra_data": {}
     },
@@ -362,7 +362,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.011880+00:00",
+      "catch_date": "2026-04-16T03:13:18.064085+00:00",
       "spawned_time": "2026-04-12T07:56:16.810000+00:00",
       "extra_data": {}
     },
@@ -375,7 +375,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.020046+00:00",
+      "catch_date": "2026-04-16T03:13:18.069976+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -388,7 +388,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.030225+00:00",
+      "catch_date": "2026-04-16T03:13:18.073249+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -401,7 +401,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1350536318777819207,
-      "catch_date": "2026-04-15T13:32:21.039058+00:00",
+      "catch_date": "2026-04-16T03:13:18.078694+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -414,7 +414,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1350536318777819207,
-      "catch_date": "2026-04-15T13:32:21.043624+00:00",
+      "catch_date": "2026-04-16T03:13:18.081593+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -427,7 +427,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1350536318777819207,
-      "catch_date": "2026-04-15T13:32:21.052054+00:00",
+      "catch_date": "2026-04-16T03:13:18.087026+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -440,7 +440,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1350536318777819207,
-      "catch_date": "2026-04-15T13:32:21.056939+00:00",
+      "catch_date": "2026-04-16T03:13:18.090984+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -453,7 +453,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1350536318777819207,
-      "catch_date": "2026-04-15T13:32:21.064722+00:00",
+      "catch_date": "2026-04-16T03:13:18.096455+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -466,7 +466,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1350536318777819207,
-      "catch_date": "2026-04-15T13:32:21.068566+00:00",
+      "catch_date": "2026-04-16T03:13:18.099369+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -479,7 +479,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.073682+00:00",
+      "catch_date": "2026-04-16T03:13:18.102576+00:00",
       "spawned_time": "2026-04-12T08:37:07.691000+00:00",
       "extra_data": {}
     },
@@ -492,7 +492,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.078310+00:00",
+      "catch_date": "2026-04-16T03:13:18.106324+00:00",
       "spawned_time": "2026-04-12T08:37:10.482000+00:00",
       "extra_data": {}
     },
@@ -505,7 +505,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.083446+00:00",
+      "catch_date": "2026-04-16T03:13:18.108969+00:00",
       "spawned_time": "2026-04-15T05:51:23.344000+00:00",
       "extra_data": {}
     },
@@ -518,7 +518,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.088813+00:00",
+      "catch_date": "2026-04-16T03:13:18.112384+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -531,7 +531,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.094069+00:00",
+      "catch_date": "2026-04-16T03:13:18.115837+00:00",
       "spawned_time": "2026-04-12T08:40:16.450000+00:00",
       "extra_data": {}
     },
@@ -544,7 +544,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.098824+00:00",
+      "catch_date": "2026-04-16T03:13:18.118964+00:00",
       "spawned_time": "2026-04-12T08:40:09.898000+00:00",
       "extra_data": {}
     },
@@ -557,7 +557,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.107904+00:00",
+      "catch_date": "2026-04-16T03:13:18.125742+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -570,7 +570,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.117018+00:00",
+      "catch_date": "2026-04-16T03:13:18.132007+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -583,7 +583,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.121358+00:00",
+      "catch_date": "2026-04-16T03:13:18.135177+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -596,7 +596,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.125506+00:00",
+      "catch_date": "2026-04-16T03:13:18.138308+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -609,7 +609,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.130828+00:00",
+      "catch_date": "2026-04-16T03:13:18.142248+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -622,7 +622,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.135772+00:00",
+      "catch_date": "2026-04-16T03:13:18.145843+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -635,7 +635,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.139808+00:00",
+      "catch_date": "2026-04-16T03:13:18.148806+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -648,7 +648,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.145821+00:00",
+      "catch_date": "2026-04-16T03:13:18.152354+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -661,7 +661,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.152325+00:00",
+      "catch_date": "2026-04-16T03:13:18.155219+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -674,7 +674,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.156959+00:00",
+      "catch_date": "2026-04-16T03:13:18.157974+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -687,7 +687,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.163890+00:00",
+      "catch_date": "2026-04-16T03:13:18.163242+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -700,7 +700,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.167941+00:00",
+      "catch_date": "2026-04-16T03:13:18.166416+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -713,7 +713,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.172218+00:00",
+      "catch_date": "2026-04-16T03:13:18.169337+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -726,7 +726,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.176651+00:00",
+      "catch_date": "2026-04-16T03:13:18.172103+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -739,7 +739,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.182285+00:00",
+      "catch_date": "2026-04-16T03:13:18.174989+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -752,7 +752,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.187147+00:00",
+      "catch_date": "2026-04-16T03:13:18.178191+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -765,7 +765,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.190911+00:00",
+      "catch_date": "2026-04-16T03:13:18.180915+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -778,7 +778,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.195735+00:00",
+      "catch_date": "2026-04-16T03:13:18.183930+00:00",
       "spawned_time": "2026-04-12T10:40:51.471000+00:00",
       "extra_data": {}
     },
@@ -791,7 +791,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.199404+00:00",
+      "catch_date": "2026-04-16T03:13:18.187938+00:00",
       "spawned_time": "2026-04-15T06:04:44.144000+00:00",
       "extra_data": {}
     },
@@ -804,7 +804,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.208015+00:00",
+      "catch_date": "2026-04-16T03:13:18.193687+00:00",
       "spawned_time": "2026-04-12T13:07:17.181000+00:00",
       "extra_data": {}
     },
@@ -817,7 +817,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.211995+00:00",
+      "catch_date": "2026-04-16T03:13:18.196891+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -830,7 +830,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.220788+00:00",
+      "catch_date": "2026-04-16T03:13:18.202846+00:00",
       "spawned_time": "2026-04-12T14:39:48.745000+00:00",
       "extra_data": {}
     },
@@ -843,7 +843,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.224960+00:00",
+      "catch_date": "2026-04-16T03:13:18.205921+00:00",
       "spawned_time": "2026-04-12T14:39:49.735000+00:00",
       "extra_data": {}
     },
@@ -856,7 +856,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.233165+00:00",
+      "catch_date": "2026-04-16T03:13:18.211529+00:00",
       "spawned_time": "2026-04-12T14:39:51.979000+00:00",
       "extra_data": {}
     },
@@ -869,7 +869,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.238035+00:00",
+      "catch_date": "2026-04-16T03:13:18.214629+00:00",
       "spawned_time": "2026-04-12T14:39:53.130000+00:00",
       "extra_data": {}
     },
@@ -882,7 +882,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.242454+00:00",
+      "catch_date": "2026-04-16T03:13:18.217626+00:00",
       "spawned_time": "2026-04-12T14:40:01.438000+00:00",
       "extra_data": {}
     },
@@ -895,7 +895,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.247075+00:00",
+      "catch_date": "2026-04-16T03:13:18.220762+00:00",
       "spawned_time": "2026-04-12T14:40:03.627000+00:00",
       "extra_data": {}
     },
@@ -908,7 +908,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.254600+00:00",
+      "catch_date": "2026-04-16T03:13:18.223848+00:00",
       "spawned_time": "2026-04-12T14:40:00.765000+00:00",
       "extra_data": {}
     },
@@ -921,7 +921,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.260193+00:00",
+      "catch_date": "2026-04-16T03:13:18.227114+00:00",
       "spawned_time": "2026-04-12T14:41:26.757000+00:00",
       "extra_data": {}
     },
@@ -934,7 +934,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.265392+00:00",
+      "catch_date": "2026-04-16T03:13:18.238776+00:00",
       "spawned_time": "2026-04-12T14:41:23.809000+00:00",
       "extra_data": {}
     },
@@ -947,7 +947,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.283492+00:00",
+      "catch_date": "2026-04-16T03:13:18.244635+00:00",
       "spawned_time": "2026-04-12T14:41:31.981000+00:00",
       "extra_data": {}
     },
@@ -960,7 +960,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.288736+00:00",
+      "catch_date": "2026-04-16T03:13:18.247886+00:00",
       "spawned_time": "2026-04-12T14:41:29.319000+00:00",
       "extra_data": {}
     },
@@ -973,7 +973,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.293506+00:00",
+      "catch_date": "2026-04-16T03:13:18.250310+00:00",
       "spawned_time": "2026-04-12T14:41:24.683000+00:00",
       "extra_data": {}
     },
@@ -986,7 +986,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.297874+00:00",
+      "catch_date": "2026-04-16T03:13:18.253485+00:00",
       "spawned_time": "2026-04-12T14:41:30.135000+00:00",
       "extra_data": {}
     },
@@ -999,7 +999,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.303125+00:00",
+      "catch_date": "2026-04-16T03:13:18.256463+00:00",
       "spawned_time": "2026-04-12T14:43:33.545000+00:00",
       "extra_data": {}
     },
@@ -1012,7 +1012,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.314522+00:00",
+      "catch_date": "2026-04-16T03:13:18.261948+00:00",
       "spawned_time": "2026-04-12T14:43:32.693000+00:00",
       "extra_data": {}
     },
@@ -1025,7 +1025,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.322489+00:00",
+      "catch_date": "2026-04-16T03:13:18.264694+00:00",
       "spawned_time": "2026-04-12T14:43:26.273000+00:00",
       "extra_data": {}
     },
@@ -1038,7 +1038,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.327340+00:00",
+      "catch_date": "2026-04-16T03:13:18.268062+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1051,7 +1051,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.332347+00:00",
+      "catch_date": "2026-04-16T03:13:18.271232+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1064,7 +1064,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.336649+00:00",
+      "catch_date": "2026-04-16T03:13:18.273949+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1077,7 +1077,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.340466+00:00",
+      "catch_date": "2026-04-16T03:13:18.277028+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1090,7 +1090,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.344751+00:00",
+      "catch_date": "2026-04-16T03:13:18.280578+00:00",
       "spawned_time": "2026-04-15T06:27:41.502000+00:00",
       "extra_data": {}
     },
@@ -1103,7 +1103,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.349838+00:00",
+      "catch_date": "2026-04-16T03:13:18.283773+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1116,7 +1116,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.354250+00:00",
+      "catch_date": "2026-04-16T03:13:18.286911+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1129,7 +1129,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.359270+00:00",
+      "catch_date": "2026-04-16T03:13:18.290013+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1142,7 +1142,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.367254+00:00",
+      "catch_date": "2026-04-16T03:13:18.295822+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1155,7 +1155,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.371263+00:00",
+      "catch_date": "2026-04-16T03:13:18.298524+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1168,7 +1168,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.376104+00:00",
+      "catch_date": "2026-04-16T03:13:18.301727+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1181,7 +1181,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.380885+00:00",
+      "catch_date": "2026-04-16T03:13:18.304928+00:00",
       "spawned_time": "2026-04-12T17:43:17.461000+00:00",
       "extra_data": {}
     },
@@ -1194,7 +1194,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.385940+00:00",
+      "catch_date": "2026-04-16T03:13:18.307524+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1207,7 +1207,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.393860+00:00",
+      "catch_date": "2026-04-16T03:13:18.313601+00:00",
       "spawned_time": "2026-04-12T18:07:20.189000+00:00",
       "extra_data": {}
     },
@@ -1220,7 +1220,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.398558+00:00",
+      "catch_date": "2026-04-16T03:13:18.317544+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1233,7 +1233,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1331925375420465162,
-      "catch_date": "2026-04-15T13:32:21.403340+00:00",
+      "catch_date": "2026-04-16T03:13:18.320609+00:00",
       "spawned_time": "2026-04-15T11:22:35.429000+00:00",
       "extra_data": {}
     },
@@ -1246,7 +1246,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.409768+00:00",
+      "catch_date": "2026-04-16T03:13:18.323945+00:00",
       "spawned_time": "2026-04-15T11:29:22.998000+00:00",
       "extra_data": {}
     },
@@ -1259,7 +1259,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.415584+00:00",
+      "catch_date": "2026-04-16T03:13:18.327048+00:00",
       "spawned_time": "2026-04-15T11:33:19.620000+00:00",
       "extra_data": {}
     },
@@ -1272,7 +1272,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.420680+00:00",
+      "catch_date": "2026-04-16T03:13:18.329980+00:00",
       "spawned_time": "2026-04-15T12:01:51.709000+00:00",
       "extra_data": {}
     },
@@ -1285,7 +1285,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.425381+00:00",
+      "catch_date": "2026-04-16T03:13:18.333044+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1298,7 +1298,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.430052+00:00",
+      "catch_date": "2026-04-16T03:13:18.336247+00:00",
       "spawned_time": "2026-04-12T19:28:29.063000+00:00",
       "extra_data": {}
     },
@@ -1311,7 +1311,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.435162+00:00",
+      "catch_date": "2026-04-16T03:13:18.339140+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1324,7 +1324,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.440721+00:00",
+      "catch_date": "2026-04-16T03:13:18.342246+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1337,7 +1337,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.446097+00:00",
+      "catch_date": "2026-04-16T03:13:18.345114+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1350,7 +1350,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1331925375420465162,
-      "catch_date": "2026-04-15T13:32:21.452804+00:00",
+      "catch_date": "2026-04-16T03:13:18.348327+00:00",
       "spawned_time": "2026-04-15T12:22:57.375000+00:00",
       "extra_data": {}
     },
@@ -1363,7 +1363,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.464550+00:00",
+      "catch_date": "2026-04-16T03:13:18.354285+00:00",
       "spawned_time": "2026-04-15T12:28:31.511000+00:00",
       "extra_data": {}
     },
@@ -1376,7 +1376,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.470257+00:00",
+      "catch_date": "2026-04-16T03:13:18.357580+00:00",
       "spawned_time": "2026-04-15T12:29:01.017000+00:00",
       "extra_data": {}
     },
@@ -1389,7 +1389,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.475054+00:00",
+      "catch_date": "2026-04-16T03:13:18.361257+00:00",
       "spawned_time": "2026-04-15T12:29:07.243000+00:00",
       "extra_data": {}
     },
@@ -1402,7 +1402,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.480242+00:00",
+      "catch_date": "2026-04-16T03:13:18.364478+00:00",
       "spawned_time": "2026-04-15T12:29:30.628000+00:00",
       "extra_data": {}
     },
@@ -1415,7 +1415,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.489296+00:00",
+      "catch_date": "2026-04-16T03:13:18.367506+00:00",
       "spawned_time": "2026-04-15T12:29:21.799000+00:00",
       "extra_data": {}
     },
@@ -1428,7 +1428,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.500763+00:00",
+      "catch_date": "2026-04-16T03:13:18.373411+00:00",
       "spawned_time": "2026-04-15T12:29:52.228000+00:00",
       "extra_data": {}
     },
@@ -1441,7 +1441,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.508933+00:00",
+      "catch_date": "2026-04-16T03:13:18.376581+00:00",
       "spawned_time": "2026-04-15T12:30:16.701000+00:00",
       "extra_data": {}
     },
@@ -1454,7 +1454,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.514183+00:00",
+      "catch_date": "2026-04-16T03:13:18.379570+00:00",
       "spawned_time": "2026-04-15T12:30:30.430000+00:00",
       "extra_data": {}
     },
@@ -1467,7 +1467,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.519528+00:00",
+      "catch_date": "2026-04-16T03:13:18.382918+00:00",
       "spawned_time": "2026-04-15T12:31:03.392000+00:00",
       "extra_data": {}
     },
@@ -1480,7 +1480,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.530646+00:00",
+      "catch_date": "2026-04-16T03:13:18.386012+00:00",
       "spawned_time": "2026-04-13T03:58:03.701000+00:00",
       "extra_data": {}
     },
@@ -1493,7 +1493,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.536316+00:00",
+      "catch_date": "2026-04-16T03:13:18.389043+00:00",
       "spawned_time": "2026-04-13T04:08:33.706000+00:00",
       "extra_data": {}
     },
@@ -1506,7 +1506,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.541116+00:00",
+      "catch_date": "2026-04-16T03:13:18.391907+00:00",
       "spawned_time": "2026-04-13T05:13:16.907000+00:00",
       "extra_data": {}
     },
@@ -1519,7 +1519,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.547695+00:00",
+      "catch_date": "2026-04-16T03:13:18.395562+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1532,7 +1532,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.552250+00:00",
+      "catch_date": "2026-04-16T03:13:18.398672+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1545,7 +1545,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.557312+00:00",
+      "catch_date": "2026-04-16T03:13:18.401783+00:00",
       "spawned_time": "2026-04-13T06:32:48.763000+00:00",
       "extra_data": {}
     },
@@ -1558,7 +1558,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.562893+00:00",
+      "catch_date": "2026-04-16T03:13:18.404755+00:00",
       "spawned_time": "2026-04-13T09:49:28.592000+00:00",
       "extra_data": {}
     },
@@ -1571,7 +1571,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.568037+00:00",
+      "catch_date": "2026-04-16T03:13:18.408207+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1584,7 +1584,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.572223+00:00",
+      "catch_date": "2026-04-16T03:13:18.411013+00:00",
       "spawned_time": "2026-04-13T05:44:39.453000+00:00",
       "extra_data": {}
     },
@@ -1597,7 +1597,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.577859+00:00",
+      "catch_date": "2026-04-16T03:13:18.414712+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1610,7 +1610,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.583607+00:00",
+      "catch_date": "2026-04-16T03:13:18.417693+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1623,7 +1623,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.591698+00:00",
+      "catch_date": "2026-04-16T03:13:18.420956+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1636,7 +1636,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.598235+00:00",
+      "catch_date": "2026-04-16T03:13:18.423374+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1649,7 +1649,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:21.606428+00:00",
+      "catch_date": "2026-04-16T03:13:18.427144+00:00",
       "spawned_time": "2026-04-13T13:05:49.502000+00:00",
       "extra_data": {}
     },
@@ -1662,7 +1662,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.611835+00:00",
+      "catch_date": "2026-04-16T03:13:18.430134+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1675,7 +1675,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.616001+00:00",
+      "catch_date": "2026-04-16T03:13:18.433883+00:00",
       "spawned_time": "2026-04-13T13:56:55.502000+00:00",
       "extra_data": {}
     },
@@ -1688,7 +1688,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.620703+00:00",
+      "catch_date": "2026-04-16T03:13:18.437098+00:00",
       "spawned_time": "2026-04-13T14:20:59.667000+00:00",
       "extra_data": {}
     },
@@ -1701,7 +1701,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.625231+00:00",
+      "catch_date": "2026-04-16T03:13:18.440248+00:00",
       "spawned_time": "2026-04-13T14:21:05.576000+00:00",
       "extra_data": {}
     },
@@ -1714,7 +1714,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.630202+00:00",
+      "catch_date": "2026-04-16T03:13:18.443328+00:00",
       "spawned_time": "2026-04-13T14:21:01.132000+00:00",
       "extra_data": {}
     },
@@ -1727,7 +1727,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.634558+00:00",
+      "catch_date": "2026-04-16T03:13:18.446776+00:00",
       "spawned_time": "2026-04-13T14:21:51.517000+00:00",
       "extra_data": {}
     },
@@ -1740,7 +1740,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.638927+00:00",
+      "catch_date": "2026-04-16T03:13:18.450013+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1753,7 +1753,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.645257+00:00",
+      "catch_date": "2026-04-16T03:13:18.453569+00:00",
       "spawned_time": "2026-04-13T14:25:08.396000+00:00",
       "extra_data": {}
     },
@@ -1766,7 +1766,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.650556+00:00",
+      "catch_date": "2026-04-16T03:13:18.456565+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1779,7 +1779,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.655523+00:00",
+      "catch_date": "2026-04-16T03:13:18.459625+00:00",
       "spawned_time": "2026-04-15T06:41:02.912000+00:00",
       "extra_data": {}
     },
@@ -1792,7 +1792,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.660758+00:00",
+      "catch_date": "2026-04-16T03:13:18.462773+00:00",
       "spawned_time": "2026-04-13T17:02:05.910000+00:00",
       "extra_data": {}
     },
@@ -1805,7 +1805,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.666010+00:00",
+      "catch_date": "2026-04-16T03:13:18.465928+00:00",
       "spawned_time": "2026-04-13T17:02:05.467000+00:00",
       "extra_data": {}
     },
@@ -1818,7 +1818,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.671441+00:00",
+      "catch_date": "2026-04-16T03:13:18.468927+00:00",
       "spawned_time": "2026-04-13T17:02:07.378000+00:00",
       "extra_data": {}
     },
@@ -1831,7 +1831,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.676068+00:00",
+      "catch_date": "2026-04-16T03:13:18.472025+00:00",
       "spawned_time": "2026-04-13T17:02:09.975000+00:00",
       "extra_data": {}
     },
@@ -1844,7 +1844,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.680793+00:00",
+      "catch_date": "2026-04-16T03:13:18.475080+00:00",
       "spawned_time": "2026-04-13T17:02:08.151000+00:00",
       "extra_data": {}
     },
@@ -1857,7 +1857,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.685782+00:00",
+      "catch_date": "2026-04-16T03:13:18.478087+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -1870,7 +1870,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.691225+00:00",
+      "catch_date": "2026-04-16T03:13:18.480946+00:00",
       "spawned_time": "2026-04-13T17:02:04.959000+00:00",
       "extra_data": {}
     },
@@ -1883,7 +1883,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.695534+00:00",
+      "catch_date": "2026-04-16T03:13:18.484089+00:00",
       "spawned_time": "2026-04-13T17:03:18.890000+00:00",
       "extra_data": {}
     },
@@ -1896,7 +1896,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.700246+00:00",
+      "catch_date": "2026-04-16T03:13:18.487186+00:00",
       "spawned_time": "2026-04-13T17:02:04.256000+00:00",
       "extra_data": {}
     },
@@ -1909,7 +1909,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.705497+00:00",
+      "catch_date": "2026-04-16T03:13:18.490390+00:00",
       "spawned_time": "2026-04-13T17:03:36.569000+00:00",
       "extra_data": {}
     },
@@ -1922,7 +1922,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.710404+00:00",
+      "catch_date": "2026-04-16T03:13:18.493363+00:00",
       "spawned_time": "2026-04-13T17:03:49.830000+00:00",
       "extra_data": {}
     },
@@ -1935,7 +1935,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.714747+00:00",
+      "catch_date": "2026-04-16T03:13:18.496998+00:00",
       "spawned_time": "2026-04-13T17:05:08.426000+00:00",
       "extra_data": {}
     },
@@ -1948,7 +1948,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.719608+00:00",
+      "catch_date": "2026-04-16T03:13:18.500026+00:00",
       "spawned_time": "2026-04-13T17:05:06.629000+00:00",
       "extra_data": {}
     },
@@ -1961,7 +1961,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.724469+00:00",
+      "catch_date": "2026-04-16T03:13:18.502395+00:00",
       "spawned_time": "2026-04-13T17:05:09.528000+00:00",
       "extra_data": {}
     },
@@ -1974,7 +1974,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.729936+00:00",
+      "catch_date": "2026-04-16T03:13:18.505323+00:00",
       "spawned_time": "2026-04-13T17:04:21.878000+00:00",
       "extra_data": {}
     },
@@ -1987,7 +1987,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.734943+00:00",
+      "catch_date": "2026-04-16T03:13:18.508715+00:00",
       "spawned_time": "2026-04-13T17:05:08.667000+00:00",
       "extra_data": {}
     },
@@ -2000,7 +2000,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.742854+00:00",
+      "catch_date": "2026-04-16T03:13:18.511886+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2013,7 +2013,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.754853+00:00",
+      "catch_date": "2026-04-16T03:13:18.517596+00:00",
       "spawned_time": "2026-04-13T17:55:58.296000+00:00",
       "extra_data": {}
     },
@@ -2026,7 +2026,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.761054+00:00",
+      "catch_date": "2026-04-16T03:13:18.520106+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2039,7 +2039,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.765527+00:00",
+      "catch_date": "2026-04-16T03:13:18.523525+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2052,7 +2052,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.770079+00:00",
+      "catch_date": "2026-04-16T03:13:18.526110+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2065,7 +2065,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.775493+00:00",
+      "catch_date": "2026-04-16T03:13:18.529289+00:00",
       "spawned_time": "2026-04-13T18:15:49.721000+00:00",
       "extra_data": {}
     },
@@ -2078,7 +2078,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.781009+00:00",
+      "catch_date": "2026-04-16T03:13:18.531639+00:00",
       "spawned_time": "2026-04-13T18:16:18.168000+00:00",
       "extra_data": {}
     },
@@ -2091,7 +2091,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.788497+00:00",
+      "catch_date": "2026-04-16T03:13:18.534229+00:00",
       "spawned_time": "2026-04-13T18:17:55.250000+00:00",
       "extra_data": {}
     },
@@ -2104,7 +2104,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.792662+00:00",
+      "catch_date": "2026-04-16T03:13:18.537383+00:00",
       "spawned_time": "2026-04-13T18:17:52.533000+00:00",
       "extra_data": {}
     },
@@ -2117,7 +2117,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.798461+00:00",
+      "catch_date": "2026-04-16T03:13:18.540877+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2130,7 +2130,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.805389+00:00",
+      "catch_date": "2026-04-16T03:13:18.543396+00:00",
       "spawned_time": "2026-04-13T18:19:15.555000+00:00",
       "extra_data": {}
     },
@@ -2143,7 +2143,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.810781+00:00",
+      "catch_date": "2026-04-16T03:13:18.546054+00:00",
       "spawned_time": "2026-04-13T18:19:10.755000+00:00",
       "extra_data": {}
     },
@@ -2156,7 +2156,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.815274+00:00",
+      "catch_date": "2026-04-16T03:13:18.548628+00:00",
       "spawned_time": "2026-04-13T18:19:18.674000+00:00",
       "extra_data": {}
     },
@@ -2169,7 +2169,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.820144+00:00",
+      "catch_date": "2026-04-16T03:13:18.551575+00:00",
       "spawned_time": "2026-04-13T18:19:24.472000+00:00",
       "extra_data": {}
     },
@@ -2182,7 +2182,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.825560+00:00",
+      "catch_date": "2026-04-16T03:13:18.554058+00:00",
       "spawned_time": "2026-04-13T18:21:53.381000+00:00",
       "extra_data": {}
     },
@@ -2195,7 +2195,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.835211+00:00",
+      "catch_date": "2026-04-16T03:13:18.558842+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2208,7 +2208,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.840324+00:00",
+      "catch_date": "2026-04-16T03:13:18.561945+00:00",
       "spawned_time": "2026-04-13T18:17:56.872000+00:00",
       "extra_data": {}
     },
@@ -2221,7 +2221,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.844879+00:00",
+      "catch_date": "2026-04-16T03:13:18.564684+00:00",
       "spawned_time": "2026-04-13T18:30:26.172000+00:00",
       "extra_data": {}
     },
@@ -2234,7 +2234,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.849226+00:00",
+      "catch_date": "2026-04-16T03:13:18.567800+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2247,7 +2247,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.854748+00:00",
+      "catch_date": "2026-04-16T03:13:18.570317+00:00",
       "spawned_time": "2026-04-13T18:36:30.129000+00:00",
       "extra_data": {}
     },
@@ -2260,7 +2260,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.859317+00:00",
+      "catch_date": "2026-04-16T03:13:18.573306+00:00",
       "spawned_time": "2026-04-13T18:46:49.260000+00:00",
       "extra_data": {}
     },
@@ -2273,7 +2273,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.864850+00:00",
+      "catch_date": "2026-04-16T03:13:18.576401+00:00",
       "spawned_time": "2026-04-13T18:50:50.203000+00:00",
       "extra_data": {}
     },
@@ -2286,7 +2286,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.869423+00:00",
+      "catch_date": "2026-04-16T03:13:18.579693+00:00",
       "spawned_time": "2026-04-13T18:57:49.416000+00:00",
       "extra_data": {}
     },
@@ -2299,7 +2299,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.877188+00:00",
+      "catch_date": "2026-04-16T03:13:18.582344+00:00",
       "spawned_time": "2026-04-13T19:08:20.031000+00:00",
       "extra_data": {}
     },
@@ -2312,7 +2312,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1453365044648607805,
-      "catch_date": "2026-04-15T13:32:21.883728+00:00",
+      "catch_date": "2026-04-16T03:13:18.585242+00:00",
       "spawned_time": "2026-04-13T19:10:35.155000+00:00",
       "extra_data": {}
     },
@@ -2325,7 +2325,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.895287+00:00",
+      "catch_date": "2026-04-16T03:13:18.590896+00:00",
       "spawned_time": "2026-04-13T19:42:48.038000+00:00",
       "extra_data": {}
     },
@@ -2338,7 +2338,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.899441+00:00",
+      "catch_date": "2026-04-16T03:13:18.594103+00:00",
       "spawned_time": "2026-04-13T19:45:16.072000+00:00",
       "extra_data": {}
     },
@@ -2351,7 +2351,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.906266+00:00",
+      "catch_date": "2026-04-16T03:13:18.597132+00:00",
       "spawned_time": "2026-04-13T18:19:19.582000+00:00",
       "extra_data": {}
     },
@@ -2364,7 +2364,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.912986+00:00",
+      "catch_date": "2026-04-16T03:13:18.599868+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2377,7 +2377,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.919364+00:00",
+      "catch_date": "2026-04-16T03:13:18.603083+00:00",
       "spawned_time": "2026-04-13T19:59:51.989000+00:00",
       "extra_data": {}
     },
@@ -2390,7 +2390,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.928384+00:00",
+      "catch_date": "2026-04-16T03:13:18.606403+00:00",
       "spawned_time": "2026-04-13T20:10:09.896000+00:00",
       "extra_data": {}
     },
@@ -2403,7 +2403,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1453365044648607805,
-      "catch_date": "2026-04-15T13:32:21.934443+00:00",
+      "catch_date": "2026-04-16T03:13:18.728094+00:00",
       "spawned_time": "2026-04-13T20:10:20.328000+00:00",
       "extra_data": {}
     },
@@ -2416,7 +2416,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.938895+00:00",
+      "catch_date": "2026-04-16T03:13:18.731488+00:00",
       "spawned_time": "2026-04-13T20:10:46.349000+00:00",
       "extra_data": {}
     },
@@ -2429,7 +2429,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:21.944825+00:00",
+      "catch_date": "2026-04-16T03:13:18.734825+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2442,7 +2442,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.949473+00:00",
+      "catch_date": "2026-04-16T03:13:18.737975+00:00",
       "spawned_time": "2026-04-14T05:35:00.135000+00:00",
       "extra_data": {}
     },
@@ -2455,7 +2455,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.958605+00:00",
+      "catch_date": "2026-04-16T03:13:18.743970+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2468,7 +2468,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1453365044648607805,
-      "catch_date": "2026-04-15T13:32:21.962939+00:00",
+      "catch_date": "2026-04-16T03:13:18.747167+00:00",
       "spawned_time": "2026-04-14T05:51:29.994000+00:00",
       "extra_data": {}
     },
@@ -2481,7 +2481,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.972170+00:00",
+      "catch_date": "2026-04-16T03:13:18.753418+00:00",
       "spawned_time": "2026-04-14T05:52:57.842000+00:00",
       "extra_data": {}
     },
@@ -2494,7 +2494,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.977980+00:00",
+      "catch_date": "2026-04-16T03:13:18.756488+00:00",
       "spawned_time": "2026-04-14T05:56:37.715000+00:00",
       "extra_data": {}
     },
@@ -2507,7 +2507,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.982934+00:00",
+      "catch_date": "2026-04-16T03:13:18.759559+00:00",
       "spawned_time": "2026-04-14T06:03:02.926000+00:00",
       "extra_data": {}
     },
@@ -2520,7 +2520,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.987561+00:00",
+      "catch_date": "2026-04-16T03:13:18.762774+00:00",
       "spawned_time": "2026-04-15T06:56:21.125000+00:00",
       "extra_data": {}
     },
@@ -2533,7 +2533,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:21.992453+00:00",
+      "catch_date": "2026-04-16T03:13:18.765787+00:00",
       "spawned_time": "2026-04-14T06:22:48.335000+00:00",
       "extra_data": {}
     },
@@ -2546,7 +2546,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:21.997882+00:00",
+      "catch_date": "2026-04-16T03:13:18.768948+00:00",
       "spawned_time": "2026-04-14T06:26:03.743000+00:00",
       "extra_data": {}
     },
@@ -2559,7 +2559,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.002254+00:00",
+      "catch_date": "2026-04-16T03:13:18.771314+00:00",
       "spawned_time": "2026-04-14T06:42:04.129000+00:00",
       "extra_data": {}
     },
@@ -2572,7 +2572,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.007226+00:00",
+      "catch_date": "2026-04-16T03:13:18.774565+00:00",
       "spawned_time": "2026-04-14T06:42:22.096000+00:00",
       "extra_data": {}
     },
@@ -2585,7 +2585,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1479565024849690697,
-      "catch_date": "2026-04-15T13:32:22.012757+00:00",
+      "catch_date": "2026-04-16T03:13:18.777359+00:00",
       "spawned_time": "2026-04-14T06:44:06.416000+00:00",
       "extra_data": {}
     },
@@ -2598,7 +2598,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.017114+00:00",
+      "catch_date": "2026-04-16T03:13:18.780678+00:00",
       "spawned_time": "2026-04-14T07:18:45.609000+00:00",
       "extra_data": {}
     },
@@ -2611,7 +2611,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.025321+00:00",
+      "catch_date": "2026-04-16T03:13:18.783904+00:00",
       "spawned_time": "2026-04-15T07:08:02.632000+00:00",
       "extra_data": {}
     },
@@ -2624,7 +2624,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.030330+00:00",
+      "catch_date": "2026-04-16T03:13:18.787157+00:00",
       "spawned_time": "2026-04-14T07:59:35.024000+00:00",
       "extra_data": {}
     },
@@ -2637,7 +2637,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.035347+00:00",
+      "catch_date": "2026-04-16T03:13:18.790171+00:00",
       "spawned_time": "2026-04-14T07:57:56.473000+00:00",
       "extra_data": {}
     },
@@ -2650,7 +2650,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.040475+00:00",
+      "catch_date": "2026-04-16T03:13:18.793236+00:00",
       "spawned_time": "2026-04-15T07:08:59.444000+00:00",
       "extra_data": {}
     },
@@ -2663,7 +2663,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.044819+00:00",
+      "catch_date": "2026-04-16T03:13:18.796417+00:00",
       "spawned_time": "2026-04-15T07:34:24.047000+00:00",
       "extra_data": {}
     },
@@ -2676,7 +2676,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.049340+00:00",
+      "catch_date": "2026-04-16T03:13:18.799671+00:00",
       "spawned_time": "2026-04-14T08:28:50.897000+00:00",
       "extra_data": {}
     },
@@ -2689,7 +2689,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.059066+00:00",
+      "catch_date": "2026-04-16T03:13:18.802875+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2702,7 +2702,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.066597+00:00",
+      "catch_date": "2026-04-16T03:13:18.806017+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2715,7 +2715,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.071312+00:00",
+      "catch_date": "2026-04-16T03:13:18.808687+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2728,7 +2728,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.076221+00:00",
+      "catch_date": "2026-04-16T03:13:18.811231+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2741,7 +2741,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.081310+00:00",
+      "catch_date": "2026-04-16T03:13:18.814278+00:00",
       "spawned_time": "2026-04-14T09:02:58.007000+00:00",
       "extra_data": {}
     },
@@ -2754,7 +2754,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.086247+00:00",
+      "catch_date": "2026-04-16T03:13:18.816831+00:00",
       "spawned_time": "2026-04-14T09:32:05.996000+00:00",
       "extra_data": {}
     },
@@ -2767,7 +2767,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.093699+00:00",
+      "catch_date": "2026-04-16T03:13:18.820088+00:00",
       "spawned_time": "2026-04-14T09:43:37.772000+00:00",
       "extra_data": {}
     },
@@ -2780,7 +2780,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.103188+00:00",
+      "catch_date": "2026-04-16T03:13:18.824139+00:00",
       "spawned_time": "2026-04-14T10:44:54.949000+00:00",
       "extra_data": {}
     },
@@ -2793,7 +2793,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:22.113035+00:00",
+      "catch_date": "2026-04-16T03:13:18.831307+00:00",
       "spawned_time": "2026-04-14T10:50:59.298000+00:00",
       "extra_data": {}
     },
@@ -2806,7 +2806,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:22.118644+00:00",
+      "catch_date": "2026-04-16T03:13:18.834492+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2819,7 +2819,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:22.124720+00:00",
+      "catch_date": "2026-04-16T03:13:18.837663+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2832,7 +2832,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:22.135156+00:00",
+      "catch_date": "2026-04-16T03:13:18.843462+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2845,7 +2845,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:22.142782+00:00",
+      "catch_date": "2026-04-16T03:13:18.847300+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2858,7 +2858,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:22.154399+00:00",
+      "catch_date": "2026-04-16T03:13:18.852997+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2871,7 +2871,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.159200+00:00",
+      "catch_date": "2026-04-16T03:13:18.855667+00:00",
       "spawned_time": "2026-04-15T07:59:05.493000+00:00",
       "extra_data": {}
     },
@@ -2884,7 +2884,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:22.163529+00:00",
+      "catch_date": "2026-04-16T03:13:18.858415+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2897,7 +2897,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.167881+00:00",
+      "catch_date": "2026-04-16T03:13:18.861323+00:00",
       "spawned_time": "2026-04-15T08:07:04.658000+00:00",
       "extra_data": {}
     },
@@ -2910,7 +2910,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.172346+00:00",
+      "catch_date": "2026-04-16T03:13:18.864692+00:00",
       "spawned_time": "2026-04-12T07:36:34.037000+00:00",
       "extra_data": {}
     },
@@ -2923,7 +2923,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.178195+00:00",
+      "catch_date": "2026-04-16T03:13:18.867912+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2936,7 +2936,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.182364+00:00",
+      "catch_date": "2026-04-16T03:13:18.870338+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2949,7 +2949,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1369933974822195200,
-      "catch_date": "2026-04-15T13:32:22.191788+00:00",
+      "catch_date": "2026-04-16T03:13:18.876712+00:00",
       "spawned_time": "2026-04-14T14:50:58.649000+00:00",
       "extra_data": {}
     },
@@ -2962,7 +2962,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1369933974822195200,
-      "catch_date": "2026-04-15T13:32:22.196896+00:00",
+      "catch_date": "2026-04-16T03:13:18.879712+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2975,7 +2975,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1369933974822195200,
-      "catch_date": "2026-04-15T13:32:22.201901+00:00",
+      "catch_date": "2026-04-16T03:13:18.882863+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -2988,7 +2988,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.211361+00:00",
+      "catch_date": "2026-04-16T03:13:18.889009+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3001,7 +3001,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1369933974822195200,
-      "catch_date": "2026-04-15T13:32:22.219780+00:00",
+      "catch_date": "2026-04-16T03:13:18.894646+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3014,7 +3014,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.223978+00:00",
+      "catch_date": "2026-04-16T03:13:18.897299+00:00",
       "spawned_time": "2026-04-14T16:28:45.349000+00:00",
       "extra_data": {}
     },
@@ -3027,7 +3027,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.229579+00:00",
+      "catch_date": "2026-04-16T03:13:18.900407+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3040,7 +3040,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.234508+00:00",
+      "catch_date": "2026-04-16T03:13:18.902871+00:00",
       "spawned_time": "2026-04-14T16:28:48.076000+00:00",
       "extra_data": {}
     },
@@ -3053,7 +3053,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1369933974822195200,
-      "catch_date": "2026-04-15T13:32:22.238834+00:00",
+      "catch_date": "2026-04-16T03:13:18.905364+00:00",
       "spawned_time": "2026-04-14T16:24:20.295000+00:00",
       "extra_data": {}
     },
@@ -3066,7 +3066,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.242948+00:00",
+      "catch_date": "2026-04-16T03:13:18.908616+00:00",
       "spawned_time": "2026-04-14T16:28:55.196000+00:00",
       "extra_data": {}
     },
@@ -3079,7 +3079,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.248519+00:00",
+      "catch_date": "2026-04-16T03:13:18.911726+00:00",
       "spawned_time": "2026-04-14T16:28:48.726000+00:00",
       "extra_data": {}
     },
@@ -3092,7 +3092,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.253099+00:00",
+      "catch_date": "2026-04-16T03:13:18.915040+00:00",
       "spawned_time": "2026-04-14T16:28:51.168000+00:00",
       "extra_data": {}
     },
@@ -3105,7 +3105,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.257454+00:00",
+      "catch_date": "2026-04-16T03:13:18.918190+00:00",
       "spawned_time": "2026-04-14T16:28:54.436000+00:00",
       "extra_data": {}
     },
@@ -3118,7 +3118,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.261708+00:00",
+      "catch_date": "2026-04-16T03:13:18.922111+00:00",
       "spawned_time": "2026-04-14T16:28:56.069000+00:00",
       "extra_data": {}
     },
@@ -3131,7 +3131,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.267314+00:00",
+      "catch_date": "2026-04-16T03:13:18.925316+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3144,7 +3144,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.271666+00:00",
+      "catch_date": "2026-04-16T03:13:18.928572+00:00",
       "spawned_time": "2026-04-14T16:30:32.780000+00:00",
       "extra_data": {}
     },
@@ -3157,7 +3157,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.278426+00:00",
+      "catch_date": "2026-04-16T03:13:18.931691+00:00",
       "spawned_time": "2026-04-14T16:30:34.577000+00:00",
       "extra_data": {}
     },
@@ -3170,7 +3170,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.282957+00:00",
+      "catch_date": "2026-04-16T03:13:18.934846+00:00",
       "spawned_time": "2026-04-14T16:30:39.865000+00:00",
       "extra_data": {}
     },
@@ -3183,7 +3183,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.287577+00:00",
+      "catch_date": "2026-04-16T03:13:18.937904+00:00",
       "spawned_time": "2026-04-14T16:31:09.214000+00:00",
       "extra_data": {}
     },
@@ -3196,7 +3196,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.291848+00:00",
+      "catch_date": "2026-04-16T03:13:18.941192+00:00",
       "spawned_time": "2026-04-14T07:49:15.809000+00:00",
       "extra_data": {}
     },
@@ -3209,7 +3209,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.297191+00:00",
+      "catch_date": "2026-04-16T03:13:18.944604+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3222,7 +3222,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.301535+00:00",
+      "catch_date": "2026-04-16T03:13:18.947473+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3235,7 +3235,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.306424+00:00",
+      "catch_date": "2026-04-16T03:13:18.950611+00:00",
       "spawned_time": "2026-04-14T16:30:35.831000+00:00",
       "extra_data": {}
     },
@@ -3248,7 +3248,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.311941+00:00",
+      "catch_date": "2026-04-16T03:13:18.953398+00:00",
       "spawned_time": "2026-04-14T16:30:29.360000+00:00",
       "extra_data": {}
     },
@@ -3261,7 +3261,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.317277+00:00",
+      "catch_date": "2026-04-16T03:13:18.956293+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3274,7 +3274,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.322111+00:00",
+      "catch_date": "2026-04-16T03:13:18.959175+00:00",
       "spawned_time": "2026-04-14T16:30:40.988000+00:00",
       "extra_data": {}
     },
@@ -3287,7 +3287,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1331925375420465162,
-      "catch_date": "2026-04-15T13:32:22.327234+00:00",
+      "catch_date": "2026-04-16T03:13:18.962386+00:00",
       "spawned_time": "2026-04-15T08:14:59.298000+00:00",
       "extra_data": {}
     },
@@ -3300,7 +3300,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1331925375420465162,
-      "catch_date": "2026-04-15T13:32:22.331230+00:00",
+      "catch_date": "2026-04-16T03:13:18.965845+00:00",
       "spawned_time": "2026-04-15T08:27:57.167000+00:00",
       "extra_data": {}
     },
@@ -3313,7 +3313,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.342773+00:00",
+      "catch_date": "2026-04-16T03:13:18.968602+00:00",
       "spawned_time": "2026-04-12T18:24:50.885000+00:00",
       "extra_data": {}
     },
@@ -3326,7 +3326,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.347779+00:00",
+      "catch_date": "2026-04-16T03:13:18.971064+00:00",
       "spawned_time": "2026-04-14T16:45:43.272000+00:00",
       "extra_data": {}
     },
@@ -3339,7 +3339,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1369933974822195200,
-      "catch_date": "2026-04-15T13:32:22.355750+00:00",
+      "catch_date": "2026-04-16T03:13:18.974151+00:00",
       "spawned_time": "2026-04-14T16:48:29.233000+00:00",
       "extra_data": {}
     },
@@ -3352,7 +3352,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1331925375420465162,
-      "catch_date": "2026-04-15T13:32:22.361346+00:00",
+      "catch_date": "2026-04-16T03:13:18.977252+00:00",
       "spawned_time": "2026-04-14T16:50:05.981000+00:00",
       "extra_data": {}
     },
@@ -3365,7 +3365,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.366345+00:00",
+      "catch_date": "2026-04-16T03:13:18.979818+00:00",
       "spawned_time": "2026-04-15T09:06:36.009000+00:00",
       "extra_data": {}
     },
@@ -3378,7 +3378,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1369933974822195200,
-      "catch_date": "2026-04-15T13:32:22.375057+00:00",
+      "catch_date": "2026-04-16T03:13:18.983033+00:00",
       "spawned_time": "2026-04-15T09:10:02.502000+00:00",
       "extra_data": {}
     },
@@ -3391,7 +3391,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.383551+00:00",
+      "catch_date": "2026-04-16T03:13:18.988786+00:00",
       "spawned_time": "2026-04-14T17:16:04.696000+00:00",
       "extra_data": {}
     },
@@ -3404,7 +3404,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1331925375420465162,
-      "catch_date": "2026-04-15T13:32:22.388935+00:00",
+      "catch_date": "2026-04-16T03:13:18.991558+00:00",
       "spawned_time": "2026-04-14T17:20:00.549000+00:00",
       "extra_data": {}
     },
@@ -3417,7 +3417,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1331925375420465162,
-      "catch_date": "2026-04-15T13:32:22.393878+00:00",
+      "catch_date": "2026-04-16T03:13:18.994804+00:00",
       "spawned_time": "2026-04-14T17:51:18.564000+00:00",
       "extra_data": {}
     },
@@ -3430,7 +3430,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.399504+00:00",
+      "catch_date": "2026-04-16T03:13:18.998093+00:00",
       "spawned_time": "2026-04-14T18:02:32.358000+00:00",
       "extra_data": {}
     },
@@ -3443,7 +3443,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.406383+00:00",
+      "catch_date": "2026-04-16T03:13:19.001468+00:00",
       "spawned_time": "2026-04-14T19:06:39.297000+00:00",
       "extra_data": {}
     },
@@ -3456,7 +3456,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.411338+00:00",
+      "catch_date": "2026-04-16T03:13:19.004721+00:00",
       "spawned_time": "2026-04-14T19:16:45.595000+00:00",
       "extra_data": {}
     },
@@ -3469,7 +3469,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.416183+00:00",
+      "catch_date": "2026-04-16T03:13:19.008475+00:00",
       "spawned_time": "2026-04-15T09:16:42.128000+00:00",
       "extra_data": {}
     },
@@ -3482,7 +3482,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1479565024849690697,
-      "catch_date": "2026-04-15T13:32:22.421222+00:00",
+      "catch_date": "2026-04-16T03:13:19.011585+00:00",
       "spawned_time": "2026-04-14T19:23:04.297000+00:00",
       "extra_data": {}
     },
@@ -3495,7 +3495,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.426048+00:00",
+      "catch_date": "2026-04-16T03:13:19.015081+00:00",
       "spawned_time": "2026-04-14T19:38:45.478000+00:00",
       "extra_data": {}
     },
@@ -3508,7 +3508,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.430250+00:00",
+      "catch_date": "2026-04-16T03:13:19.018317+00:00",
       "spawned_time": "2026-04-15T09:27:48.603000+00:00",
       "extra_data": {}
     },
@@ -3521,7 +3521,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.433963+00:00",
+      "catch_date": "2026-04-16T03:13:19.021541+00:00",
       "spawned_time": "2026-04-14T19:52:26.061000+00:00",
       "extra_data": {}
     },
@@ -3534,7 +3534,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.439075+00:00",
+      "catch_date": "2026-04-16T03:13:19.024623+00:00",
       "spawned_time": "2026-04-14T19:53:38.682000+00:00",
       "extra_data": {}
     },
@@ -3547,7 +3547,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.443284+00:00",
+      "catch_date": "2026-04-16T03:13:19.027921+00:00",
       "spawned_time": "2026-04-14T20:05:58.103000+00:00",
       "extra_data": {}
     },
@@ -3560,7 +3560,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.451594+00:00",
+      "catch_date": "2026-04-16T03:13:19.031153+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3573,7 +3573,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.456986+00:00",
+      "catch_date": "2026-04-16T03:13:19.034353+00:00",
       "spawned_time": "2026-04-14T20:06:53.176000+00:00",
       "extra_data": {}
     },
@@ -3586,7 +3586,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.462426+00:00",
+      "catch_date": "2026-04-16T03:13:19.037420+00:00",
       "spawned_time": "2026-04-15T09:37:50.271000+00:00",
       "extra_data": {}
     },
@@ -3599,7 +3599,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.472244+00:00",
+      "catch_date": "2026-04-16T03:13:19.043714+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3612,7 +3612,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.477327+00:00",
+      "catch_date": "2026-04-16T03:13:19.046903+00:00",
       "spawned_time": "2026-04-14T21:31:04.545000+00:00",
       "extra_data": {}
     },
@@ -3625,7 +3625,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.482425+00:00",
+      "catch_date": "2026-04-16T03:13:19.049798+00:00",
       "spawned_time": "2026-04-15T10:04:59.300000+00:00",
       "extra_data": {}
     },
@@ -3638,7 +3638,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.486901+00:00",
+      "catch_date": "2026-04-16T03:13:19.052749+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3651,7 +3651,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.491960+00:00",
+      "catch_date": "2026-04-16T03:13:19.056510+00:00",
       "spawned_time": "2026-04-14T20:52:14.870000+00:00",
       "extra_data": {}
     },
@@ -3664,7 +3664,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.496232+00:00",
+      "catch_date": "2026-04-16T03:13:19.059759+00:00",
       "spawned_time": "2026-04-14T20:52:37.284000+00:00",
       "extra_data": {}
     },
@@ -3677,7 +3677,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1479565024849690697,
-      "catch_date": "2026-04-15T13:32:22.501250+00:00",
+      "catch_date": "2026-04-16T03:13:19.062910+00:00",
       "spawned_time": "2026-04-14T21:20:26.622000+00:00",
       "extra_data": {}
     },
@@ -3690,7 +3690,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.505334+00:00",
+      "catch_date": "2026-04-16T03:13:19.066096+00:00",
       "spawned_time": "2026-04-15T10:15:09.440000+00:00",
       "extra_data": {}
     },
@@ -3703,7 +3703,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.509343+00:00",
+      "catch_date": "2026-04-16T03:13:19.068649+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3716,7 +3716,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.514292+00:00",
+      "catch_date": "2026-04-16T03:13:19.071841+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3729,7 +3729,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1331925375420465162,
-      "catch_date": "2026-04-15T13:32:22.519281+00:00",
+      "catch_date": "2026-04-16T03:13:19.074556+00:00",
       "spawned_time": "2026-04-15T01:18:42.103000+00:00",
       "extra_data": {}
     },
@@ -3742,7 +3742,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.523757+00:00",
+      "catch_date": "2026-04-16T03:13:19.077751+00:00",
       "spawned_time": "2026-04-14T21:20:57.934000+00:00",
       "extra_data": {}
     },
@@ -3755,7 +3755,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.530396+00:00",
+      "catch_date": "2026-04-16T03:13:19.080259+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3768,7 +3768,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.535472+00:00",
+      "catch_date": "2026-04-16T03:13:19.083746+00:00",
       "spawned_time": "2026-04-11T20:26:24.281000+00:00",
       "extra_data": {}
     },
@@ -3781,7 +3781,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.540273+00:00",
+      "catch_date": "2026-04-16T03:13:19.086691+00:00",
       "spawned_time": "2026-04-13T18:26:23.401000+00:00",
       "extra_data": {}
     },
@@ -3794,7 +3794,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.545283+00:00",
+      "catch_date": "2026-04-16T03:13:19.089816+00:00",
       "spawned_time": "2026-04-14T21:50:42.474000+00:00",
       "extra_data": {}
     },
@@ -3807,7 +3807,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.550735+00:00",
+      "catch_date": "2026-04-16T03:13:19.093245+00:00",
       "spawned_time": "2026-04-14T22:06:33.676000+00:00",
       "extra_data": {}
     },
@@ -3820,7 +3820,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1453365044648607805,
-      "catch_date": "2026-04-15T13:32:22.555018+00:00",
+      "catch_date": "2026-04-16T03:13:19.096493+00:00",
       "spawned_time": "2026-04-13T19:44:14.985000+00:00",
       "extra_data": {}
     },
@@ -3833,7 +3833,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1453365044648607805,
-      "catch_date": "2026-04-15T13:32:22.561010+00:00",
+      "catch_date": "2026-04-16T03:13:19.100344+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3846,7 +3846,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1453365044648607805,
-      "catch_date": "2026-04-15T13:32:22.568386+00:00",
+      "catch_date": "2026-04-16T03:13:19.103403+00:00",
       "spawned_time": "2026-04-13T19:59:07.479000+00:00",
       "extra_data": {}
     },
@@ -3859,7 +3859,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.573193+00:00",
+      "catch_date": "2026-04-16T03:13:19.106312+00:00",
       "spawned_time": "2026-04-13T19:59:12.783000+00:00",
       "extra_data": {}
     },
@@ -3872,7 +3872,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.578522+00:00",
+      "catch_date": "2026-04-16T03:13:19.109405+00:00",
       "spawned_time": "2026-04-14T06:12:40.340000+00:00",
       "extra_data": {}
     },
@@ -3885,7 +3885,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.582672+00:00",
+      "catch_date": "2026-04-16T03:13:19.112325+00:00",
       "spawned_time": "2026-04-14T16:30:27.400000+00:00",
       "extra_data": {}
     },
@@ -3898,7 +3898,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.586643+00:00",
+      "catch_date": "2026-04-16T03:13:19.115628+00:00",
       "spawned_time": "2026-04-14T19:18:40.576000+00:00",
       "extra_data": {}
     },
@@ -3911,7 +3911,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.590965+00:00",
+      "catch_date": "2026-04-16T03:13:19.119102+00:00",
       "spawned_time": "2026-04-14T19:40:28.536000+00:00",
       "extra_data": {}
     },
@@ -3924,7 +3924,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.594950+00:00",
+      "catch_date": "2026-04-16T03:13:19.122241+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3937,7 +3937,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.600161+00:00",
+      "catch_date": "2026-04-16T03:13:19.124901+00:00",
       "spawned_time": "2026-04-15T01:55:49.519000+00:00",
       "extra_data": {}
     },
@@ -3950,7 +3950,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.605378+00:00",
+      "catch_date": "2026-04-16T03:13:19.128056+00:00",
       "spawned_time": "2026-04-15T02:23:26.457000+00:00",
       "extra_data": {}
     },
@@ -3963,7 +3963,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.610061+00:00",
+      "catch_date": "2026-04-16T03:13:19.131445+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -3976,7 +3976,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.614835+00:00",
+      "catch_date": "2026-04-16T03:13:19.134634+00:00",
       "spawned_time": "2026-04-13T18:19:09.188000+00:00",
       "extra_data": {}
     },
@@ -3989,7 +3989,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.618859+00:00",
+      "catch_date": "2026-04-16T03:13:19.138138+00:00",
       "spawned_time": "2026-04-14T22:16:38.421000+00:00",
       "extra_data": {}
     },
@@ -4002,7 +4002,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1331925375420465162,
-      "catch_date": "2026-04-15T13:32:22.622942+00:00",
+      "catch_date": "2026-04-16T03:13:19.141052+00:00",
       "spawned_time": "2026-04-15T02:29:39.598000+00:00",
       "extra_data": {}
     },
@@ -4015,7 +4015,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 928536817001721906,
-      "catch_date": "2026-04-15T13:32:22.627189+00:00",
+      "catch_date": "2026-04-16T03:13:19.145246+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -4028,7 +4028,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.632315+00:00",
+      "catch_date": "2026-04-16T03:13:19.148049+00:00",
       "spawned_time": "2026-04-14T22:56:27.187000+00:00",
       "extra_data": {}
     },
@@ -4041,7 +4041,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1369933974822195200,
-      "catch_date": "2026-04-15T13:32:22.637041+00:00",
+      "catch_date": "2026-04-16T03:13:19.151274+00:00",
       "spawned_time": "2026-04-15T00:59:33.105000+00:00",
       "extra_data": {}
     },
@@ -4054,7 +4054,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.641636+00:00",
+      "catch_date": "2026-04-16T03:13:19.154316+00:00",
       "spawned_time": "2026-04-15T03:29:26.136000+00:00",
       "extra_data": {}
     },
@@ -4067,7 +4067,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.646399+00:00",
+      "catch_date": "2026-04-16T03:13:19.158177+00:00",
       "spawned_time": "2026-04-15T04:21:44.769000+00:00",
       "extra_data": {}
     },
@@ -4080,7 +4080,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1479565024849690697,
-      "catch_date": "2026-04-15T13:32:22.651534+00:00",
+      "catch_date": "2026-04-16T03:13:19.161417+00:00",
       "spawned_time": "2026-04-15T04:31:45.240000+00:00",
       "extra_data": {}
     },
@@ -4093,7 +4093,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.655950+00:00",
+      "catch_date": "2026-04-16T03:13:19.164956+00:00",
       "spawned_time": "2026-04-15T04:33:05.550000+00:00",
       "extra_data": {}
     },
@@ -4106,7 +4106,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.660942+00:00",
+      "catch_date": "2026-04-16T03:13:19.167729+00:00",
       "spawned_time": "2026-04-15T05:10:23.838000+00:00",
       "extra_data": {}
     },
@@ -4119,7 +4119,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.665727+00:00",
+      "catch_date": "2026-04-16T03:13:19.171039+00:00",
       "spawned_time": "2026-04-15T05:14:35.088000+00:00",
       "extra_data": {}
     },
@@ -4132,7 +4132,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T13:32:22.671906+00:00",
+      "catch_date": "2026-04-16T03:13:19.174227+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -4145,7 +4145,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.677053+00:00",
+      "catch_date": "2026-04-16T03:13:19.178274+00:00",
       "spawned_time": "2026-04-15T10:22:12.712000+00:00",
       "extra_data": {}
     },
@@ -4158,7 +4158,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.681372+00:00",
+      "catch_date": "2026-04-16T03:13:19.181678+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -4171,7 +4171,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T13:32:22.687144+00:00",
+      "catch_date": "2026-04-16T03:13:19.184315+00:00",
       "spawned_time": "2026-04-14T10:51:55.901000+00:00",
       "extra_data": {}
     },
@@ -4184,7 +4184,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.692098+00:00",
+      "catch_date": "2026-04-16T03:13:19.187513+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -4197,7 +4197,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.696510+00:00",
+      "catch_date": "2026-04-16T03:13:19.190185+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -4210,7 +4210,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.703393+00:00",
+      "catch_date": "2026-04-16T03:13:19.193907+00:00",
       "spawned_time": "2026-04-15T12:47:58.722000+00:00",
       "extra_data": {}
     },
@@ -4223,7 +4223,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T13:32:22.717077+00:00",
+      "catch_date": "2026-04-16T03:13:19.199972+00:00",
       "spawned_time": "2026-04-15T13:02:44.719000+00:00",
       "extra_data": {}
     },
@@ -4236,7 +4236,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1331925375420465162,
-      "catch_date": "2026-04-15T13:32:22.727129+00:00",
+      "catch_date": "2026-04-16T03:13:19.202629+00:00",
       "spawned_time": "2026-04-15T13:07:16.749000+00:00",
       "extra_data": {}
     },
@@ -4249,7 +4249,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T15:02:34.737120+00:00",
+      "catch_date": "2026-04-16T03:13:19.205814+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -4262,7 +4262,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T15:45:23.324047+00:00",
+      "catch_date": "2026-04-16T03:13:19.209858+00:00",
       "spawned_time": "2026-04-15T15:43:09.390000+00:00",
       "extra_data": {}
     },
@@ -4275,7 +4275,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T15:51:36.891766+00:00",
+      "catch_date": "2026-04-16T03:13:19.212411+00:00",
       "spawned_time": "2026-04-15T15:48:45.229000+00:00",
       "extra_data": {}
     },
@@ -4288,7 +4288,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T16:01:03.554806+00:00",
+      "catch_date": "2026-04-16T03:13:19.215949+00:00",
       "spawned_time": "2026-04-15T15:59:12.066000+00:00",
       "extra_data": {}
     },
@@ -4301,7 +4301,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T16:13:53.519124+00:00",
+      "catch_date": "2026-04-16T03:13:19.218619+00:00",
       "spawned_time": "2026-04-15T16:13:38.039000+00:00",
       "extra_data": {}
     },
@@ -4314,7 +4314,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T16:15:16.157365+00:00",
+      "catch_date": "2026-04-16T03:13:19.221974+00:00",
       "spawned_time": "2026-04-15T16:14:49.750000+00:00",
       "extra_data": {}
     },
@@ -4327,7 +4327,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-15T16:17:58.070498+00:00",
+      "catch_date": "2026-04-16T03:13:19.225036+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -4340,7 +4340,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T16:19:58.761740+00:00",
+      "catch_date": "2026-04-16T03:13:19.228373+00:00",
       "spawned_time": "2026-04-15T16:19:39.420000+00:00",
       "extra_data": {}
     },
@@ -4353,7 +4353,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T16:45:01.609345+00:00",
+      "catch_date": "2026-04-16T03:13:19.231794+00:00",
       "spawned_time": "2026-04-15T16:44:38.602000+00:00",
       "extra_data": {}
     },
@@ -4366,7 +4366,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T16:45:11.956716+00:00",
+      "catch_date": "2026-04-16T03:13:19.235111+00:00",
       "spawned_time": "2026-04-15T16:44:38.699000+00:00",
       "extra_data": {}
     },
@@ -4379,7 +4379,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T16:53:40.321683+00:00",
+      "catch_date": "2026-04-16T03:13:19.238351+00:00",
       "spawned_time": "2026-04-15T16:49:58.869000+00:00",
       "extra_data": {}
     },
@@ -4392,7 +4392,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T16:54:45.287712+00:00",
+      "catch_date": "2026-04-16T03:13:19.241801+00:00",
       "spawned_time": "2026-04-15T16:54:38.170000+00:00",
       "extra_data": {}
     },
@@ -4405,7 +4405,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1371364151728799856,
-      "catch_date": "2026-04-15T17:00:17.305391+00:00",
+      "catch_date": "2026-04-16T03:13:19.245117+00:00",
       "spawned_time": "2026-04-15T17:00:09.669000+00:00",
       "extra_data": {}
     },
@@ -4418,7 +4418,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T17:01:38.884322+00:00",
+      "catch_date": "2026-04-16T03:13:19.248114+00:00",
       "spawned_time": "2026-04-15T17:01:06.112000+00:00",
       "extra_data": {}
     },
@@ -4431,7 +4431,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-15T17:01:45.886643+00:00",
+      "catch_date": "2026-04-16T03:13:19.251256+00:00",
       "spawned_time": "2026-04-15T17:01:04.951000+00:00",
       "extra_data": {}
     },
@@ -4444,7 +4444,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-16T01:45:17.754509+00:00",
+      "catch_date": "2026-04-16T03:13:19.254231+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -4457,7 +4457,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-16T01:47:29.594420+00:00",
+      "catch_date": "2026-04-16T03:13:19.257364+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -4470,7 +4470,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": 1476180448030756928,
-      "catch_date": "2026-04-16T01:51:57.354085+00:00",
+      "catch_date": "2026-04-16T03:13:19.260383+00:00",
       "spawned_time": "2026-04-16T01:51:46.123000+00:00",
       "extra_data": {}
     },
@@ -4483,7 +4483,7 @@
       "favorite": false,
       "tradeable": true,
       "server_id": null,
-      "catch_date": "2026-04-16T02:27:57.963927+00:00",
+      "catch_date": "2026-04-16T03:13:19.263612+00:00",
       "spawned_time": null,
       "extra_data": {}
     }
