@@ -2702,6 +2702,129 @@ class Admin(commands.Cog):
             ephemeral=True,
         )
 
+    @app_commands.command(
+        name="cschance",
+        description="[Owner] View or update spawn, weekly, and daily chances for one card.",
+    )
+    @app_commands.describe(
+        player_name="Player/card to inspect or update.",
+        spawn_chance="Optional new random spawn weight from 0 to 1000. Leave blank to keep existing.",
+        weekly_chance="Optional new weekly weight from 0 to 1000. Leave blank to keep existing.",
+        daily_chance="Optional new daily weight from 0 to 1000. Leave blank to keep existing.",
+    )
+    @app_commands.autocomplete(player_name=_player_name_autocomplete)
+    async def cschance(
+        self,
+        interaction: discord.Interaction["CricStarBot"],
+        player_name: str,
+        spawn_chance: app_commands.Range[float, 0.0, 1000.0] | None = None,
+        weekly_chance: app_commands.Range[float, 0.0, 1000.0] | None = None,
+        daily_chance: app_commands.Range[float, 0.0, 1000.0] | None = None,
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        if not await self.bot.is_owner(interaction.user):
+            await interaction.followup.send("❌ Only the bot owner can use this command.", ephemeral=True)
+            return
+
+        try:
+            ball = await Ball.objects.aget(country=player_name)
+        except Ball.DoesNotExist:
+            close = [
+                b.country for b in balls_cache.values()
+                if player_name.lower() in b.country.lower()
+            ][:5]
+            hint = f"\nDid you mean: {', '.join(close)}?" if close else ""
+            await interaction.followup.send(
+                f"❌ No cricketer named **{player_name}** found.{hint}",
+                ephemeral=True,
+            )
+            return
+
+        logic = dict(ball.capacity_logic or {})
+        old_spawn = float(ball.rarity or 0)
+        old_weekly = float(logic.get("weekly_chance", 0) or 0)
+        old_daily = float(logic.get("daily_chance", 0) or 0)
+        changed_fields: list[str] = []
+        changes: list[str] = []
+
+        if spawn_chance is not None:
+            new_spawn = float(spawn_chance)
+            ball.rarity = new_spawn
+            ball.spawnable = new_spawn > 0
+            changed_fields.extend(["rarity", "spawnable"])
+            changes.append(f"Spawn: `{old_spawn:.4g}` → `{new_spawn:.4g}`")
+
+        if weekly_chance is not None:
+            new_weekly = float(weekly_chance)
+            logic["weekly_chance"] = new_weekly
+            if "capacity_logic" not in changed_fields:
+                changed_fields.append("capacity_logic")
+            changes.append(f"Weekly: `{old_weekly:.4g}` → `{new_weekly:.4g}`")
+
+        if daily_chance is not None:
+            new_daily = float(daily_chance)
+            logic["daily_chance"] = new_daily
+            if "capacity_logic" not in changed_fields:
+                changed_fields.append("capacity_logic")
+            changes.append(f"Daily: `{old_daily:.4g}` → `{new_daily:.4g}`")
+
+        if "capacity_logic" in changed_fields:
+            ball.capacity_logic = logic
+
+        if changed_fields:
+            await ball.asave(update_fields=list(set(changed_fields)))
+            balls_cache[ball.id] = ball
+            try:
+                slug = re.sub(r"[^a-z0-9]+", "_", ball.country.lower().strip()).strip("_")
+                ev_id = (ball.capacity_logic or {}).get("forced_special")
+                ev_name = specials_cache[ev_id].name if ev_id and ev_id in specials_cache else ""
+                filename = ball.collection_card.name if ball.collection_card else (ball.wild_card.name if ball.wild_card else "")
+                _export_card(
+                    player_name=ball.country,
+                    card_name=(ball.capacity_logic or {}).get("display_name") or ball.country,
+                    slug=slug,
+                    codename=ball.capacity_name or "",
+                    description=ball.capacity_description or "",
+                    bat_score=ball.health,
+                    ball_score=ball.attack,
+                    rarity=(ball.capacity_logic or {}).get("badge_rarity", 1.0),
+                    spawn_chance=ball.rarity,
+                    artwork_author=ball.credits or "",
+                    tradeable=ball.tradeable,
+                    spawnable=ball.spawnable,
+                    unobtainable=ball.unobtainable,
+                    catch_name=ball.catch_names or None,
+                    event_id=ev_id,
+                    event_name=ev_name,
+                    filename=filename,
+                    wild_card_filename=ball.wild_card.name if ball.wild_card else filename,
+                    capacity_logic=ball.capacity_logic,
+                )
+            except Exception as exc:
+                log.warning("cschance: card_sync export failed (non-critical): %s", exc)
+
+        current_spawn = float(ball.rarity or 0)
+        current_weekly = float((ball.capacity_logic or {}).get("weekly_chance", 0) or 0)
+        current_daily = float((ball.capacity_logic or {}).get("daily_chance", 0) or 0)
+        status = "enabled" if ball.spawnable and current_spawn > 0 else "disabled"
+        badge_rarity = (ball.capacity_logic or {}).get("badge_rarity", "?")
+
+        title = f"✅ Updated **{ball.country}** chances" if changes else f"ℹ️ **{ball.country}** chances"
+        changed_text = "\n".join(f"• {line}" for line in changes)
+        if changed_text:
+            changed_text = f"\n\nChanges made:\n{changed_text}"
+
+        await interaction.followup.send(
+            f"{title}\n"
+            f"Badge rarity: `{badge_rarity}`\n"
+            f"Spawn chance: `{current_spawn:.4g}/1000` ({status})\n"
+            f"Weekly chance: `{current_weekly:.4g}/1000`\n"
+            f"Daily chance: `{current_daily:.4g}/1000`"
+            f"{changed_text}",
+            ephemeral=True,
+        )
+
     # ── /cscleanup ────────────────────────────────────────────────────────────
     @app_commands.command(
         name="cscleanup",
