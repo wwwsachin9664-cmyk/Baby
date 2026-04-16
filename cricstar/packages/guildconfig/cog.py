@@ -139,18 +139,18 @@ class Config(commands.GroupCog):
             config.enabled = True  # type: ignore
             await config.asave()
             export_guild_config(guild.id, config.spawn_channel, True)
-            self.bot.dispatch("cricstar_settings_change", guild, enabled=True)
             if config.spawn_channel and (channel := guild.get_channel(config.spawn_channel)):
-                if channel:
-                    await interaction.response.send_message(
-                        f"{settings.bot_name} is now enabled in this server, "
-                        f"{settings.plural_collectible_name} will start spawning "
-                        f"soon in {channel.mention}."
-                    )
-                else:
-                    await interaction.response.send_message(
-                        "The spawning channel specified in the configuration is not available.", ephemeral=True
-                    )
+                self.bot.dispatch("cricstar_settings_change", guild, channel=channel, enabled=True)
+                await interaction.response.send_message(
+                    f"{settings.bot_name} is now enabled in this server, "
+                    f"{settings.plural_collectible_name} will start spawning "
+                    f"soon in {channel.mention}."
+                )
+            elif config.spawn_channel:
+                self.bot.dispatch("cricstar_settings_change", guild, channel=None, enabled=True)
+                await interaction.response.send_message(
+                    "The spawning channel specified in the configuration is not available.", ephemeral=True
+                )
             else:
                 config_cmd = self.channel.extras.get("mention", "`/config channel`")
                 await interaction.response.send_message(

@@ -46,6 +46,8 @@ class CountryBallsSpawner(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
+        if not self.bot.is_ready():
+            return
         if message.author.bot or message.webhook_id is not None:
             return
         guild = message.guild
@@ -85,7 +87,7 @@ class CountryBallsSpawner(commands.Cog):
     ):
         if guild.id not in self.cache:
             if enabled is False:
-                return  # do nothing
+                return  # guild not active, nothing to do
             if channel:
                 self.cache[guild.id] = channel.id
             else:
@@ -94,9 +96,11 @@ class CountryBallsSpawner(commands.Cog):
                 except GuildConfig.DoesNotExist:
                     return
                 else:
-                    self.cache[guild.id] = cast(int, config.spawn_channel)
+                    if config.spawn_channel and config.enabled:
+                        self.cache[guild.id] = cast(int, config.spawn_channel)
         else:
             if enabled is False:
                 del self.cache[guild.id]
+                self._spawn_locks.pop(guild.id, None)
             elif channel:
                 self.cache[guild.id] = channel.id
