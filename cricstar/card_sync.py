@@ -244,6 +244,35 @@ def delete_card_export(player_name: str, filename: str, wild_card_filename: str 
     return removed
 
 
+def rename_card_export(old_name: str, new_name: str) -> None:
+    """
+    Rename a card in cards.json and holdings.json.
+    Called by /renamecard so the new name survives restarts.
+    """
+    _ensure_dirs()
+
+    records = _load_json(CARDS_JSON)
+    if old_name in records:
+        entry = records.pop(old_name)
+        entry["player_name"] = new_name
+        records[new_name] = entry
+        CARDS_JSON.write_text(json.dumps(records, indent=2, ensure_ascii=False))
+        log.info("card_sync: renamed %r -> %r in cards.json", old_name, new_name)
+
+    holdings_payload = _load_json(HOLDINGS_JSON)
+    if isinstance(holdings_payload, dict) and "holdings" in holdings_payload:
+        updated = 0
+        for h in holdings_payload["holdings"]:
+            if h.get("ball_player_name") == old_name:
+                h["ball_player_name"] = new_name
+                updated += 1
+        if updated:
+            holdings_payload["exported_at"] = datetime.now(timezone.utc).isoformat()
+            HOLDINGS_JSON.write_text(json.dumps(holdings_payload, indent=2, ensure_ascii=False))
+            log.info("card_sync: renamed %d holding(s) from %r to %r in holdings.json",
+                     updated, old_name, new_name)
+
+
 def import_all_cards() -> int:
     records = _load_json(CARDS_JSON)
     if not records:

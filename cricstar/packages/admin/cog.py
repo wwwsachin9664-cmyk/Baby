@@ -19,6 +19,7 @@ from cricstar.card_sync import (
     export_card as _export_card,
     export_event as _export_event,
     delete_card_export as _delete_card_export,
+    rename_card_export as _rename_card_export,
     has_custom_spawn_image as _has_custom_spawn_image,
     export_spawn_image as _export_spawn_image,
     remove_spawn_image as _remove_spawn_image,
@@ -1970,6 +1971,104 @@ class Admin(commands.Cog):
             f"✅ **{ball_name}** has been permanently deleted.\n"
             f"• `{deleted_instances}` player instance(s) removed\n"
             f"• Files deleted: {files_summary}",
+            ephemeral=True,
+        )
+
+    @commands.hybrid_command(name="renamecard")
+    @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
+    @app_commands.check(checks.is_developer)
+    @commands.is_owner()
+    @app_commands.describe(
+        old_name="Current name of the cricketer (autocomplete available)",
+        new_name="New name to assign to the cricketer",
+    )
+    @app_commands.autocomplete(old_name=_player_name_autocomplete)
+    async def renamecard(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        old_name: str,
+        new_name: str,
+    ):
+        """
+        Rename a cricketer card — updates the DB, in-memory cache, export files, and emoji registry.
+        ONLY the bot owner can run this.
+        """
+        await ctx.defer(ephemeral=True)
+
+        new_name = new_name.strip()
+
+        ball: Ball | None = None
+        try:
+            ball = await Ball.objects.aget(country=old_name)
+        except Ball.DoesNotExist:
+            pass
+
+        if ball is None:
+            close = [
+                b.country for b in balls_cache.values()
+                if old_name.lower() in b.country.lower()
+            ][:5]
+            hint = f"\nDid you mean: {', '.join(close)}?" if close else ""
+            await ctx.send(
+                f"❌ No cricketer named **{old_name}** found.{hint}",
+                ephemeral=True,
+            )
+            return
+
+        if await Ball.objects.filter(country=new_name).aexists():
+            await ctx.send(
+                f"❌ A cricketer named **{new_name}** already exists. Choose a different name.",
+                ephemeral=True,
+            )
+            return
+
+        confirm_view = ConfirmChoiceView(
+            ctx,
+            user=ctx.author,
+            accept_message="Renaming...",
+            cancel_message="Rename cancelled.",
+        )
+        instance_count = await BallInstance.objects.filter(ball=ball).acount()
+        await ctx.send(
+            f"⚠️ Rename **{old_name}** → **{new_name}**?\n"
+            f"This will update the card and **{instance_count}** player holding(s).",
+            view=confirm_view,
+            ephemeral=True,
+        )
+        await confirm_view.wait()
+
+        if not confirm_view.value:
+            return
+
+        ball.country = new_name
+        await ball.asave(update_fields=["country"])
+
+        balls_cache[ball.id] = ball
+
+        from cricstar.core.utils.emojis import _load as _load_emojis, _save as _save_emojis
+        emojis = _load_emojis()
+        emoji_updated = False
+        for entry in emojis:
+            if entry.get("player") == old_name:
+                entry["player"] = new_name
+                emoji_updated = True
+        if emoji_updated:
+            _save_emojis(emojis)
+
+        try:
+            _rename_card_export(old_name, new_name)
+        except Exception as exc:
+            log.warning(f"renamecard: card_sync rename failed (non-critical): {exc}")
+
+        log.info(
+            f"renamecard: '{old_name}' -> '{new_name}' by {ctx.author} — "
+            f"{instance_count} holding(s) updated"
+        )
+        await ctx.send(
+            f"✅ **{old_name}** has been renamed to **{new_name}**.\n"
+            f"• `{instance_count}` holding(s) updated\n"
+            f"{'• Emoji registry updated' if emoji_updated else ''}",
             ephemeral=True,
         )
 

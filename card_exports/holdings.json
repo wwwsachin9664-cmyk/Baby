@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-16T13:12:24.365526+00:00",
-  "count": 380,
+  "exported_at": "2026-04-16T13:20:14.759193+00:00",
+  "count": 381,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -4939,6 +4939,19 @@
       "tradeable": true,
       "server_id": null,
       "catch_date": "2026-04-16T13:04:12.059051+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Vaibhav Sooryavanshi (IPL2026)",
+      "special_name": null,
+      "health_bonus": -15,
+      "attack_bonus": 18,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-16T13:15:14.805442+00:00",
       "spawned_time": null,
       "extra_data": {}
     }
