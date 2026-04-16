@@ -430,8 +430,8 @@
       "weekly_chance": 900.0
     }
   },
-  "Vaibhav Sooryawanshi (IPL2026)": {
-    "player_name": "Vaibhav Sooryawanshi (IPL2026)",
+  "Vaibhav Sooryavanshi (IPL2026)": {
+    "player_name": "Vaibhav Sooryavanshi (IPL2026)",
     "card_name": "Vaibhav",
     "slug": "vaibhav_sooryawanshi_ipl2026",
     "codename": "Boss Baby",
@@ -1166,7 +1166,7 @@
     "event_id": null,
     "event_name": "",
     "filename": "premade_sir_aalastair_cook.png",
-    "wild_card_filename": "premade_sir_aalastair_cook.png",
+    "wild_card_filename": "spawn_sir_aalastair_cook.jpg",
     "capacity_logic": {
       "bg_preset": "icons_9",
       "credit_font": "optimus",
@@ -1336,6 +1336,38 @@
       "weekly_chance": 3.0,
       "daily_chance": 0.0,
       "display_name": "Starc (F)"
+    }
+  },
+  "Shreyas Iyer(Ipl 2026)": {
+    "player_name": "Shreyas Iyer(Ipl 2026)",
+    "card_name": "Shreyas",
+    "slug": "shreyas_iyer_ipl_2026",
+    "codename": "Sarpanch",
+    "description": "The Punjab Kings captain and premier middle order batter Shreyas Iyer continues to dominate IPL 2026 with his exceptional composure and clinical finishing He leads with authority while anchoring high scoring chases with effortless class",
+    "bat_score": 92,
+    "ball_score": 0,
+    "rarity": 1.0,
+    "spawn_chance": 25.0,
+    "artwork_author": "Marco",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": true,
+    "catch_name": "shreyas iyer",
+    "event_id": 3,
+    "event_name": "IPL2026",
+    "filename": "premade_shreyas_iyer_ipl_2026.png",
+    "wild_card_filename": "spawn_shreyas_iyer_ipl_2026.jpg",
+    "capacity_logic": {
+      "badge_rarity": 1.0,
+      "bg_preset": "IPL2026",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": true,
+      "credit_font": "optimus",
+      "weekly_chance": 9.0,
+      "daily_chance": 0.0,
+      "display_name": "Shreyas",
+      "forced_special": 3
     }
   }
 }
