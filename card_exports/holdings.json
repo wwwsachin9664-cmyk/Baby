@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-15T16:25:21.769239+00:00",
-  "count": 334,
+  "exported_at": "2026-04-16T01:26:34.172502+00:00",
+  "count": 341,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -4342,6 +4342,97 @@
       "server_id": 1371364151728799856,
       "catch_date": "2026-04-15T16:19:58.761740+00:00",
       "spawned_time": "2026-04-15T16:19:39.420000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1322496330433695847,
+      "ball_player_name": "Tilak Varma",
+      "special_name": null,
+      "health_bonus": 10,
+      "attack_bonus": 9,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-15T16:45:01.609345+00:00",
+      "spawned_time": "2026-04-15T16:44:38.602000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1322496330433695847,
+      "ball_player_name": "Roston Chase",
+      "special_name": null,
+      "health_bonus": 0,
+      "attack_bonus": -14,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-15T16:45:11.956716+00:00",
+      "spawned_time": "2026-04-15T16:44:38.699000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Sanju Samson",
+      "special_name": null,
+      "health_bonus": -9,
+      "attack_bonus": 7,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-15T16:53:40.321683+00:00",
+      "spawned_time": "2026-04-15T16:49:58.869000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Virat Kohli",
+      "special_name": null,
+      "health_bonus": -6,
+      "attack_bonus": -7,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-15T16:54:45.287712+00:00",
+      "spawned_time": "2026-04-15T16:54:38.170000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Yashasvi Jaiswal (IPL2026)",
+      "special_name": "IPL2026",
+      "health_bonus": 17,
+      "attack_bonus": 7,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-15T17:00:17.305391+00:00",
+      "spawned_time": "2026-04-15T17:00:09.669000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Travis Head",
+      "special_name": null,
+      "health_bonus": -5,
+      "attack_bonus": -8,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-15T17:01:38.884322+00:00",
+      "spawned_time": "2026-04-15T17:01:06.112000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Shreyas Iyer",
+      "special_name": null,
+      "health_bonus": -16,
+      "attack_bonus": -14,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-15T17:01:45.886643+00:00",
+      "spawned_time": "2026-04-15T17:01:04.951000+00:00",
       "extra_data": {}
     }
   ]
