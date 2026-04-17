@@ -222,5 +222,33 @@
     "bet": true,
     "player": "Yashasvi Jaiswal (IPL2026)",
     "name": "Yashasvi_IPL"
+  },
+  {
+    "id": "1494601368004984882",
+    "list": true,
+    "bet": true,
+    "player": "Arshdeep Singh",
+    "name": "ArshdeepSingh"
+  },
+  {
+    "id": "1494604876469239858",
+    "list": true,
+    "bet": true,
+    "player": "Brett Lee",
+    "name": "Lee_Icon"
+  },
+  {
+    "id": "1494604833246675117",
+    "list": true,
+    "bet": true,
+    "player": "Don Bradman",
+    "name": "bradmanIcon"
+  },
+  {
+    "id": "1494604827269926912",
+    "list": true,
+    "bet": true,
+    "player": "Sir Aalastair Cook",
+    "name": "AalastairIcon"
   }
 ]
