@@ -20,6 +20,7 @@ from cricstar.card_sync import (
     export_event as _export_event,
     delete_card_export as _delete_card_export,
     rename_card_export as _rename_card_export,
+    rename_event_export as _rename_event_export,
     has_custom_spawn_image as _has_custom_spawn_image,
     export_spawn_image as _export_spawn_image,
     remove_spawn_image as _remove_spawn_image,
@@ -1737,6 +1738,89 @@ class Admin(commands.Cog):
             if current_lower in special.name.lower()
         ]
         return matches[:25]
+
+    @commands.hybrid_command(name="renameevent")
+    @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
+    @app_commands.check(checks.is_developer)
+    @checks.is_superuser()
+    @app_commands.describe(
+        old_name="Current name of the event (autocomplete available)",
+        new_name="New name to assign to the event",
+    )
+    @app_commands.autocomplete(old_name=_event_name_autocomplete)
+    async def renameevent(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        old_name: str,
+        new_name: str,
+    ):
+        """
+        Rename a special event — updates the DB, in-memory cache, events.json, and all card references.
+        """
+        await ctx.defer(ephemeral=True)
+
+        new_name = new_name.strip()
+        if not new_name:
+            await ctx.send("❌ New event name cannot be blank.", ephemeral=True)
+            return
+
+        special: Special | None = None
+        try:
+            special = await Special.objects.aget(name=old_name)
+        except Special.DoesNotExist:
+            pass
+
+        if special is None:
+            close = [s.name for s in specials_cache.values() if old_name.lower() in s.name.lower()][:5]
+            hint = f"\nDid you mean: {', '.join(close)}?" if close else ""
+            await ctx.send(f"❌ No event named **{old_name}** found.{hint}", ephemeral=True)
+            return
+
+        if await Special.objects.filter(name=new_name).aexists():
+            await ctx.send(
+                f"❌ An event named **{new_name}** already exists. Choose a different name.",
+                ephemeral=True,
+            )
+            return
+
+        card_count = await Ball.objects.filter(
+            capacity_logic__forced_special=special.id
+        ).acount()
+
+        confirm_view = ConfirmChoiceView(
+            ctx,
+            user=ctx.author,
+            accept_message="Renaming event...",
+            cancel_message="Rename cancelled.",
+        )
+        await ctx.send(
+            f"⚠️ Rename event **{old_name}** → **{new_name}**?\n"
+            f"This will update the event and **{card_count}** card(s) that reference it.",
+            view=confirm_view,
+            ephemeral=True,
+        )
+        await confirm_view.wait()
+
+        if not confirm_view.value:
+            return
+
+        special.name = new_name
+        await special.asave(update_fields=["name"])
+
+        specials_cache[special.id] = special
+
+        try:
+            _rename_event_export(old_name, new_name)
+        except Exception as exc:
+            log.warning(f"renameevent: card_sync rename failed (non-critical): {exc}")
+
+        log.info(f"renameevent: '{old_name}' -> '{new_name}' by {ctx.author}")
+        await ctx.send(
+            f"✅ Event **{old_name}** has been renamed to **{new_name}**.\n"
+            f"• `{card_count}` card reference(s) updated in export files",
+            ephemeral=True,
+        )
 
     @commands.hybrid_command(name="evmake")
     @app_commands.default_permissions()

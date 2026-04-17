@@ -244,6 +244,32 @@ def delete_card_export(player_name: str, filename: str, wild_card_filename: str 
     return removed
 
 
+def rename_event_export(old_name: str, new_name: str) -> None:
+    """
+    Rename an event in events.json and update all card references in cards.json.
+    Called by /renameevent so the new name survives restarts.
+    """
+    _ensure_dirs()
+
+    records = _load_json(EVENTS_JSON)
+    if old_name in records:
+        entry = records.pop(old_name)
+        entry["name"] = new_name
+        records[new_name] = entry
+        EVENTS_JSON.write_text(json.dumps(records, indent=2, ensure_ascii=False))
+        log.info("card_sync: renamed event %r -> %r in events.json", old_name, new_name)
+
+    cards = _load_json(CARDS_JSON)
+    updated = 0
+    for card in cards.values():
+        if card.get("event_name") == old_name:
+            card["event_name"] = new_name
+            updated += 1
+    if updated:
+        CARDS_JSON.write_text(json.dumps(cards, indent=2, ensure_ascii=False))
+        log.info("card_sync: updated event_name in %d card(s) from %r to %r", updated, old_name, new_name)
+
+
 def rename_card_export(old_name: str, new_name: str) -> None:
     """
     Rename a card in cards.json and holdings.json.
