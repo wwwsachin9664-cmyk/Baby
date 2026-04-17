@@ -800,7 +800,7 @@
     "event_id": 3,
     "event_name": "IPL2026",
     "filename": "premade_virat_kohli_ipl2026.png",
-    "wild_card_filename": "spawn_virat_kohli_ipl2026.jpg",
+    "wild_card_filename": "premade_virat_kohli_ipl2026.png",
     "capacity_logic": {
       "bg_preset": "IPL2026",
       "credit_font": "optimus",
@@ -1252,7 +1252,7 @@
     "bat_score": 95,
     "ball_score": 0,
     "rarity": 0.3,
-    "spawn_chance": 4.0,
+    "spawn_chance": 3.0,
     "artwork_author": "Sachin",
     "tradeable": true,
     "spawnable": true,
@@ -1263,16 +1263,16 @@
     "filename": "premade_steve_smith_f.png",
     "wild_card_filename": "spawn_steve_smith_f.jpg",
     "capacity_logic": {
-      "badge_rarity": 0.3,
-      "bg_preset": "Australia",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
+      "bg_preset": "INDIA",
       "credit_font": "optimus",
-      "weekly_chance": 2.0,
+      "badge_rarity": 0.3,
       "daily_chance": 0.0,
       "display_name": "Smith (F)",
-      "forced_special": 5
+      "credit_stroke": true,
+      "weekly_chance": 3.0,
+      "forced_special": 5,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   },
   "Mitchell Starc (F)": {
@@ -1295,15 +1295,15 @@
     "filename": "premade_mitchell_starc_f.png",
     "wild_card_filename": "spawn_mitchell_starc_f.jpg",
     "capacity_logic": {
-      "badge_rarity": 0.4,
-      "bg_preset": "Australia",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
+      "bg_preset": "INDIA",
       "credit_font": "optimus",
-      "weekly_chance": 3.0,
+      "badge_rarity": 0.4,
       "daily_chance": 0.0,
-      "display_name": "Starc (F)"
+      "display_name": "Starc (F)",
+      "credit_stroke": true,
+      "weekly_chance": 3.0,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   },
   "Shreyas Iyer(Ipl 2026)": {
@@ -1448,20 +1448,21 @@
     "spawnable": true,
     "unobtainable": false,
     "catch_name": "don bradman",
-    "event_id": null,
-    "event_name": "",
+    "event_id": 4,
+    "event_name": "ICONS",
     "filename": "premade_don_bradman.png",
     "wild_card_filename": "spawn_don_bradman.jpg",
     "capacity_logic": {
-      "badge_rarity": 0.1,
       "bg_preset": "icons_9",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
       "credit_font": "optimus",
-      "weekly_chance": 20.0,
+      "badge_rarity": 0.1,
       "daily_chance": 0.0,
-      "display_name": "Bradman"
+      "display_name": "Bradman",
+      "credit_stroke": true,
+      "weekly_chance": 20.0,
+      "foreground_border": true,
+      "only_spawn_in_event": false,
+      "forced_special": 4
     }
   },
   "Yuvraj Singh": {
@@ -1493,6 +1494,38 @@
       "weekly_chance": 80.0,
       "daily_chance": 15.0,
       "display_name": "Yuvraj"
+    }
+  },
+  "Virat Kohli (F)": {
+    "player_name": "Virat Kohli (F)",
+    "card_name": "Virat (F)",
+    "slug": "virat_kohli_f",
+    "codename": "RUN MACHINE",
+    "description": "At his absolute peak in 2016 dominating the cricketing world with unreal consistency fearless aggression and masterful chases piling up runs across formats and redefining batting excellence",
+    "bat_score": 99,
+    "ball_score": 32,
+    "rarity": 0.05,
+    "spawn_chance": 0.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": false,
+    "unobtainable": false,
+    "catch_name": "virat kohli",
+    "event_id": 5,
+    "event_name": "FlashBack",
+    "filename": "premade_virat_kohli_f.png",
+    "wild_card_filename": "spawn_virat_kohli_f.jpg",
+    "capacity_logic": {
+      "bg_preset": "RCBFLASHBACK",
+      "credit_font": "optimus",
+      "badge_rarity": 0.05,
+      "daily_chance": 0.0,
+      "display_name": "Virat (F)",
+      "credit_stroke": true,
+      "weekly_chance": 0.0,
+      "forced_special": 5,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   }
 }
