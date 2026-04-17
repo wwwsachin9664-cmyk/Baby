@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-17T07:01:58.670965+00:00",
-  "count": 440,
+  "exported_at": "2026-04-17T07:10:38.183959+00:00",
+  "count": 442,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -5720,6 +5720,32 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-17T06:26:01.884888+00:00",
       "spawned_time": "2026-04-17T06:25:54.056000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 765948116544782367,
+      "ball_player_name": "Kane Williamson",
+      "special_name": null,
+      "health_bonus": 12,
+      "attack_bonus": 7,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-17T07:03:40.874711+00:00",
+      "spawned_time": "2026-04-17T07:03:26.335000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 820893612489179136,
+      "ball_player_name": "Arshdeep Singh",
+      "special_name": null,
+      "health_bonus": 0,
+      "attack_bonus": -15,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-17T07:05:12.015088+00:00",
+      "spawned_time": "2026-04-17T07:05:00.185000+00:00",
       "extra_data": {}
     }
   ]

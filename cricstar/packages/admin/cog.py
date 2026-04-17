@@ -1840,6 +1840,36 @@ class Admin(commands.Cog):
             ephemeral=True,
         )
 
+    @commands.hybrid_command(name="maintenance")
+    @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
+    @commands.is_owner()
+    @app_commands.describe(
+        enabled="True to enable maintenance mode (blocks all users), False to disable it",
+    )
+    async def maintenance(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        enabled: bool,
+    ):
+        """
+        Toggle maintenance mode. When enabled, all user commands return a maintenance message.
+        Only the bot owner can use this command.
+        """
+        ctx.bot.maintenance_mode = enabled
+        if enabled:
+            await ctx.send(
+                "🔧 **Maintenance mode ON** — all user commands are now blocked.",
+                ephemeral=True,
+            )
+            log.info(f"Maintenance mode ENABLED by {ctx.author}")
+        else:
+            await ctx.send(
+                "✅ **Maintenance mode OFF** — the bot is back to normal.",
+                ephemeral=True,
+            )
+            log.info(f"Maintenance mode DISABLED by {ctx.author}")
+
     @commands.hybrid_command(name="removecard")
     @app_commands.default_permissions()
     @app_commands.guilds(checks.ADMIN_GUILD_ID)

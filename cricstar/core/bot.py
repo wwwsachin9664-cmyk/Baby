@@ -140,6 +140,24 @@ class CommandTree[Bot: CricStarBot](app_commands.CommandTree[Bot]):
         if impersonated := impersonations.get(interaction.user.id, None):
             interaction.user = impersonated
             interaction._permissions = impersonated._permissions or 0
+
+        if bot.maintenance_mode:
+            from cricstar.core.utils.checks import BOT_OWNER_ID
+            is_owner = (
+                interaction.user.id == BOT_OWNER_ID
+                or await bot.is_owner(interaction.user)
+            )
+            if not is_owner and interaction.type != discord.InteractionType.autocomplete:
+                try:
+                    await interaction.response.send_message(
+                        "🔧 **The bot is currently under maintenance.**\n"
+                        "Please wait while we make some improvements. We'll be back shortly!",
+                        ephemeral=True,
+                    )
+                except discord.NotFound:
+                    pass
+                return False
+
         return await bot.blacklist_check(interaction)
 
     async def load_command_mentions(
@@ -219,6 +237,7 @@ class CricStarBot(commands.AutoShardedBot):
         self.catch_log: set[int] = set()
         self.command_log: set[int] = set()
         self.locked_balls = TTLCache(maxsize=99999, ttl=60 * 30)
+        self.maintenance_mode: bool = False
 
         self.owner_ids: set[int]
 
