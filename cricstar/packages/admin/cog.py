@@ -1840,6 +1840,68 @@ class Admin(commands.Cog):
             ephemeral=True,
         )
 
+    @commands.hybrid_command(name="showemojis")
+    @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
+    @app_commands.check(checks.is_developer)
+    async def showemojis(self, ctx: commands.Context["CricStarBot"]):
+        """
+        Show all cards with True/False indicating whether an emoji is set for each.
+        """
+        await ctx.defer(ephemeral=True)
+
+        from cricstar.core.utils.emojis import get_player_emoji_id
+
+        entries = sorted(balls_cache.values(), key=lambda b: b.country.lower())
+
+        with_emoji = [(b, True) for b in entries if get_player_emoji_id(b.country)]
+        without_emoji = [(b, False) for b in entries if not get_player_emoji_id(b.country)]
+        all_entries = with_emoji + without_emoji
+
+        pages: list[discord.Embed] = []
+        chunk_size = 25
+        total = len(all_entries)
+        chunks = [all_entries[i:i + chunk_size] for i in range(0, total, chunk_size)]
+
+        for page_num, chunk in enumerate(chunks, start=1):
+            embed = discord.Embed(
+                title=f"🎨 Card Emoji Status ({total} cards)",
+                colour=0x5865F2,
+            )
+            lines = []
+            for ball, has_emoji in chunk:
+                status = "✅ `True `" if has_emoji else "❌ `False`"
+                lines.append(f"{status} — **{ball.country}**")
+            embed.description = "\n".join(lines)
+            embed.set_footer(text=f"Page {page_num}/{len(chunks)} • ✅ {len(with_emoji)} have emoji • ❌ {len(without_emoji)} missing")
+            pages.append(embed)
+
+        if not pages:
+            await ctx.send("No cards found.", ephemeral=True)
+            return
+
+        if len(pages) == 1:
+            await ctx.send(embed=pages[0], ephemeral=True)
+            return
+
+        class PaginatorView(discord.ui.View):
+            def __init__(self):
+                super().__init__(timeout=120)
+                self.page = 0
+
+            @discord.ui.button(label="◀ Prev", style=discord.ButtonStyle.secondary)
+            async def prev(self, interaction: discord.Interaction, button: discord.ui.Button):
+                self.page = (self.page - 1) % len(pages)
+                await interaction.response.edit_message(embed=pages[self.page])
+
+            @discord.ui.button(label="Next ▶", style=discord.ButtonStyle.secondary)
+            async def next(self, interaction: discord.Interaction, button: discord.ui.Button):
+                self.page = (self.page + 1) % len(pages)
+                await interaction.response.edit_message(embed=pages[self.page])
+
+        view = PaginatorView()
+        await ctx.send(embed=pages[0], view=view, ephemeral=True)
+
     @commands.hybrid_command(name="maintenance")
     @app_commands.default_permissions()
     @app_commands.guilds(checks.ADMIN_GUILD_ID)
