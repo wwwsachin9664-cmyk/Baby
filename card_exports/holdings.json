@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-18T08:20:22.679428+00:00",
-  "count": 562,
+  "exported_at": "2026-04-18T08:34:36.341356+00:00",
+  "count": 567,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -7306,6 +7306,71 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-18T08:08:07.073205+00:00",
       "spawned_time": "2026-04-18T08:07:55.626000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 820893612489179136,
+      "ball_player_name": "Arshdeep Singh",
+      "special_name": null,
+      "health_bonus": 13,
+      "attack_bonus": 8,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-18T08:22:41.219021+00:00",
+      "spawned_time": "2026-04-18T08:21:18.203000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 765948116544782367,
+      "ball_player_name": "Sherfane Rutherford",
+      "special_name": null,
+      "health_bonus": 14,
+      "attack_bonus": 0,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-18T08:23:54.373589+00:00",
+      "spawned_time": "2026-04-18T08:23:24.399000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 765948116544782367,
+      "ball_player_name": "Sanju Samson (IPL2026)",
+      "special_name": "IPL2026",
+      "health_bonus": -17,
+      "attack_bonus": -4,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-18T08:28:18.495582+00:00",
+      "spawned_time": "2026-04-18T08:27:56.401000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1307952343278686221,
+      "ball_player_name": "Joe Root",
+      "special_name": null,
+      "health_bonus": 11,
+      "attack_bonus": -2,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-18T08:31:00.938036+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1307952343278686221,
+      "ball_player_name": "Rinku Singh",
+      "special_name": null,
+      "health_bonus": -1,
+      "attack_bonus": 18,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-18T08:31:05.320385+00:00",
+      "spawned_time": null,
       "extra_data": {}
     }
   ]

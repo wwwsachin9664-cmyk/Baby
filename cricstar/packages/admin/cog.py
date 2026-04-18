@@ -3082,8 +3082,36 @@ class Admin(commands.Cog):
         current_spawn = float(ball.rarity or 0)
         current_weekly = float((ball.capacity_logic or {}).get("weekly_chance", 0) or 0)
         current_daily = float((ball.capacity_logic or {}).get("daily_chance", 0) or 0)
-        status = "enabled" if ball.spawnable and current_spawn > 0 else "disabled"
         badge_rarity = (ball.capacity_logic or {}).get("badge_rarity", "?")
+
+        # Determine true spawn status — all three flags must be clear
+        spawn_ready = ball.enabled and ball.spawnable and current_spawn > 0
+        status = "✅ will spawn" if spawn_ready else "❌ will NOT spawn"
+
+        # Build per-flag breakdown so the user can see exactly what's blocking
+        flag_lines: list[str] = []
+        if not ball.enabled:
+            flag_lines.append("⛔ `enabled=False` — card is globally disabled (use Django admin to enable it)")
+        if not ball.spawnable or current_spawn <= 0:
+            flag_lines.append("⛔ `spawnable/rarity` — spawn chance is 0 or spawnable flag is off")
+
+        # Check only_spawn_in_event
+        logic = ball.capacity_logic or {}
+        forced_id = logic.get("forced_special")
+        if forced_id and logic.get("only_spawn_in_event"):
+            special_obj = specials_cache.get(int(forced_id))
+            if special_obj:
+                from cricstar.core.utils.availability import is_special_active
+                if not is_special_active(special_obj):
+                    flag_lines.append(
+                        f"⛔ `only_spawn_in_event=True` — event **{special_obj.name}** is not currently active"
+                    )
+            else:
+                flag_lines.append("⛔ `only_spawn_in_event=True` — linked event not found in cache")
+
+        blocking_text = ""
+        if flag_lines:
+            blocking_text = "\n\n⚠️ **Why this card isn't spawning:**\n" + "\n".join(flag_lines)
 
         title = f"✅ Updated **{ball.country}** chances" if changes else f"ℹ️ **{ball.country}** chances"
         changed_text = "\n".join(f"• {line}" for line in changes)
@@ -3093,10 +3121,12 @@ class Admin(commands.Cog):
         await interaction.followup.send(
             f"{title}\n"
             f"Badge rarity: `{badge_rarity}`\n"
-            f"Spawn chance: `{current_spawn:.4g}/1000` ({status})\n"
+            f"Card enabled: `{ball.enabled}`\n"
+            f"Spawn chance: `{current_spawn:.4g}/1000` — {status}\n"
             f"Weekly chance: `{current_weekly:.4g}/1000`\n"
             f"Daily chance: `{current_daily:.4g}/1000`"
-            f"{changed_text}",
+            f"{changed_text}"
+            f"{blocking_text}",
             ephemeral=True,
         )
 
