@@ -565,7 +565,7 @@ class Admin(commands.Cog):
         bat_score="Bat / health score shown on left (e.g. 342)",
         ball_score="Ball / attack score shown on right (e.g. 327)",
         rarity="Value shown on card badge (e.g. 50.0) — cosmetic only",
-        spawn_chance="Spawn weight from 0 to 1000 — 1000 is max, 0 disables spawning",
+        spawn_chance="Spawn weight from 0 to 100000 — 100000 is max, 0 disables spawning",
         artwork_author="Name of the artwork creator",
         background="Preset name (e.g. custom_bg) or image URL",
         foreground="Player image URL or preset name (saved by player name after first use)",
@@ -578,8 +578,8 @@ class Admin(commands.Cog):
         credit_stroke="Whether to draw a stroke/outline on the credit and artwork author text (default True)",
         only_spawn_in_event="If True, this card only spawns while its assigned event is active. Once the event ends, it stops spawning.",
         credit_font="Font for 'Created by El Laggron' and 'Artwork' credit lines. Default = arial. optimus = Optimus Bold.",
-        weekly_chance="Weekly weight from 0 to 1000 — 900 means 90%, 0 disables weekly spawning",
-        daily_chance="Daily weight from 0 to 1000 — 900 means 90%, 0 disables daily spawning",
+        weekly_chance="Weekly weight from 0 to 100000 — 0 disables weekly spawning",
+        daily_chance="Daily weight from 0 to 100000 — 0 disables daily spawning",
     )
     @app_commands.autocomplete(event=_event_autocomplete, background=_background_autocomplete)
     @app_commands.choices(credit_font=[
@@ -595,7 +595,7 @@ class Admin(commands.Cog):
         bat_score: int,
         ball_score: int,
         rarity: float,
-        spawn_chance: app_commands.Range[float, 0.0, 1000.0],
+        spawn_chance: app_commands.Range[float, 0.0, 100000.0],
         artwork_author: str,
         background: str,
         foreground: str,
@@ -609,13 +609,13 @@ class Admin(commands.Cog):
         credit_stroke: bool = True,
         only_spawn_in_event: bool = False,
         credit_font: str = "default",
-        weekly_chance: app_commands.Range[float, 0.0, 1000.0] = 0.0,
-        daily_chance: app_commands.Range[float, 0.0, 1000.0] = 0.0,
+        weekly_chance: app_commands.Range[float, 0.0, 100000.0] = 0.0,
+        daily_chance: app_commands.Range[float, 0.0, 100000.0] = 0.0,
     ):
         """
         Generate a Dembele-style cricket card and add it to the database.
         rarity: badge display value (any number, e.g. 50.0).
-        spawn_chance: spawn weight from 0 to 1000. Set to 0 to disable spawning.
+        spawn_chance: spawn weight from 0 to 100000. Set to 0 to disable spawning.
         background: preset name or URL. foreground: URL or saved preset name.
         """
         await ctx.defer()
@@ -825,7 +825,7 @@ class Admin(commands.Cog):
             try:
                 await ctx.send(
                     f"✅ **{player_name}** card created!{event_text}\n"
-                    f"`{filename}` | Badge Rarity: `{rarity}` | Spawn: `{spawn_chance}/1000` | Weekly: `{weekly_chance}/1000` | Daily: `{daily_chance}/1000` | Tradeable: `{tradeable}` | Spawnable: `{spawnable}` | Unobtainable: `{unobtainable}`\n"
+                    f"`{filename}` | Badge Rarity: `{rarity}` | Spawn: `{spawn_chance}/100000` | Weekly: `{weekly_chance}/100000` | Daily: `{daily_chance}/100000` | Tradeable: `{tradeable}` | Spawnable: `{spawnable}` | Unobtainable: `{unobtainable}`\n"
                     f"BAT: `{bat_score}` | BALL: `{ball_score}` | Artwork: {artwork_author}\n"
                     f"Foreground saved as preset `{slug}` for future reuse.",
                     file=preview_file,
@@ -852,7 +852,7 @@ class Admin(commands.Cog):
         bat_score="New bat / health score (leave blank to keep existing)",
         ball_score="New ball / attack score (leave blank to keep existing)",
         rarity="New badge display value — cosmetic only (leave blank to keep existing)",
-        spawn_chance="New spawn weight from 0 to 1000 — set to 0 to disable spawning",
+        spawn_chance="New spawn weight from 0 to 100000 — set to 0 to disable spawning",
         artwork_author="New artwork author name (leave blank to keep existing)",
         logo_url="Logo name (e.g. ICONS) or URL — leave blank to keep existing",
         tradeable="Change tradeability (leave blank to keep existing)",
@@ -861,8 +861,8 @@ class Admin(commands.Cog):
         only_spawn_in_event="If True, card only spawns while its event is active. Set False to allow spawning anytime.",
         credit_font="Font for credit lines. Leave blank to keep existing. 'Default (Arial)' or 'Optimus Bold'.",
         event="Assign or change the special event for this card. Choose 'none' to remove the current event.",
-        weekly_chance="New weekly weight from 0 to 1000 — leave blank to keep existing. 0 disables weekly spawning.",
-        daily_chance="New daily weight from 0 to 1000 — leave blank to keep existing. 0 disables daily spawning.",
+        weekly_chance="New weekly weight from 0 to 100000 — leave blank to keep existing. 0 disables weekly spawning.",
+        daily_chance="New daily weight from 0 to 100000 — leave blank to keep existing. 0 disables daily spawning.",
     )
     @app_commands.autocomplete(background=_background_autocomplete, event=_event_autocomplete)
     @app_commands.choices(credit_font=[
@@ -882,7 +882,7 @@ class Admin(commands.Cog):
         bat_score: int | None = None,
         ball_score: int | None = None,
         rarity: float | None = None,
-        spawn_chance: app_commands.Range[float, 0.0, 1000.0] | None = None,
+        spawn_chance: app_commands.Range[float, 0.0, 100000.0] | None = None,
         artwork_author: str = "",
         logo_url: str = "",
         tradeable: bool | None = None,
@@ -891,8 +891,8 @@ class Admin(commands.Cog):
         only_spawn_in_event: bool | None = None,
         credit_font: str = "",
         event: str = "",
-        weekly_chance: app_commands.Range[float, 0.0, 1000.0] | None = None,
-        daily_chance: app_commands.Range[float, 0.0, 1000.0] | None = None,
+        weekly_chance: app_commands.Range[float, 0.0, 100000.0] | None = None,
+        daily_chance: app_commands.Range[float, 0.0, 100000.0] | None = None,
     ):
         """
         Edit an existing cricket card. Only supply the fields you want to change.
@@ -1229,7 +1229,7 @@ class Admin(commands.Cog):
         if ball_score is not None:
             summary_parts.append(f"BALL → `{ball.attack}`")
         if spawn_chance is not None:
-            spawn_label = f"Spawn chance → `{spawn_chance}/1000`" + (" *(spawning disabled)*" if spawn_chance == 0 else "")
+            spawn_label = f"Spawn chance → `{spawn_chance}/100000`" + (" *(spawning disabled)*" if spawn_chance == 0 else "")
             summary_parts.append(spawn_label)
         if artwork_author.strip():
             summary_parts.append(f"Author → `{ball.credits}`")
@@ -1252,10 +1252,10 @@ class Admin(commands.Cog):
         if unobtainable is not None:
             summary_parts.append(f"Unobtainable → `{ball.unobtainable}`")
         if weekly_chance is not None:
-            weekly_label = f"Weekly chance → `{weekly_chance}/1000`" + (" *(disabled)*" if weekly_chance == 0 else "")
+            weekly_label = f"Weekly chance → `{weekly_chance}/100000`" + (" *(disabled)*" if weekly_chance == 0 else "")
             summary_parts.append(weekly_label)
         if daily_chance is not None:
-            daily_label = f"Daily chance → `{daily_chance}/1000`" + (" *(disabled)*" if daily_chance == 0 else "")
+            daily_label = f"Daily chance → `{daily_chance}/100000`" + (" *(disabled)*" if daily_chance == 0 else "")
             summary_parts.append(daily_label)
         if event_summary:
             summary_parts.append(event_summary)
@@ -2923,9 +2923,9 @@ class Admin(commands.Cog):
         else:
             new_chance = 0.0
 
-        if new_chance > 1000:
+        if new_chance > 100000:
             await interaction.followup.send(
-                "❌ Spawn chance cannot be higher than `1000`.",
+                "❌ Spawn chance cannot be higher than `100000`.",
                 ephemeral=True,
             )
             return
@@ -2983,18 +2983,18 @@ class Admin(commands.Cog):
     )
     @app_commands.describe(
         player_name="Player/card to inspect or update.",
-        spawn_chance="Optional new random spawn weight from 0 to 1000. Leave blank to keep existing.",
-        weekly_chance="Optional new weekly weight from 0 to 1000. Leave blank to keep existing.",
-        daily_chance="Optional new daily weight from 0 to 1000. Leave blank to keep existing.",
+        spawn_chance="Optional new random spawn weight from 0 to 100000. Leave blank to keep existing.",
+        weekly_chance="Optional new weekly weight from 0 to 100000. Leave blank to keep existing.",
+        daily_chance="Optional new daily weight from 0 to 100000. Leave blank to keep existing.",
     )
     @app_commands.autocomplete(player_name=_player_name_autocomplete)
     async def cschance(
         self,
         interaction: discord.Interaction["CricStarBot"],
         player_name: str,
-        spawn_chance: app_commands.Range[float, 0.0, 1000.0] | None = None,
-        weekly_chance: app_commands.Range[float, 0.0, 1000.0] | None = None,
-        daily_chance: app_commands.Range[float, 0.0, 1000.0] | None = None,
+        spawn_chance: app_commands.Range[float, 0.0, 100000.0] | None = None,
+        weekly_chance: app_commands.Range[float, 0.0, 100000.0] | None = None,
+        daily_chance: app_commands.Range[float, 0.0, 100000.0] | None = None,
     ):
         await interaction.response.defer(ephemeral=True)
 
@@ -3122,9 +3122,9 @@ class Admin(commands.Cog):
             f"{title}\n"
             f"Badge rarity: `{badge_rarity}`\n"
             f"Card enabled: `{ball.enabled}`\n"
-            f"Spawn chance: `{current_spawn:.4g}/1000` — {status}\n"
-            f"Weekly chance: `{current_weekly:.4g}/1000`\n"
-            f"Daily chance: `{current_daily:.4g}/1000`"
+            f"Spawn chance: `{current_spawn:.4g}/100000` — {status}\n"
+            f"Weekly chance: `{current_weekly:.4g}/100000`\n"
+            f"Daily chance: `{current_daily:.4g}/100000`"
             f"{changed_text}"
             f"{blocking_text}",
             ephemeral=True,
