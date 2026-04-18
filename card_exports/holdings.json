@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-18T08:34:36.341356+00:00",
-  "count": 567,
+  "exported_at": "2026-04-18T08:56:25.389470+00:00",
+  "count": 568,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -7371,6 +7371,19 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-18T08:31:05.320385+00:00",
       "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1150812547553955922,
+      "ball_player_name": "Ishan kishan (IPL2026)",
+      "special_name": "IPL2026",
+      "health_bonus": -15,
+      "attack_bonus": -5,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-18T08:43:10.373155+00:00",
+      "spawned_time": "2026-04-18T08:42:50.637000+00:00",
       "extra_data": {}
     }
   ]
