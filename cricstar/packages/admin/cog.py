@@ -56,6 +56,7 @@ from .history import history as history_group
 from .info import info as info_group
 from .logs import logs as logs_group
 from .money import money as money_group
+from .useractivity import useractivity as useractivity_group
 
 if TYPE_CHECKING:
     from cricstar.core.bot import CricStarBot
@@ -226,6 +227,7 @@ class Admin(commands.Cog):
         self.admin.add_command(history_group)
         self.admin.add_command(logs_group)
         self.admin.add_command(money_group)
+        self.admin.add_command(useractivity_group)
 
     async def _resolve_logo(self, logo_input: str, dest_path: str) -> bool:
         """
