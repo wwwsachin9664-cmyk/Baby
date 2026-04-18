@@ -21,6 +21,8 @@ if TYPE_CHECKING:
 
 type Interaction = discord.Interaction["CricStarBot"]
 
+MENU_TIMEOUT = 300  # 5 minutes
+
 
 class NumberedPageModal(Modal, title="Go to page"):
     page = discord.ui.TextInput(label="Page", placeholder="Enter a number", min_length=1)
@@ -47,51 +49,97 @@ class NumberedPageModal(Modal, title="Go to page"):
 
 
 class Controls(ActionRow):
+    """
+    Navigation row — Footballers-Dex style:
+        <<  |  prev/...  |  current (blue)  |  next/...  |  >>
+    """
+
     def __init__(self, menu: Menu):
         super().__init__()
         self.menu = menu
 
-    @button(label="≪", style=discord.ButtonStyle.grey)
-    async def go_to_first_page(self, interaction: Interaction, button: Button):
+    @button(label="<<", style=discord.ButtonStyle.grey)
+    async def go_to_first_page(self, interaction: Interaction, btn: Button):
         await self.menu.show_page(interaction, 0)
 
-    @button(label="Back", style=discord.ButtonStyle.blurple)
-    async def go_to_previous_page(self, interaction: Interaction, button: Button):
+    @button(label="...", style=discord.ButtonStyle.grey)
+    async def go_to_previous_page(self, interaction: Interaction, btn: Button):
         await self.menu.show_page(interaction, self.menu.current_page - 1)
 
-    @button(label="1 (go to)", style=discord.ButtonStyle.blurple)
-    async def go_to_page(self, interaction: Interaction, button: Button):
+    @button(label="1", style=discord.ButtonStyle.primary)
+    async def go_to_current_page(self, interaction: Interaction, btn: Button):
         await interaction.response.send_modal(NumberedPageModal(self.menu))
 
-    @button(label="Next", style=discord.ButtonStyle.blurple)
-    async def go_to_next_page(self, interaction: Interaction, button: Button):
+    @button(label="2", style=discord.ButtonStyle.grey)
+    async def go_to_next_page(self, interaction: Interaction, btn: Button):
         await self.menu.show_page(interaction, self.menu.current_page + 1)
 
-    @button(label="≫", style=discord.ButtonStyle.grey)
-    async def go_to_last_page(self, interaction: Interaction, button: Button):
+    @button(label=">>", style=discord.ButtonStyle.grey)
+    async def go_to_last_page(self, interaction: Interaction, btn: Button):
         await self.menu.show_page(interaction, self.menu.source.get_max_pages() - 1)
 
     def edit_buttons(self, page: int):
-        max = self.menu.source.get_max_pages()
-        self.go_to_page.label = f"{str(page + 1)} (go to)"
+        max_pages = self.menu.source.get_max_pages()
+
+        # << first page
+        self.go_to_first_page.disabled = page == 0
+
+        # prev button — shows actual prev page number, or "..." and disabled on first page
         if page > 0:
             self.go_to_previous_page.label = str(page)
             self.go_to_previous_page.disabled = False
-            self.go_to_first_page.disabled = False
         else:
-            self.go_to_previous_page.label = "Back"
+            self.go_to_previous_page.label = "..."
             self.go_to_previous_page.disabled = True
-            self.go_to_first_page.disabled = True
 
-        if page < max - 1:
+        # current page — always blue/primary, clicking opens "go to page" modal
+        self.go_to_current_page.label = str(page + 1)
+        self.go_to_current_page.disabled = False
+        self.go_to_current_page.style = discord.ButtonStyle.primary
+
+        # next button — shows actual next page number, or "..." and disabled on last page
+        if page < max_pages - 1:
             self.go_to_next_page.label = str(page + 2)
             self.go_to_next_page.disabled = False
-            self.go_to_last_page.disabled = False
         else:
-            self.go_to_next_page.label = "Next"
+            self.go_to_next_page.label = "..."
             self.go_to_next_page.disabled = True
-            self.go_to_last_page.disabled = True
+
+        # >> last page
+        self.go_to_last_page.disabled = page == max_pages - 1
+
         self.menu.current_page = page
+
+    def disable_all(self):
+        for child in self.children:
+            child.disabled = True  # type: ignore
+
+
+class UtilControls(ActionRow):
+    """
+    Utility row — shown below the nav row when the menu is at the top level:
+        Skip to page...  |  Quit (red)
+    """
+
+    def __init__(self, menu: Menu):
+        super().__init__()
+        self.menu = menu
+
+    @button(label="Skip to page...", style=discord.ButtonStyle.grey)
+    async def skip_to_page(self, interaction: Interaction, btn: Button):
+        await interaction.response.send_modal(NumberedPageModal(self.menu))
+
+    @button(label="Quit", style=discord.ButtonStyle.danger)
+    async def quit_btn(self, interaction: Interaction, btn: Button):
+        await interaction.response.defer()
+        self.menu.view.stop()
+        self.menu.controls.disable_all()
+        self.disable_all()
+        await interaction.edit_original_response(view=self.menu.view)
+
+    def disable_all(self):
+        for child in self.children:
+            child.disabled = True  # type: ignore
 
 
 class Menu[P]:
@@ -188,6 +236,7 @@ class Menu[P]:
         self.source = source
         self.current_page = 0
         self.controls = Controls(self)
+        self.util_controls = UtilControls(self)
 
     @classmethod
     def cricketers(
@@ -217,9 +266,17 @@ class Menu[P]:
         await self.set_page(0)
         if self.source.get_max_pages() <= 1:
             return
+
+        # Set 5-minute timeout when the menu is shown at the top-level view
+        if container is None and self.view.timeout is None:
+            self.view.timeout = MENU_TIMEOUT
+
         item = container or self.view
         if not position:
             item.add_item(self.controls)
+            # Only add util row (Skip/Quit) when at the top-level view, not inside containers
+            if container is None:
+                self.view.add_item(self.util_controls)
             return
 
         # View only supports appending at the end, not inserting, so it's done manually

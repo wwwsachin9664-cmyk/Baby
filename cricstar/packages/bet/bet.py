@@ -317,7 +317,9 @@ class BetInstance(LayoutView):
             )
 
     def _winner_prefix(self, bettor: BettingUser) -> str:
-        return "✅ "
+        if bettor.user.id == self._winner_user_id:
+            return "🏆 "
+        return "❌ "
 
     def _build_button_row(self) -> ActionRow:
         row = ActionRow()

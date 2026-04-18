@@ -241,7 +241,11 @@ class Bet(commands.GroupCog, name="bet"):
         """
         result = await self.get_bet(interaction)
         if result is None:
-            await interaction.response.send_message("You do not have any active bet.", ephemeral=True)
+            await interaction.response.send_message(
+                "You do not have any active bet in this channel. "
+                "If a bet was just started, the bot may have restarted — please begin a new bet.",
+                ephemeral=True,
+            )
             return
         bet, bettor = result
         try:
@@ -307,7 +311,11 @@ class Bet(commands.GroupCog, name="bet"):
         await interaction.response.defer(thinking=True, ephemeral=True)
         result = await self.get_bet(interaction)
         if result is None:
-            await interaction.followup.send("You do not have any active bet.", ephemeral=True)
+            await interaction.followup.send(
+                "You do not have any active bet in this channel. "
+                "If a bet was just started, the bot may have restarted — please begin a new bet.",
+                ephemeral=True,
+            )
             return
         _, bettor = result
         if bettor.locked:

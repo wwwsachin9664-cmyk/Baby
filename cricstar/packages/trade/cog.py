@@ -162,7 +162,11 @@ class Trade(commands.GroupCog):
         """
         result = await self.get_trade(interaction)
         if result is None:
-            await interaction.response.send_message("You do not have any active trade.", ephemeral=True)
+            await interaction.response.send_message(
+                "You do not have any active trade in this channel. "
+                "If a trade was just started, the bot may have restarted — please begin a new trade.",
+                ephemeral=True,
+            )
             return
         trade, trader = result
         try:
@@ -321,7 +325,11 @@ class Trade(commands.GroupCog):
         await interaction.response.defer(thinking=True, ephemeral=True)
         result = await self.get_trade(interaction)
         if result is None:
-            await interaction.followup.send("You do not have any active trade.", ephemeral=True)
+            await interaction.followup.send(
+                "You do not have any active trade in this channel. "
+                "If a trade was just started, the bot may have restarted — please begin a new trade.",
+                ephemeral=True,
+            )
             return
         _, trader = result
         if trader.locked:

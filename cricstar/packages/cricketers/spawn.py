@@ -8,6 +8,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Literal
 
 import discord
+from asgiref.sync import sync_to_async
 from discord.utils import format_dt
 
 from settings.models import settings
@@ -139,20 +140,63 @@ class SpawnCooldown:
         return True
 
 
+@sync_to_async
+def _load_guild_spawn_state(guild_id: int) -> tuple[datetime | None, int | None]:
+    """Load persisted spawn state from the database for a guild."""
+    from bd_models.models import GuildConfig
+    try:
+        config = GuildConfig.objects.only("last_spawn_at", "spawn_threshold").get(guild_id=guild_id)
+        return config.last_spawn_at, config.spawn_threshold
+    except GuildConfig.DoesNotExist:
+        return None, None
+
+
+@sync_to_async
+def _save_guild_spawn_state(guild_id: int, last_spawn_at: datetime, threshold: int):
+    """Persist spawn state to the database for a guild."""
+    from bd_models.models import GuildConfig
+    GuildConfig.objects.filter(guild_id=guild_id).update(
+        last_spawn_at=last_spawn_at,
+        spawn_threshold=threshold,
+    )
+
+
 class SpawnManager(BaseSpawnManager):
     def __init__(self, bot: "CricStarBot"):
         super().__init__(bot)
         self.cooldowns: dict[int, SpawnCooldown] = {}
+
+    async def _get_or_create_cooldown(self, guild_id: int, message_time: datetime) -> SpawnCooldown:
+        """
+        Return the cooldown for a guild, loading persisted state from DB on first access
+        so spawn progress survives bot restarts and remixes.
+        """
+        if guild_id in self.cooldowns:
+            return self.cooldowns[guild_id]
+
+        last_spawn_at, saved_threshold = await _load_guild_spawn_state(guild_id)
+
+        if last_spawn_at is not None:
+            # Restore from DB — use the persisted last-spawn time so the 10-minute
+            # minimum and time-based multiplier are calculated correctly.
+            cooldown = SpawnCooldown(time=last_spawn_at)
+            if saved_threshold is not None:
+                cooldown.threshold = saved_threshold
+            # Start progress at half-way so the bot doesn't immediately re-spawn
+            # after a restart while still honouring time elapsed.
+            cooldown.scaled_message_count = settings.spawn_chance_min // 2
+        else:
+            cooldown = SpawnCooldown(message_time)
+
+        self.cooldowns[guild_id] = cooldown
+        return cooldown
 
     async def handle_message(self, message: discord.Message) -> bool:
         guild = message.guild
         if not guild:
             return False
 
-        cooldown = self.cooldowns.get(guild.id, None)
-        if not cooldown:
-            cooldown = SpawnCooldown(message.created_at)
-            self.cooldowns[guild.id] = cooldown
+        cooldown = await self._get_or_create_cooldown(guild.id, message.created_at)
 
         delta_t = (message.created_at - cooldown.time).total_seconds()
         # change how the threshold varies according to the member count, while nuking farm servers
@@ -180,8 +224,12 @@ class SpawnManager(BaseSpawnManager):
             # wait for at least 10 minutes before spawning
             return False
 
-        # spawn cricketer
+        # spawn cricketer — reset cooldown and persist new state to DB
         cooldown.reset(message.created_at)
+        try:
+            await _save_guild_spawn_state(guild.id, cooldown.time, cooldown.threshold)
+        except Exception:
+            log.exception(f"Failed to persist spawn state for guild {guild.id}")
         return True
 
     async def admin_explain(self, ctx: "Context[CricStarBot]", guild: discord.Guild):

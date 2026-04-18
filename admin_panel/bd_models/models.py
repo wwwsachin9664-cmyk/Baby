@@ -84,6 +84,16 @@ class GuildConfig(models.Model):
     admin_command_synced = models.BooleanField(
         help_text="True if slash admin commands are present in this server", default=False, editable=False
     )
+    last_spawn_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Timestamp of the last cricketer spawn in this guild — persisted across restarts",
+    )
+    spawn_threshold = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="Current spawn threshold for this guild — persisted across restarts",
+    )
 
     objects: Manager[Self] = Manager()
 
