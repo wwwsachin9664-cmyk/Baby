@@ -31,7 +31,7 @@
     "bat_score": 95,
     "ball_score": 0,
     "rarity": 0.5,
-    "spawn_chance": 999.0,
+    "spawn_chance": 10.0,
     "artwork_author": "NASH",
     "tradeable": true,
     "spawnable": true,
@@ -47,7 +47,7 @@
       "badge_rarity": 0.5,
       "daily_chance": 0.0,
       "display_name": "Mccullum",
-      "weekly_chance": 0.0,
+      "weekly_chance": 10.0,
       "forced_special": 4
     }
   },
@@ -1181,7 +1181,7 @@
       "weekly_chance": 700.0,
       "forced_special": 3,
       "foreground_border": true,
-      "only_spawn_in_event": true
+      "only_spawn_in_event": false
     }
   },
   "Josh Hazlewood (IPL2026)": {
@@ -1193,7 +1193,7 @@
     "bat_score": 20,
     "ball_score": 89,
     "rarity": 1.0,
-    "spawn_chance": 25.0,
+    "spawn_chance": 13000.0,
     "artwork_author": "MarcoGOD",
     "tradeable": true,
     "spawnable": true,
@@ -1204,16 +1204,16 @@
     "filename": "premade_josh_hazlewood_ipl2026.png",
     "wild_card_filename": "spawn_josh_hazlewood_ipl2026.jpg",
     "capacity_logic": {
-      "badge_rarity": 1.0,
       "bg_preset": "IPL2026",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": true,
       "credit_font": "optimus",
-      "weekly_chance": 25.0,
+      "badge_rarity": 1.0,
       "daily_chance": 25.0,
       "display_name": "Hazlewood",
-      "forced_special": 3
+      "credit_stroke": true,
+      "weekly_chance": 25.0,
+      "forced_special": 3,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   },
   "Suryakumar Yadav (IPL2026)": {
