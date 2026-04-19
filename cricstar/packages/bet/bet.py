@@ -8,10 +8,12 @@ Flow
 ────
 1. /bet begin  → BetInstance.configure() creates the view and sends the message.
 2. Each user adds cards via /bet add (locked in DB immediately).
-3. When both click "Lock proposal" → confirmation phase.
+3. When both click "Lock proposal" → confirmation phase (✅ appears next to each name
+   as they confirm).
 4. Both click "Confirm" → finish_bet() picks a random winner,
    transfers all of the loser's staked cards to the winner atomically,
-   then displays the result.
+   then displays the result: only the winner's name (plain, no emoji) and
+   the combined list of all cards they won.
 """
 
 from __future__ import annotations
@@ -88,7 +90,6 @@ class BettingUser:
         lines = []
         async for ball in self.get_queryset().select_related("ball").prefetch_related("special"):
             desc = ball.description(include_emoji=True, bot=bot, is_trade=True)
-            # Use emojis.json lookup (all cards have emoji_id=0, so only this source works)
             emoji_str = get_player_emoji(ball.ball.country)
             if emoji_str:
                 desc = f"{emoji_str}{desc}"
@@ -137,6 +138,30 @@ class BettingUser:
 
 
 # ─────────────────────────────────────────────────────────────────
+#  Helpers
+# ─────────────────────────────────────────────────────────────────
+
+
+async def _combined_card_text(all_ids: set[int], bot: CricStarBot) -> str:
+    """Return a card list string for a combined set of ball IDs."""
+    from cricstar.core.utils.emojis import get_player_emoji
+    if not all_ids:
+        return "*No cards staked*"
+    lines = []
+    async for ball in (
+        BallInstance.objects.filter(id__in=all_ids)
+        .select_related("ball")
+        .prefetch_related("special")
+    ):
+        desc = ball.description(include_emoji=True, bot=bot, is_trade=True)
+        emoji_str = get_player_emoji(ball.ball.country)
+        if emoji_str:
+            desc = f"{emoji_str}{desc}"
+        lines.append(f"• {desc}")
+    return "\n".join(lines) if lines else "*No cards staked*"
+
+
+# ─────────────────────────────────────────────────────────────────
 #  BetInstance — the LayoutView, handles all rendering
 # ─────────────────────────────────────────────────────────────────
 
@@ -150,17 +175,19 @@ class BetInstance(LayoutView):
     """
 
     def __init__(self, cog: BetCog):
-        super().__init__(timeout=BET_TIMEOUT)
+        # No discord.py built-in timeout — we manage our own lifecycle via _timeout_task
+        super().__init__(timeout=None)
         self.cog = cog
         self.bettor1: BettingUser
         self.bettor2: BettingUser
         self.message: discord.Message
 
         self._resolved: bool = False        # True once finish_bet() has run
+        self._timed_out: bool = False       # True once the custom timeout fires
         self.edit_lock = asyncio.Lock()
         self.confirmation_phase_start: datetime | None = None
 
-        self.timeout_task = asyncio.create_task(
+        self._timeout_task = asyncio.create_task(
             self._timeout(), name=f"bet-timeout-{id(self)}"
         )
 
@@ -172,7 +199,8 @@ class BetInstance(LayoutView):
 
     @property
     def active(self) -> bool:
-        return not self.is_finished() and not self.cancelled and not self._resolved
+        """True while the bet is still accepting interactions."""
+        return not self._timed_out and not self.cancelled and not self._resolved
 
     @property
     def confirmation_phase(self) -> bool:
@@ -187,7 +215,7 @@ class BetInstance(LayoutView):
         log.exception(
             f"Error in bet between {self.bettor1} and {self.bettor2}", exc_info=error
         )
-        await self._cleanup()
+        await self._do_cleanup()
         send = (
             interaction.followup.send
             if interaction.response.is_done()
@@ -215,7 +243,8 @@ class BetInstance(LayoutView):
     async def _timeout(self):
         await asyncio.sleep(BET_TIMEOUT)
         if self.active:
-            await self._cleanup()
+            self._timed_out = True
+            await self.cleanup()
 
     # ── Rendering ────────────────────────────────────────────────
 
@@ -227,15 +256,15 @@ class BetInstance(LayoutView):
         await self._fill_container(container)
         self.add_item(container)
 
-        # Buttons live outside the container
-        if not self._resolved:
+        # Buttons live outside the container (hidden once resolved)
+        if not self._resolved and not self.cancelled and not self._timed_out:
             row = self._build_button_row()
             self.add_item(row)
 
     def _accent_colour(self) -> discord.Colour:
         if self._resolved:
             return discord.Colour.green()
-        if self.cancelled:
+        if self.cancelled or self._timed_out:
             return discord.Colour.red()
         if self.confirmation_phase:
             return discord.Colour.gold()
@@ -244,20 +273,36 @@ class BetInstance(LayoutView):
     async def _fill_container(self, container: Container):
         b1, b2 = self.bettor1, self.bettor2
 
-        # ── Intro mention (only shown before bet is resolved/cancelled) ──────
-        if not self._resolved and not self.cancelled:
-            container.add_item(TextDisplay(
-                f"Hey {b2.user.mention}, **{b1.user.display_name}** is proposing a CricStar Bet with you!"
-            ))
+        # ── Resolved: show ONLY the winner, no loser section ────────────────
+        if self._resolved:
+            container.add_item(TextDisplay(self._result_header))
             container.add_item(Separator())
 
-        # ── Header ───────────────────────────────────────────────
-        if self._resolved:
-            # header is set later in finish_bet after we know the winner
-            header = self._result_header
-        elif self.cancelled:
-            header = "## CricStar Betting\nThe bet has been cancelled."
-        elif self.confirmation_phase:
+            winner = b1 if b1.user.id == self._winner_user_id else b2
+            loser  = b2 if b1.user.id == self._winner_user_id else b1
+
+            # Winner's name — plain, no emoji prefix
+            container.add_item(TextDisplay(f"**{winner.user.display_name}**"))
+
+            # All cards the winner now holds (their stake + loser's captured cards)
+            all_won_ids = winner.proposal | loser.proposal
+            container.add_item(TextDisplay(await _combined_card_text(all_won_ids, self.cog.bot)))
+            return
+
+        # ── Cancelled / timed-out ────────────────────────────────────────────
+        if self.cancelled or self._timed_out:
+            reason = "The bet has been cancelled." if self.cancelled else "The bet timed out."
+            container.add_item(TextDisplay(f"## CricStar Betting\n{reason}"))
+            return
+
+        # ── Intro mention (only while bet is live) ───────────────────────────
+        container.add_item(TextDisplay(
+            f"Hey {b2.user.mention}, **{b1.user.display_name}** is proposing a CricStar Bet with you!"
+        ))
+        container.add_item(Separator())
+
+        # ── Header ───────────────────────────────────────────────────────────
+        if self.confirmation_phase:
             header = (
                 "## CricStar Betting\n"
                 "Both users locked their propositions!\n"
@@ -278,48 +323,33 @@ class BetInstance(LayoutView):
         container.add_item(TextDisplay(header))
         container.add_item(Separator())
 
-        # ── Bettor 1 ──────────────────────────────────────────────
-        if self._resolved:
-            b1_prefix = self._winner_prefix(b1)
-        elif b1.cancelled:
-            b1_prefix = "❌ "
-        elif b1.confirmed:
-            b1_prefix = "✅ "
-        elif b1.locked:
-            b1_prefix = "🔒 "
-        else:
-            b1_prefix = ""
+        # ── Bettor 1 ─────────────────────────────────────────────────────────
+        b1_prefix = self._live_prefix(b1)
         container.add_item(TextDisplay(f"**{b1_prefix}{b1.user.display_name}**"))
         container.add_item(TextDisplay(await b1.card_list_text(self.cog.bot)))
-
         container.add_item(Separator())
 
-        # ── Bettor 2 ──────────────────────────────────────────────
-        if self._resolved:
-            b2_prefix = self._winner_prefix(b2)
-        elif b2.cancelled:
-            b2_prefix = "❌ "
-        elif b2.confirmed:
-            b2_prefix = "✅ "
-        elif b2.locked:
-            b2_prefix = "🔒 "
-        else:
-            b2_prefix = ""
+        # ── Bettor 2 ─────────────────────────────────────────────────────────
+        b2_prefix = self._live_prefix(b2)
         container.add_item(TextDisplay(f"**{b2_prefix}{b2.user.display_name}**"))
         container.add_item(TextDisplay(await b2.card_list_text(self.cog.bot)))
 
-        if not self._resolved:
-            container.add_item(Separator())
-            container.add_item(
-                TextDisplay(
-                    "-# This message is updated every 15 seconds, but you can keep on editing your proposal."
-                )
+        container.add_item(Separator())
+        container.add_item(
+            TextDisplay(
+                "-# This message is updated every 15 seconds, but you can keep on editing your proposal."
             )
+        )
 
-    def _winner_prefix(self, bettor: BettingUser) -> str:
-        if bettor.user.id == self._winner_user_id:
-            return "🏆 "
-        return "❌ "
+    def _live_prefix(self, bettor: BettingUser) -> str:
+        """Emoji prefix shown while the bet is live (not yet resolved)."""
+        if bettor.cancelled:
+            return "❌ "
+        if bettor.confirmed:
+            return "✅ "
+        if bettor.locked:
+            return "🔒 "
+        return ""
 
     def _build_button_row(self) -> ActionRow:
         row = ActionRow()
@@ -423,9 +453,9 @@ class BetInstance(LayoutView):
         if not view.value:
             return
         bettor.cancelled = True
-        self.stop()
         await self._cleanup_cards()
         await self._update(None)
+        await self._do_cleanup()
 
     async def _confirm_callback(self, interaction: Interaction):
         bettor = self._get_bettor(interaction.user.id)
@@ -497,13 +527,24 @@ class BetInstance(LayoutView):
         return msg
 
     async def cleanup(self):
+        """Public cleanup — called by cog.get_bet() and timeout handler."""
         await self._cleanup_cards()
-        self.stop()
+        self._do_cleanup_sync()
+
+    async def _do_cleanup(self):
+        """Internal cleanup: deregister from cog and stop."""
+        self._do_cleanup_sync()
+
+    def _do_cleanup_sync(self):
+        """Remove this bet from the cog's tracking dict."""
         msg = getattr(self, "message", None)
         if msg is not None:
             channel_bets = self.cog.bets.get(msg.channel.id, {})
             channel_bets.pop(self.bettor1.user.id, None)
             channel_bets.pop(self.bettor2.user.id, None)
+        # Cancel our custom timeout task if it's still running
+        if not self._timeout_task.done():
+            self._timeout_task.cancel()
 
     async def _cleanup_cards(self):
         all_ids = self.bettor1.proposal | self.bettor2.proposal
@@ -512,7 +553,7 @@ class BetInstance(LayoutView):
 
     async def admin_cancel(self, reason: str):
         await self._cleanup_cards()
-        self.stop()
+        self._do_cleanup_sync()
         try:
             self.clear_items()
             self.add_item(TextDisplay(f"This bet was cancelled by an admin: {reason}"))
@@ -528,14 +569,9 @@ class BetInstance(LayoutView):
         then post the result message.
         """
         self._resolved = True
-        self.stop()
 
-        # Unregister immediately so no further interactions are processed
-        msg = getattr(self, "message", None)
-        if msg is not None:
-            channel_bets = self.cog.bets.get(msg.channel.id, {})
-            channel_bets.pop(self.bettor1.user.id, None)
-            channel_bets.pop(self.bettor2.user.id, None)
+        # Deregister immediately so no further /bet add commands can reference this bet
+        self._do_cleanup_sync()
 
         # Random winner
         winner, loser = random.choice(
@@ -566,6 +602,8 @@ class BetInstance(LayoutView):
                         deleted=False,
                     ).update(locked=None)
 
+        msg = getattr(self, "message", None)
+
         try:
             await _transfer()
         except IntegrityError:
@@ -582,13 +620,13 @@ class BetInstance(LayoutView):
                 await msg.edit(view=self)
             return
 
-        # Set result header — italic sentence, bold-italic winner name (like FootDex style)
+        # Build the result header
         self._result_header = (
             f"## CricStar Betting\n"
             f"*The winner is* ***{winner.user.display_name}***"
         )
 
-        # Re-render the full view using the standard pipeline (buttons are hidden since _resolved=True)
+        # Re-render — _fill_container will show winner-only section
         await self._build_view()
         if msg:
             await msg.edit(view=self)

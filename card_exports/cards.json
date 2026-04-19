@@ -1554,7 +1554,7 @@
     "filename": "premade_sachin_sourav.png",
     "wild_card_filename": "spawn_sachin_sourav.jpg",
     "capacity_logic": {
-      "bg_preset": "A",
+      "bg_preset": "B",
       "credit_font": "optimus",
       "badge_rarity": 0.1,
       "daily_chance": 0.0,
@@ -1563,6 +1563,37 @@
       "weekly_chance": 5.0,
       "foreground_border": true,
       "only_spawn_in_event": false
+    }
+  },
+  "Dewald Brevis": {
+    "player_name": "Dewald Brevis",
+    "card_name": "Brevis",
+    "slug": "dewald_brevis",
+    "codename": "Baby 360",
+    "description": "Dewald Brevis is a phenomenal young talent nicknamed Baby AB for his breathtaking strokeplay and versatility across the crease A dynamic batter with immense power he represents the future of global T20 cricket through his fearlessness",
+    "bat_score": 80,
+    "ball_score": 15,
+    "rarity": 10.0,
+    "spawn_chance": 500.0,
+    "artwork_author": "Rishav",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": false,
+    "catch_name": "dewald brevis",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_dewald_brevis.png",
+    "wild_card_filename": "spawn_dewald_brevis.jpg",
+    "capacity_logic": {
+      "badge_rarity": 10.0,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 0.0,
+      "daily_chance": 650.0,
+      "display_name": "Brevis"
     }
   }
 }
