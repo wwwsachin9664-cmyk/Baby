@@ -152,13 +152,30 @@ def _load_guild_spawn_state(guild_id: int) -> tuple[datetime | None, int | None]
 
 
 @sync_to_async
-def _save_guild_spawn_state(guild_id: int, last_spawn_at: datetime, threshold: int):
-    """Persist spawn state to the database for a guild."""
+def _claim_spawn(guild_id: int, new_time: datetime, new_threshold: int) -> bool:
+    """
+    Atomically claim the right to spawn for a guild.
+
+    Uses a conditional UPDATE so that even when two bot processes run concurrently
+    (e.g. after a Replit restart where the old process lingers), only one process
+    can win the race per spawn event.
+
+    The claim succeeds only when the stored last_spawn_at is either NULL or more
+    than 5 seconds in the past, preventing a duplicate spawn within that window.
+
+    Returns True if this process should spawn, False if another already did.
+    """
+    from datetime import timedelta
+
+    from django.db.models import Q
+
     from bd_models.models import GuildConfig
-    GuildConfig.objects.filter(guild_id=guild_id).update(
-        last_spawn_at=last_spawn_at,
-        spawn_threshold=threshold,
-    )
+
+    cutoff = new_time - timedelta(seconds=5)
+    rows_updated = GuildConfig.objects.filter(guild_id=guild_id).filter(
+        Q(last_spawn_at__isnull=True) | Q(last_spawn_at__lt=cutoff)
+    ).update(last_spawn_at=new_time, spawn_threshold=new_threshold)
+    return rows_updated > 0
 
 
 class SpawnManager(BaseSpawnManager):
@@ -224,12 +241,31 @@ class SpawnManager(BaseSpawnManager):
             # wait for at least 10 minutes before spawning
             return False
 
-        # spawn cricketer — reset cooldown and persist new state to DB
-        cooldown.reset(message.created_at)
+        # Atomically claim the spawn in the database before doing anything in memory.
+        # This prevents duplicate spawns when two bot processes run concurrently
+        # (e.g. after a Replit restart where the old process didn't exit cleanly).
+        # The DB UPDATE only succeeds for one process; the other gets rows_updated=0.
+        new_time = message.created_at
+        new_threshold = random.randint(settings.spawn_chance_min, settings.spawn_chance_max)
         try:
-            await _save_guild_spawn_state(guild.id, cooldown.time, cooldown.threshold)
+            claimed = await _claim_spawn(guild.id, new_time, new_threshold)
         except Exception:
-            log.exception(f"Failed to persist spawn state for guild {guild.id}")
+            log.exception(f"Failed to claim spawn for guild {guild.id}, allowing spawn anyway")
+            claimed = True  # fall back to spawning if DB is unreachable
+
+        if not claimed:
+            log.warning(f"Spawn race prevented for guild {guild.id} — another process already spawned")
+            cooldown.reset(new_time)  # still reset locally so we don't instantly re-trigger
+            return False
+
+        # Won the DB race — apply the same values locally so in-memory state stays in sync
+        cooldown.scaled_message_count = 1.0
+        cooldown.threshold = new_threshold
+        try:
+            cooldown.lock.release()
+        except RuntimeError:
+            pass  # already released by the asyncio.sleep block
+        cooldown.time = new_time
         return True
 
     async def admin_explain(self, ctx: "Context[CricStarBot]", guild: discord.Guild):
