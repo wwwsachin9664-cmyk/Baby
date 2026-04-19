@@ -32,53 +32,93 @@ DISCORD_TOKEN = (os.environ.get("DISCORD_BOT_TOKEN") or os.environ.get("DISCORD_
 PID_FILE = os.path.join(BASE_DIR, ".bot.pid")
 
 
-def _kill_old_process() -> None:
-    """Kill any previously running bot process recorded in the PID file."""
-    if not os.path.exists(PID_FILE):
-        return
-
+def _find_all_bot_pids() -> list:
+    """
+    Find ALL running manage.py startbot processes that are NOT the current process.
+    This catches ghost processes even when the PID file is stale or missing.
+    """
+    my_pid = os.getpid()
+    found = []
     try:
-        with open(PID_FILE) as f:
-            raw = f.read().strip()
-        old_pid = int(raw)
-    except (ValueError, OSError):
-        return
+        result = subprocess.run(
+            ["ps", "aux"],
+            capture_output=True, text=True
+        )
+        for line in result.stdout.splitlines():
+            if "manage.py" in line and "startbot" in line and "grep" not in line:
+                parts = line.split()
+                try:
+                    pid = int(parts[1])
+                    if pid != my_pid:
+                        found.append(pid)
+                except (IndexError, ValueError):
+                    pass
+    except Exception:
+        pass
+    return found
 
-    if old_pid == os.getpid():
-        return  # somehow same process, skip
 
+def _kill_pid(pid: int) -> None:
+    """Send SIGTERM then SIGKILL to a single PID."""
     try:
-        # Check if the process actually exists
-        os.kill(old_pid, 0)
+        os.kill(pid, 0)
     except ProcessLookupError:
         return  # Already dead
-    except PermissionError:
-        pass  # Exists but we might not be able to signal it — try anyway
 
-    print(f"[PID lock] Found old bot process (PID {old_pid}), sending SIGTERM...")
+    print(f"[PID lock] Killing old bot process (PID {pid}) with SIGTERM...")
     try:
-        os.kill(old_pid, signal.SIGTERM)
+        os.kill(pid, signal.SIGTERM)
     except (ProcessLookupError, PermissionError):
         return
 
-    # Wait up to 8 seconds for a graceful shutdown
     deadline = time.monotonic() + 8
     while time.monotonic() < deadline:
         time.sleep(0.5)
         try:
-            os.kill(old_pid, 0)  # 0 = just check existence
+            os.kill(pid, 0)
         except ProcessLookupError:
-            print(f"[PID lock] Old process (PID {old_pid}) exited cleanly.")
+            print(f"[PID lock] PID {pid} exited cleanly.")
             return
 
-    # Still alive — force kill
-    print(f"[PID lock] Old process (PID {old_pid}) did not exit, sending SIGKILL...")
+    print(f"[PID lock] PID {pid} still alive — sending SIGKILL...")
     try:
-        os.kill(old_pid, signal.SIGKILL)
+        os.kill(pid, signal.SIGKILL)
     except (ProcessLookupError, PermissionError):
         pass
     time.sleep(1)
-    print(f"[PID lock] Old process (PID {old_pid}) force-killed.")
+    print(f"[PID lock] PID {pid} force-killed.")
+
+
+def _kill_old_process() -> None:
+    """
+    Kill ALL other bot processes — both from the PID file AND by scanning
+    all processes for manage.py startbot.  This ensures ghost processes
+    left over from previous restarts are always eliminated, even when the
+    PID file is stale, missing, or was never written.
+    """
+    my_pid = os.getpid()
+    pids_to_kill = set()
+
+    # 1. PID file approach (fast path)
+    if os.path.exists(PID_FILE):
+        try:
+            with open(PID_FILE) as f:
+                old_pid = int(f.read().strip())
+            if old_pid != my_pid:
+                pids_to_kill.add(old_pid)
+        except (ValueError, OSError):
+            pass
+
+    # 2. Full process scan (catches ghost processes the PID file misses)
+    for pid in _find_all_bot_pids():
+        pids_to_kill.add(pid)
+
+    if not pids_to_kill:
+        print("[PID lock] No old bot processes found.")
+        return
+
+    for pid in pids_to_kill:
+        _kill_pid(pid)
 
 
 def _write_pid() -> None:

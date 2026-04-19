@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-19T11:46:06.671254+00:00",
-  "count": 984,
+  "exported_at": "2026-04-19T12:24:20.867036+00:00",
+  "count": 987,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -5385,19 +5385,6 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1274638398853742605,
-      "ball_player_name": "Pat Cummins",
-      "special_name": null,
-      "health_bonus": -17,
-      "attack_bonus": -3,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 928536817001721906,
-      "catch_date": "2026-04-19T06:35:53.158131+00:00",
-      "spawned_time": "2026-04-17T11:33:56.279000+00:00",
-      "extra_data": {}
-    },
-    {
       "player_discord_id": 1314630533158011005,
       "ball_player_name": "Ms Dhoni",
       "special_name": "ICONS",
@@ -5512,6 +5499,19 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-19T06:35:53.200011+00:00",
       "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1229793780002193472,
+      "ball_player_name": "Pat Cummins",
+      "special_name": null,
+      "health_bonus": -17,
+      "attack_bonus": -3,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-19T06:35:53.158131+00:00",
+      "spawned_time": "2026-04-17T11:33:56.279000+00:00",
       "extra_data": {}
     },
     {
@@ -7960,19 +7960,6 @@
     },
     {
       "player_discord_id": 1274638398853742605,
-      "ball_player_name": "Avesh Khan",
-      "special_name": null,
-      "health_bonus": 9,
-      "attack_bonus": 13,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 1476180448030756928,
-      "catch_date": "2026-04-19T06:35:54.106773+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
-    {
-      "player_discord_id": 1274638398853742605,
       "ball_player_name": "Sachin - Sourav",
       "special_name": null,
       "health_bonus": -17,
@@ -8255,6 +8242,19 @@
       "server_id": 1197183728733147167,
       "catch_date": "2026-04-19T06:35:54.221775+00:00",
       "spawned_time": "2026-04-18T10:24:14.853000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1170728448432553994,
+      "ball_player_name": "Avesh Khan",
+      "special_name": null,
+      "health_bonus": 9,
+      "attack_bonus": 13,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-19T06:35:54.106773+00:00",
+      "spawned_time": null,
       "extra_data": {}
     },
     {
@@ -11963,19 +11963,6 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1274638398853742605,
-      "ball_player_name": "Virat Kohli",
-      "special_name": null,
-      "health_bonus": -20,
-      "attack_bonus": -5,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 1476180448030756928,
-      "catch_date": "2026-04-19T06:35:55.766998+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
-    {
       "player_discord_id": 820893612489179136,
       "ball_player_name": "KL Rahul",
       "special_name": null,
@@ -12050,19 +12037,6 @@
       "tradeable": true,
       "server_id": 928536817001721906,
       "catch_date": "2026-04-19T07:20:42.123596+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
-    {
-      "player_discord_id": 1229793780002193472,
-      "ball_player_name": "Steve Smith",
-      "special_name": null,
-      "health_bonus": 0,
-      "attack_bonus": -12,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 928536817001721906,
-      "catch_date": "2026-04-19T07:20:57.830012+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -12389,19 +12363,6 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-19T06:35:53.564588+00:00",
       "spawned_time": "2026-04-17T16:37:11.739000+00:00",
-      "extra_data": {}
-    },
-    {
-      "player_discord_id": 1434609486403997718,
-      "ball_player_name": "Virat Kohli",
-      "special_name": null,
-      "health_bonus": 8,
-      "attack_bonus": -11,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 1493475022671450195,
-      "catch_date": "2026-04-19T08:14:05.439036+00:00",
-      "spawned_time": null,
       "extra_data": {}
     },
     {
@@ -12757,6 +12718,19 @@
     },
     {
       "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Avesh Khan",
+      "special_name": null,
+      "health_bonus": 4,
+      "attack_bonus": -5,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-19T11:53:14.710705+00:00",
+      "spawned_time": "2026-04-19T11:53:07.490000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
       "ball_player_name": "Sachin - Sourav",
       "special_name": null,
       "health_bonus": 13,
@@ -12766,19 +12740,6 @@
       "server_id": 1371364151728799856,
       "catch_date": "2026-04-19T11:35:50.043129+00:00",
       "spawned_time": "2026-04-19T11:35:02.357000+00:00",
-      "extra_data": {}
-    },
-    {
-      "player_discord_id": 1465448460672041012,
-      "ball_player_name": "Steve Smith",
-      "special_name": null,
-      "health_bonus": -12,
-      "attack_bonus": 13,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 1371364151728799856,
-      "catch_date": "2026-04-19T11:38:28.328197+00:00",
-      "spawned_time": "2026-04-19T11:38:19.495000+00:00",
       "extra_data": {}
     },
     {
@@ -12792,6 +12753,84 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-19T11:45:38.325600+00:00",
       "spawned_time": "2026-04-19T11:43:07.251000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Naveen ul Haq",
+      "special_name": null,
+      "health_bonus": 18,
+      "attack_bonus": -14,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-19T12:13:47.209146+00:00",
+      "spawned_time": "2026-04-19T12:13:24.145000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Virat Kohli",
+      "special_name": null,
+      "health_bonus": 8,
+      "attack_bonus": -11,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1493475022671450195,
+      "catch_date": "2026-04-19T08:14:05.439036+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1274638398853742605,
+      "ball_player_name": "Steve Smith",
+      "special_name": null,
+      "health_bonus": 0,
+      "attack_bonus": -12,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-19T07:20:57.830012+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1274638398853742605,
+      "ball_player_name": "Virat Kohli",
+      "special_name": null,
+      "health_bonus": -20,
+      "attack_bonus": -5,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-19T06:35:55.766998+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Steve Smith",
+      "special_name": null,
+      "health_bonus": -12,
+      "attack_bonus": 13,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-19T11:38:28.328197+00:00",
+      "spawned_time": "2026-04-19T11:38:19.495000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Steve Smith",
+      "special_name": null,
+      "health_bonus": 0,
+      "attack_bonus": -15,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-19T12:19:49.633433+00:00",
+      "spawned_time": "2026-04-19T12:17:41.790000+00:00",
       "extra_data": {}
     }
   ]
