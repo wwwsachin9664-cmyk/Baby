@@ -1595,5 +1595,37 @@
       "daily_chance": 650.0,
       "display_name": "Brevis"
     }
+  },
+  "Rashid Khan (IPL2026)": {
+    "player_name": "Rashid Khan (IPL2026)",
+    "card_name": "Rashid",
+    "slug": "rashid_khan_ipl2026",
+    "codename": "Roshi",
+    "description": "Rashid Khan is a premier Afghanistan leg spinner and crucial all rounder in the IPL known for his lethal spin  miserly economy and explosive lower order batting",
+    "bat_score": 87,
+    "ball_score": 90,
+    "rarity": 1.2,
+    "spawn_chance": 150.0,
+    "artwork_author": "Marco",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": false,
+    "catch_name": "rashid khan",
+    "event_id": 3,
+    "event_name": "IPL2026",
+    "filename": "premade_rashid_khan_ipl2026.png",
+    "wild_card_filename": "spawn_rashid_khan_ipl2026.png",
+    "capacity_logic": {
+      "badge_rarity": 1.2,
+      "bg_preset": "IPL2026",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 90.0,
+      "daily_chance": 0.0,
+      "display_name": "Rashid",
+      "forced_special": 3
+    }
   }
 }
