@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-19T06:08:54.276910+00:00",
-  "count": 927,
+  "exported_at": "2026-04-19T06:19:58.591870+00:00",
+  "count": 928,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -11453,6 +11453,19 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-19T05:53:19.250920+00:00",
       "spawned_time": "2026-04-19T05:50:49.751000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1322496330433695847,
+      "ball_player_name": "Kane Williamson",
+      "special_name": null,
+      "health_bonus": -17,
+      "attack_bonus": -1,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1331925375420465162,
+      "catch_date": "2026-04-19T06:13:30.647009+00:00",
+      "spawned_time": "2026-04-19T06:11:36.816000+00:00",
       "extra_data": {}
     },
     {
