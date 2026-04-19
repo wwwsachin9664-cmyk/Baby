@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-19T11:42:34.466583+00:00",
-  "count": 983,
+  "exported_at": "2026-04-19T11:46:06.671254+00:00",
+  "count": 984,
   "holdings": [
     {
       "player_discord_id": 1387054957152174191,
@@ -12779,6 +12779,19 @@
       "server_id": 1371364151728799856,
       "catch_date": "2026-04-19T11:38:28.328197+00:00",
       "spawned_time": "2026-04-19T11:38:19.495000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1322496330433695847,
+      "ball_player_name": "Naseem Shah",
+      "special_name": null,
+      "health_bonus": 13,
+      "attack_bonus": -4,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-19T11:45:38.325600+00:00",
+      "spawned_time": "2026-04-19T11:43:07.251000+00:00",
       "extra_data": {}
     }
   ]
