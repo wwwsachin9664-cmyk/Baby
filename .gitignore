@@ -47,3 +47,6 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Bot process lock file (auto-generated, must not be committed)
+.bot.pid

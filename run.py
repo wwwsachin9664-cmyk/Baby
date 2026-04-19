@@ -3,8 +3,10 @@
 CricStar Discord Bot - Startup Script
 """
 import os
+import signal
 import subprocess
 import sys
+import time
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ADMIN_PANEL_DIR = os.path.join(BASE_DIR, "admin_panel")
@@ -13,6 +15,85 @@ MANAGE_PY = os.path.join(ADMIN_PANEL_DIR, "manage.py")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "admin_panel.settings.cricstar")
 
 DISCORD_TOKEN = (os.environ.get("DISCORD_BOT_TOKEN") or os.environ.get("DISCORD_TOKEN") or "").strip()
+
+# ---------------------------------------------------------------------------
+# PID lock — ensure only one bot process is alive at a time
+# ---------------------------------------------------------------------------
+# When Replit restarts or remixes the project, the old bot process may keep
+# running for a while alongside the new one.  Both processes are connected to
+# Discord and receive every message, which causes double card spawns.
+#
+# We write the current process PID to a lock file at startup.  If a previous
+# PID file exists, we forcibly terminate that process before continuing.
+# Because run.py ends with os.execv (replacing itself with manage.py startbot,
+# same PID), the lock file correctly tracks the live bot process.
+# ---------------------------------------------------------------------------
+
+PID_FILE = os.path.join(BASE_DIR, ".bot.pid")
+
+
+def _kill_old_process() -> None:
+    """Kill any previously running bot process recorded in the PID file."""
+    if not os.path.exists(PID_FILE):
+        return
+
+    try:
+        with open(PID_FILE) as f:
+            raw = f.read().strip()
+        old_pid = int(raw)
+    except (ValueError, OSError):
+        return
+
+    if old_pid == os.getpid():
+        return  # somehow same process, skip
+
+    try:
+        # Check if the process actually exists
+        os.kill(old_pid, 0)
+    except ProcessLookupError:
+        return  # Already dead
+    except PermissionError:
+        pass  # Exists but we might not be able to signal it — try anyway
+
+    print(f"[PID lock] Found old bot process (PID {old_pid}), sending SIGTERM...")
+    try:
+        os.kill(old_pid, signal.SIGTERM)
+    except (ProcessLookupError, PermissionError):
+        return
+
+    # Wait up to 8 seconds for a graceful shutdown
+    deadline = time.monotonic() + 8
+    while time.monotonic() < deadline:
+        time.sleep(0.5)
+        try:
+            os.kill(old_pid, 0)  # 0 = just check existence
+        except ProcessLookupError:
+            print(f"[PID lock] Old process (PID {old_pid}) exited cleanly.")
+            return
+
+    # Still alive — force kill
+    print(f"[PID lock] Old process (PID {old_pid}) did not exit, sending SIGKILL...")
+    try:
+        os.kill(old_pid, signal.SIGKILL)
+    except (ProcessLookupError, PermissionError):
+        pass
+    time.sleep(1)
+    print(f"[PID lock] Old process (PID {old_pid}) force-killed.")
+
+
+def _write_pid() -> None:
+    """Write the current PID to the lock file."""
+    try:
+        with open(PID_FILE, "w") as f:
+            f.write(str(os.getpid()))
+    except OSError as exc:
+        print(f"[PID lock] Warning: could not write PID file: {exc}")
+
+
+_kill_old_process()
+_write_pid()
+
+# ---------------------------------------------------------------------------
 
 env = {**os.environ, "DJANGO_SETTINGS_MODULE": "admin_panel.settings.cricstar"}
 
@@ -163,6 +244,9 @@ if result.returncode != 0:
     print("Guild config export step failed (non-critical, continuing).")
 
 # Step 8: Start the bot
+# NOTE: os.execv replaces this process image with manage.py startbot,
+# keeping the SAME PID — so the PID lock file written above remains valid
+# and correctly tracks the live bot process.
 print("=" * 50)
 print("Starting CricStar bot...")
 print("=" * 50)
