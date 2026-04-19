@@ -1627,5 +1627,36 @@
       "display_name": "Rashid",
       "forced_special": 3
     }
+  },
+  "Muhammad Rizwan": {
+    "player_name": "Muhammad Rizwan",
+    "card_name": "Rizwan",
+    "slug": "muhammad_rizwan",
+    "codename": "Oh yes is a two",
+    "description": "Muhammad Rizwan is a resilient right handed wicketkeeper batter celebrated for his exceptional fitness and consistency across all formats An elite anchor known for his gritty determination he remains a vital cornerstone of Pakistans batting lineup",
+    "bat_score": 85,
+    "ball_score": 0,
+    "rarity": 5.0,
+    "spawn_chance": 500.0,
+    "artwork_author": "Rishav",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": false,
+    "catch_name": "",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_muhammad_rizwan.png",
+    "wild_card_filename": "spawn_muhammad_rizwan.webp",
+    "capacity_logic": {
+      "badge_rarity": 5.0,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 100.0,
+      "daily_chance": 500.0,
+      "display_name": "Rizwan"
+    }
   }
 }

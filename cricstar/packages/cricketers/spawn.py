@@ -4,7 +4,7 @@ import random
 from abc import abstractmethod
 from collections import deque, namedtuple
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING, Literal
 
 import discord
@@ -21,6 +21,29 @@ if TYPE_CHECKING:
 log = logging.getLogger("cricstar.packages.cricketers")
 
 CachedMessage = namedtuple("CachedMessage", ["content", "author_id"])
+
+# ---------------------------------------------------------------------------
+# Startup grace period
+# ---------------------------------------------------------------------------
+# After a Replit restart or remix, the old process may still be alive for a
+# short time while the new process is also starting up.  Both processes
+# receive every Discord message and will each try to spawn independently.
+#
+# To prevent this, the new process is forbidden from spawning for the first
+# 10 minutes of its life.  The old process (whose grace period has long
+# expired) continues to handle spawns during that window, and by the time
+# the new process is allowed to spawn the old process should already be dead.
+_STARTUP_GRACE_SECONDS = 600  # 10 minutes
+
+# Captured once, at import time (i.e. when the bot process first loads this module).
+_PROCESS_START_TIME: datetime = datetime.now(tz=timezone.utc)
+
+
+def _ensure_utc(dt: datetime) -> datetime:
+    """Return *dt* as a timezone-aware UTC datetime."""
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt
 
 
 class BaseSpawnManager:
@@ -160,18 +183,18 @@ def _claim_spawn(guild_id: int, new_time: datetime, new_threshold: int) -> bool:
     (e.g. after a Replit restart where the old process lingers), only one process
     can win the race per spawn event.
 
-    The claim succeeds only when the stored last_spawn_at is either NULL or more
-    than 5 seconds in the past, preventing a duplicate spawn within that window.
+    The claim window is 60 seconds — if any process already updated last_spawn_at
+    within the last 60 seconds, the claim is rejected.  The primary 10-minute guard
+    lives in handle_message; this is a secondary hard lock against races.
 
     Returns True if this process should spawn, False if another already did.
     """
-    from datetime import timedelta
-
     from django.db.models import Q
 
     from bd_models.models import GuildConfig
 
-    cutoff = new_time - timedelta(seconds=5)
+    # Reject claims from any process that spawned in the last 60 seconds.
+    cutoff = new_time - timedelta(seconds=60)
     rows_updated = GuildConfig.objects.filter(guild_id=guild_id).filter(
         Q(last_spawn_at__isnull=True) | Q(last_spawn_at__lt=cutoff)
     ).update(last_spawn_at=new_time, spawn_threshold=new_threshold)
@@ -213,6 +236,22 @@ class SpawnManager(BaseSpawnManager):
         if not guild:
             return False
 
+        # ------------------------------------------------------------------
+        # Startup grace period guard
+        # ------------------------------------------------------------------
+        # Block ALL spawns for the first 10 minutes after this process starts.
+        # When Replit restarts/remixes the bot, the old process often keeps
+        # running for a while alongside the new one.  Both processes receive
+        # every Discord message, so without this guard they would both try to
+        # spawn, producing double cards.
+        #
+        # The old process (started long ago) passes this check immediately.
+        # The new process (just started) is silenced for 10 minutes, by which
+        # time Replit will have killed the old process.
+        msg_time = _ensure_utc(message.created_at)
+        if (msg_time - _PROCESS_START_TIME).total_seconds() < _STARTUP_GRACE_SECONDS:
+            return False
+
         cooldown = await self._get_or_create_cooldown(guild.id, message.created_at)
 
         delta_t = (message.created_at - cooldown.time).total_seconds()
@@ -241,10 +280,36 @@ class SpawnManager(BaseSpawnManager):
             # wait for at least 10 minutes before spawning
             return False
 
-        # Atomically claim the spawn in the database before doing anything in memory.
-        # This prevents duplicate spawns when two bot processes run concurrently
-        # (e.g. after a Replit restart where the old process didn't exit cleanly).
-        # The DB UPDATE only succeeds for one process; the other gets rows_updated=0.
+        # ------------------------------------------------------------------
+        # Cross-process DB sync check
+        # ------------------------------------------------------------------
+        # Before claiming the spawn, re-read the DB to see if another process
+        # has already spawned for this guild recently.  This handles the case
+        # where this process has a stale in-memory timer (e.g. loaded from DB
+        # before another process's most recent spawn was written).
+        try:
+            last_db_spawn, _ = await _load_guild_spawn_state(guild.id)
+            if last_db_spawn is not None:
+                last_db_spawn = _ensure_utc(last_db_spawn)
+                seconds_since_db_spawn = (msg_time - last_db_spawn).total_seconds()
+                if seconds_since_db_spawn < 600:
+                    # Another process spawned within the last 10 minutes.
+                    # Sync our local timer so we don't re-trigger immediately.
+                    cooldown.reset(last_db_spawn)
+                    log.debug(
+                        f"Guild {guild.id}: skipping spawn — DB shows last spawn "
+                        f"{seconds_since_db_spawn:.0f}s ago (cross-process sync)"
+                    )
+                    return False
+        except Exception:
+            log.exception(f"Failed to read DB spawn state for guild {guild.id} during pre-claim check")
+
+        # ------------------------------------------------------------------
+        # Atomically claim the spawn in the database
+        # ------------------------------------------------------------------
+        # The DB UPDATE is atomic — only one process can win per window.
+        # The window is 60 seconds (see _claim_spawn), acting as a hard lock
+        # on top of the in-memory 10-minute guard above.
         new_time = message.created_at
         new_threshold = random.randint(settings.spawn_chance_min, settings.spawn_chance_max)
         try:
@@ -340,6 +405,9 @@ class SpawnManager(BaseSpawnManager):
 
         chance = cooldown.threshold - multiplier * (delta // 60)
 
+        uptime_secs = (datetime.now(tz=timezone.utc) - _PROCESS_START_TIME).total_seconds()
+        grace_remaining = max(0, _STARTUP_GRACE_SECONDS - uptime_secs)
+
         embed.description = (
             f"Manager initiated **{format_dt(cooldown.time, style='R')}**\n"
             f"Initial number of points to reach: **{cooldown.threshold}**\n"
@@ -358,6 +426,11 @@ class SpawnManager(BaseSpawnManager):
             informations.append(
                 f"The manager is less than 10 minutes old, {settings.plural_collectible_name} "
                 "cannot spawn at the moment."
+            )
+        if grace_remaining > 0:
+            informations.append(
+                f"Bot startup grace period active — spawning blocked for another "
+                f"{grace_remaining / 60:.1f} minute(s) to prevent double-spawns after restart."
             )
         if informations:
             embed.add_field(
