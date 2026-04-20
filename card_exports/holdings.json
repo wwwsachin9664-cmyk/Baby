@@ -1,20 +1,7 @@
 {
-  "exported_at": "2026-04-20T18:43:22.894523+00:00",
+  "exported_at": "2026-04-20T18:51:44.172622+00:00",
   "count": 1273,
   "holdings": [
-    {
-      "player_discord_id": 1387054957152174191,
-      "ball_player_name": "Kane Williamson",
-      "special_name": null,
-      "health_bonus": 3,
-      "attack_bonus": 8,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 1476180448030756928,
-      "catch_date": "2026-04-19T06:35:51.124236+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
     {
       "player_discord_id": 597499091504594945,
       "ball_player_name": "Sanju Samson",
@@ -844,19 +831,6 @@
       "tradeable": true,
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-19T06:35:51.527659+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
-    {
-      "player_discord_id": 1387054957152174191,
-      "ball_player_name": "AB de Villiers",
-      "special_name": "ICONS",
-      "health_bonus": 2,
-      "attack_bonus": 16,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 928536817001721906,
-      "catch_date": "2026-04-19T06:35:51.531700+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -16240,19 +16214,6 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1387054957152174191,
-      "ball_player_name": "Sachin Tendulkar",
-      "special_name": null,
-      "health_bonus": 3,
-      "attack_bonus": 9,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": null,
-      "catch_date": "2026-04-19T06:35:51.410800+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
-    {
       "player_discord_id": 1476265074749345872,
       "ball_player_name": "Shivam Dube",
       "special_name": null,
@@ -16275,6 +16236,45 @@
       "tradeable": true,
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-20T18:32:48.877509+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1387054957152174191,
+      "ball_player_name": "Kane Williamson",
+      "special_name": null,
+      "health_bonus": 3,
+      "attack_bonus": 8,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-19T06:35:51.124236+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1387054957152174191,
+      "ball_player_name": "AB de Villiers",
+      "special_name": "ICONS",
+      "health_bonus": 2,
+      "attack_bonus": 16,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-19T06:35:51.531700+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1387054957152174191,
+      "ball_player_name": "Sachin Tendulkar",
+      "special_name": null,
+      "health_bonus": 3,
+      "attack_bonus": 9,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-04-19T06:35:51.410800+00:00",
       "spawned_time": null,
       "extra_data": {}
     },

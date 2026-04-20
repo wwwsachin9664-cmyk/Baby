@@ -160,6 +160,22 @@ if result.returncode != 0:
     sys.exit(1)
 print("Migrations complete.")
 
+# Step 1b: Clear stale trade locks left over from the previous bot session.
+# Trade state is stored only in memory (the Trade cog's dict).  When the bot
+# restarts or crashes, that state is lost but BallInstance.locked timestamps
+# remain set in the DB.  Any locked card with no active trade will silently
+# block the user from adding it to a new trade.  Clearing all locks here is
+# safe because there are no active trades at startup.
+print("Clearing stale trade locks from previous session...")
+unlock_script = _PYTHON_HEADER + """
+from bd_models.models import BallInstance
+count = BallInstance.objects.filter(locked__isnull=False).update(locked=None)
+print(f"Cleared {count} stale trade lock(s).")
+"""
+result = subprocess.run([sys.executable, "-c", unlock_script], env=env, cwd=BASE_DIR)
+if result.returncode != 0:
+    print("Lock cleanup failed (non-critical, continuing).")
+
 # Step 2: Initialize CricStar settings in the database
 print("Initializing CricStar settings...")
 init_script = _PYTHON_HEADER + f"""

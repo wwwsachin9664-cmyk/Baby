@@ -341,7 +341,7 @@ class Trade(commands.GroupCog):
             return
         query = (
             BallInstance.objects.filter(
-                Q(locked=None) | Q(locked__lt=timezone.now() - timedelta(seconds=60)),
+                Q(locked=None) | Q(locked__lt=timezone.now() - timedelta(minutes=30)),
                 player__discord_id=interaction.user.id,
             )
             .exclude(tradeable=False)
