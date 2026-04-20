@@ -99,7 +99,7 @@
   },
   "Sanju Samson": {
     "player_name": "Sanju Samson",
-    "card_name": "Samson",
+    "card_name": "Sanju Samson",
     "slug": "sanju_samson",
     "codename": "Chetta",
     "description": "Sanju Viswanath Samson is an Indian cricketer who plays for the India national cricket team in the ODI and T20I formats with a brilliant performance in T20 World Cup 2026",
@@ -110,14 +110,16 @@
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
+    "unobtainable": false,
     "catch_name": "sanju samson",
     "event_id": null,
+    "event_name": "",
     "filename": "premade_sanju_samson.png",
     "wild_card_filename": "spawn_sanju_samson.jpg",
     "capacity_logic": {
       "badge_rarity": 5.0,
       "daily_chance": 600.0,
-      "weekly_chance": 100.0
+      "weekly_chance": 0.0
     }
   },
   "Kane Williamson": {
@@ -145,7 +147,7 @@
   },
   "Tilak Varma": {
     "player_name": "Tilak Varma",
-    "card_name": "Tilak",
+    "card_name": "Tilak Varma",
     "slug": "tilak_varma",
     "codename": "The Savior",
     "description": "Tilak Varma is an Indian international cricketer who plays as a left handed batsman and part time off spin bowler He represents Hyderabad in domestic cricket and Mumbai Indians in the Indian Premier League",
@@ -156,14 +158,16 @@
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
+    "unobtainable": false,
     "catch_name": "tilak varma",
     "event_id": null,
+    "event_name": "",
     "filename": "premade_tilak_varma.png",
     "wild_card_filename": "spawn_tilak_varma.jpg",
     "capacity_logic": {
       "badge_rarity": 5.0,
       "daily_chance": 600.0,
-      "weekly_chance": 100.0
+      "weekly_chance": 0.0
     }
   },
   "Virat Kohli": {
@@ -191,7 +195,7 @@
   },
   "Rinku Singh": {
     "player_name": "Rinku Singh",
-    "card_name": "Rinku",
+    "card_name": "Rinku Singh",
     "slug": "rinku_singh",
     "codename": "Lord Rinku",
     "description": "Rinku Singh is an Indian cricketer who plays for the India national cricket team He is a left handed middle order batter and an occasional right arm off break bowler He was a member of the Indian team that won the 2026 T20 World Cup",
@@ -202,14 +206,16 @@
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
+    "unobtainable": false,
     "catch_name": "rinku singh",
     "event_id": null,
+    "event_name": "",
     "filename": "premade_rinku_singh.png",
     "wild_card_filename": "spawn_rinku_singh.jpg",
     "capacity_logic": {
       "badge_rarity": 5.0,
       "daily_chance": 600.0,
-      "weekly_chance": 100.0
+      "weekly_chance": 0.0
     }
   },
   "Ms Dhoni": {
@@ -241,7 +247,7 @@
   },
   "Kuldeep Yadav": {
     "player_name": "Kuldeep Yadav",
-    "card_name": "Kuldeep",
+    "card_name": "Kuldeep Yadav",
     "slug": "kuldeep_yadav",
     "codename": "Spin Wing",
     "description": "Kuldeep Yadav is an Indian international cricketer A left arm unorthodox spinner  he plays for Uttar Pradesh in domestic cricket",
@@ -252,14 +258,16 @@
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
+    "unobtainable": false,
     "catch_name": "kuldeep yadav",
     "event_id": null,
+    "event_name": "",
     "filename": "premade_kuldeep_yadav.png",
     "wild_card_filename": "spawn_kuldeep_yadav.jpg",
     "capacity_logic": {
       "badge_rarity": 5.0,
       "daily_chance": 600.0,
-      "weekly_chance": 100.0
+      "weekly_chance": 0.0
     }
   },
   "Joe Root": {
@@ -525,7 +533,7 @@
   },
   "Surya Kumar Yadav": {
     "player_name": "Surya Kumar Yadav",
-    "card_name": "Surya",
+    "card_name": "Surya Kumar Yadav",
     "slug": "surya_kumar_yadav",
     "codename": "Sky",
     "description": "Suryakumar Yadav is a revolutionary 360 degree batter who demoralizes bowlers with audacious wristwork and unorthodox sweep shots making him a fearless dominant force in modern T20 cricket",
@@ -536,23 +544,25 @@
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
+    "unobtainable": false,
     "catch_name": "surya kumar yadav",
     "event_id": null,
     "event_name": "",
     "filename": "premade_surya_kumar_yadav.png",
     "wild_card_filename": "spawn_surya_kumar_yadav.jpg",
     "capacity_logic": {
-      "badge_rarity": 4.0,
       "bg_preset": "base_card",
-      "foreground_border": true,
+      "credit_font": "default",
+      "badge_rarity": 4.0,
       "credit_stroke": true,
+      "foreground_border": true,
       "only_spawn_in_event": false,
-      "credit_font": "default"
+      "weekly_chance": 0.0
     }
   },
   "Shreyas Iyer": {
     "player_name": "Shreyas Iyer",
-    "card_name": "Shreyas",
+    "card_name": "Shreyas Iyer",
     "slug": "shreyas_iyer",
     "codename": "Sarpanch Saab",
     "description": "Shreyas Iyer is an elegant Indian cricketer known for stylish strokeplay calm leadership strong middle order batting consistency and match winning performances across formats",
@@ -563,20 +573,21 @@
     "artwork_author": "Sachin",
     "tradeable": true,
     "spawnable": true,
+    "unobtainable": false,
     "catch_name": "shreyas iyer",
     "event_id": null,
     "event_name": "",
     "filename": "premade_shreyas_iyer.png",
     "wild_card_filename": "spawn_shreyas_iyer.jpg",
     "capacity_logic": {
-      "badge_rarity": 5.0,
       "bg_preset": "base_card",
-      "foreground_border": true,
-      "credit_stroke": false,
-      "only_spawn_in_event": false,
       "credit_font": "optimus",
+      "badge_rarity": 5.0,
       "daily_chance": 600.0,
-      "weekly_chance": 100.0
+      "credit_stroke": false,
+      "weekly_chance": 0.0,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   },
   "Shubman Gill": {
@@ -711,21 +722,22 @@
     "artwork_author": "Sachin",
     "tradeable": true,
     "spawnable": true,
+    "unobtainable": false,
     "catch_name": "arshdeep singh",
     "event_id": null,
     "event_name": "",
     "filename": "premade_arshdeep_singh.png",
     "wild_card_filename": "spawn_arshdeep_singh.jpg",
     "capacity_logic": {
-      "badge_rarity": 5.0,
       "bg_preset": "base_card",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
       "credit_font": "optimus",
-      "display_name": "Arshdeep",
+      "badge_rarity": 5.0,
       "daily_chance": 600.0,
-      "weekly_chance": 100.0
+      "display_name": "Arshdeep",
+      "credit_stroke": true,
+      "weekly_chance": 0.0,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   },
   "Rishabh Pant": {
@@ -741,6 +753,7 @@
     "artwork_author": "Rishav",
     "tradeable": true,
     "spawnable": true,
+    "unobtainable": false,
     "catch_name": "rishabh pant",
     "event_id": null,
     "event_name": "",
@@ -753,7 +766,7 @@
       "daily_chance": 20.0,
       "display_name": "Pant",
       "credit_stroke": true,
-      "weekly_chance": 45.0,
+      "weekly_chance": 0.0,
       "foreground_border": true,
       "only_spawn_in_event": false
     }
@@ -1606,7 +1619,7 @@
     "bat_score": 87,
     "ball_score": 90,
     "rarity": 1.2,
-    "spawn_chance": 150.0,
+    "spawn_chance": 300.0,
     "artwork_author": "Marco",
     "tradeable": true,
     "spawnable": true,
@@ -1623,7 +1636,7 @@
       "daily_chance": 0.0,
       "display_name": "Rashid",
       "credit_stroke": true,
-      "weekly_chance": 90.0,
+      "weekly_chance": 300.0,
       "forced_special": 3,
       "foreground_border": true,
       "only_spawn_in_event": false
@@ -1649,15 +1662,15 @@
     "filename": "premade_muhammad_rizwan.png",
     "wild_card_filename": "spawn_muhammad_rizwan.webp",
     "capacity_logic": {
-      "badge_rarity": 5.0,
       "bg_preset": "base_card",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
       "credit_font": "optimus",
-      "weekly_chance": 100.0,
+      "badge_rarity": 5.0,
       "daily_chance": 500.0,
-      "display_name": "Rizwan"
+      "display_name": "Rizwan",
+      "credit_stroke": true,
+      "weekly_chance": 0.0,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   },
   "Virat - Dhoni - Rohit": {
@@ -1755,38 +1768,6 @@
       "forced_special": 4
     }
   },
-  "Axar Patel ( IPL 2026 )": {
-    "player_name": "Axar Patel ( IPL 2026 )",
-    "card_name": "Axar",
-    "slug": "axar_patel_ipl_2026",
-    "codename": "Bapu",
-    "description": "Axar Patel is flourishing as Delhi Capitals captain in IPL 2026 Leading with tactical brilliance and gritty all round performances he remains their vital heartbeat strangling batters with precision while delivering clutch high pressure finishes",
-    "bat_score": 80,
-    "ball_score": 87,
-    "rarity": 1.2,
-    "spawn_chance": 50.0,
-    "artwork_author": "Marco",
-    "tradeable": true,
-    "spawnable": true,
-    "unobtainable": true,
-    "catch_name": "axar patel",
-    "event_id": 3,
-    "event_name": "IPL2026",
-    "filename": "premade_axar_patel_ipl_2026.png",
-    "wild_card_filename": "spawn_axar_patel_ipl_2026.jpg",
-    "capacity_logic": {
-      "badge_rarity": 1.2,
-      "bg_preset": "IPL2026",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": true,
-      "credit_font": "optimus",
-      "weekly_chance": 50.0,
-      "daily_chance": 0.1,
-      "display_name": "Axar",
-      "forced_special": 3
-    }
-  },
   "Sai Sudharsan (IPL2026)": {
     "player_name": "Sai Sudharsan (IPL2026)",
     "card_name": "Sai",
@@ -1796,11 +1777,11 @@
     "bat_score": 87,
     "ball_score": 0,
     "rarity": 2.0,
-    "spawn_chance": 40.0,
+    "spawn_chance": 300.0,
     "artwork_author": "Marco",
     "tradeable": true,
     "spawnable": true,
-    "unobtainable": true,
+    "unobtainable": false,
     "catch_name": "sai sudharsan",
     "event_id": 3,
     "event_name": "IPL2026",
@@ -1813,7 +1794,7 @@
       "daily_chance": 0.1,
       "display_name": "Sai",
       "credit_stroke": true,
-      "weekly_chance": 50.0,
+      "weekly_chance": 300.0,
       "forced_special": 3,
       "foreground_border": true,
       "only_spawn_in_event": true
@@ -1828,58 +1809,121 @@
     "bat_score": 86,
     "ball_score": 0,
     "rarity": 2.0,
-    "spawn_chance": 50.0,
+    "spawn_chance": 350.0,
     "artwork_author": "Marco",
     "tradeable": true,
     "spawnable": true,
-    "unobtainable": true,
+    "unobtainable": false,
     "catch_name": "dewald brevis",
     "event_id": 3,
     "event_name": "IPL2026",
     "filename": "premade_dewald_brevis_ipl2026.png",
     "wild_card_filename": "spawn_dewald_brevis_ipl2026.jpg",
     "capacity_logic": {
-      "badge_rarity": 2.0,
       "bg_preset": "IPL2026",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": true,
       "credit_font": "optimus",
-      "weekly_chance": 30.0,
+      "badge_rarity": 2.0,
       "daily_chance": 0.1,
       "display_name": "Brevis",
-      "forced_special": 3
+      "credit_stroke": true,
+      "weekly_chance": 300.0,
+      "forced_special": 3,
+      "foreground_border": true,
+      "only_spawn_in_event": true
     }
   },
-  "Smriti Mandhana": {
-    "player_name": "Smriti Mandhana",
-    "card_name": "Smriti",
-    "slug": "smriti_mandhana",
-    "codename": "Babu",
-    "description": "Smriti Mandhana is a premier Indian opening batter and vice captain of the Indian womens cricket team Known for her aggressive left handed style elegant stroke play",
-    "bat_score": 93,
-    "ball_score": 10,
-    "rarity": 1.0,
-    "spawn_chance": 100.0,
-    "artwork_author": "Sachin",
+  "Sikandar Raza": {
+    "player_name": "Sikandar Raza",
+    "card_name": "Sikandar",
+    "slug": "sikandar_raza",
+    "codename": "Captain Fantastic",
+    "description": "A modern day warrior carrying Zimbabwe His stats across all three formats are elite",
+    "bat_score": 85,
+    "ball_score": 87,
+    "rarity": 10.0,
+    "spawn_chance": 400.0,
+    "artwork_author": "MadMax",
     "tradeable": true,
     "spawnable": true,
     "unobtainable": false,
-    "catch_name": "smriti mandhana",
+    "catch_name": "sikandar raza",
     "event_id": null,
     "event_name": "",
-    "filename": "premade_smriti_mandhana.png",
-    "wild_card_filename": "spawn_smriti_mandhana.jpg",
+    "filename": "premade_sikandar_raza.png",
+    "wild_card_filename": "spawn_sikandar_raza.jpg",
+    "capacity_logic": {
+      "badge_rarity": 10.0,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 0.0,
+      "daily_chance": 500.0,
+      "display_name": "Sikandar"
+    }
+  },
+  "Pathum Nissanka": {
+    "player_name": "Pathum Nissanka",
+    "card_name": "Nissanka",
+    "slug": "pathum_nissanka",
+    "codename": "Hope",
+    "description": "In February he became the first Sri Lankan ever to score an ODI double century smashing 210 against Afghanistan breaking Sanath Jayasuriyas record",
+    "bat_score": 87,
+    "ball_score": 9,
+    "rarity": 5.0,
+    "spawn_chance": 200.0,
+    "artwork_author": "MadMax",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": false,
+    "catch_name": "pathum nissanka",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_pathum_nissanka.png",
+    "wild_card_filename": "spawn_pathum_nissanka.jpg",
     "capacity_logic": {
       "bg_preset": "base_card",
       "credit_font": "optimus",
-      "badge_rarity": 1.0,
-      "daily_chance": 0.0,
-      "display_name": "Smriti",
+      "badge_rarity": 5.0,
+      "daily_chance": 200.0,
+      "display_name": "Nissanka",
       "credit_stroke": true,
-      "weekly_chance": 200.0,
-      "foreground_border": false,
+      "weekly_chance": 0.0,
+      "foreground_border": true,
       "only_spawn_in_event": false
+    }
+  },
+  "Axar Patel (IPL2026)": {
+    "player_name": "Axar Patel (IPL2026)",
+    "card_name": "Axar",
+    "slug": "axar_patel_ipl2026",
+    "codename": "Bapu",
+    "description": "Axar Patel is flourishing as Delhi Capitals captain in IPL 2026 Leading with tactical brilliance and gritty all round performances he remains their vital heartbeat strangling batters with precision while delivering clutch high pressure finishes",
+    "bat_score": 80,
+    "ball_score": 87,
+    "rarity": 1.2,
+    "spawn_chance": 350.0,
+    "artwork_author": "Marco",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": false,
+    "catch_name": "axar patel",
+    "event_id": 3,
+    "event_name": "IPL2026",
+    "filename": "premade_axar_patel_ipl_2026.png",
+    "wild_card_filename": "spawn_axar_patel_ipl_2026.jpg",
+    "capacity_logic": {
+      "bg_preset": "IPL2026",
+      "credit_font": "optimus",
+      "badge_rarity": 1.2,
+      "daily_chance": 0.1,
+      "display_name": "Axar",
+      "credit_stroke": true,
+      "weekly_chance": 300.0,
+      "forced_special": 3,
+      "foreground_border": true,
+      "only_spawn_in_event": true
     }
   }
 }

@@ -299,5 +299,12 @@
     "bet": true,
     "player": "Rohit Sharma",
     "name": "rohitsharma"
+  },
+  {
+    "id": "1495826267680018624",
+    "list": true,
+    "bet": true,
+    "player": "Sikandar Raza",
+    "name": "SikandaRaza"
   }
 ]

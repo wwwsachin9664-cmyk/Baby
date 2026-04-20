@@ -10,6 +10,8 @@ from cricstar.core.utils.menus import CountryballFormatter, Menu, ModelSource, T
 from bd_models.models import BallInstance
 from settings.models import settings
 
+from cricstar.core.utils.emojis import get_player_emoji
+
 from .errors import TradeError
 
 if TYPE_CHECKING:
@@ -67,7 +69,11 @@ class BulkSelector(Container):
             .order_by(*self.queryset.query.order_by)
             .select_related(*extract_select_related(self.queryset.query.select_related))
         ):
-            text += f"- {ball.description(include_emoji=True, bot=self.bot)}\n"
+            desc = ball.description(include_emoji=True, bot=self.bot)
+            emoji_str = get_player_emoji(ball.ball.country)
+            if emoji_str:
+                desc = f"{emoji_str}{desc}"
+            text += f"- {desc}\n"
         self.display_menu = Menu(self.bot, self.view, TextSource(text, page_length=3800), TextFormatter(self.balls))
         await self.display_menu.init(position=3, container=self)
 

@@ -18,6 +18,7 @@ from django.utils import timezone
 
 from cricstar.core.discord import UNKNOWN_INTERACTION, Container, LayoutView, Modal
 from cricstar.core.utils.buttons import ConfirmChoiceView
+from cricstar.core.utils.emojis import get_player_emoji
 from cricstar.core.utils.menus import CountryballFormatter, Menu, ModelSource, TextFormatter, TextSource
 from bd_models.enums import TradeCooldownPolicy
 from bd_models.models import BallInstance, Player, Trade, TradeObject
@@ -142,6 +143,16 @@ class TradingUser:
                     cast(ModelSource, self.menu.source).queryset = self.get_queryset().order_by("locked")
                     cast(CountryballFormatter, self.menu.formatters[0]).item = select
                 await self.menu.init(container=container)
+
+                # Show card names as text immediately (same as bet/lock view)
+                text = ""
+                async for ball in self.get_queryset().prefetch_related("special"):
+                    desc = ball.description(include_emoji=True, bot=self.cog.bot, is_trade=True)
+                    emoji_str = get_player_emoji(ball.ball.country)
+                    if emoji_str:
+                        desc = f"{emoji_str}{desc}"
+                    text += f"- {desc}\n"
+                container.add_item(TextDisplay(text.strip()))
             else:
                 select.add_option(label="Nothing yet")
                 select.disabled = True
@@ -249,7 +260,11 @@ class TradingUser:
 
         text = ""
         async for ball in self.get_queryset().prefetch_related("special"):
-            text += f"- {ball.description(include_emoji=True, bot=self.cog.bot, is_trade=True)}\n"
+            desc = ball.description(include_emoji=True, bot=self.cog.bot, is_trade=True)
+            emoji_str = get_player_emoji(ball.ball.country)
+            if emoji_str:
+                desc = f"{emoji_str}{desc}"
+            text += f"- {desc}\n"
         self.menu = Menu(
             self.cog.bot, self.view,
             TextSource(text, page_length=1800),
