@@ -146,7 +146,7 @@ class TradingUser:
 
                 # Show card names as text immediately (same as bet/lock view)
                 text = ""
-                async for ball in self.get_queryset().prefetch_related("special"):
+                async for ball in self.get_queryset().select_related("ball").prefetch_related("special"):
                     desc = ball.description(include_emoji=True, bot=self.cog.bot, is_trade=True)
                     emoji_str = get_player_emoji(ball.ball.country)
                     if emoji_str:
@@ -259,7 +259,7 @@ class TradingUser:
             return
 
         text = ""
-        async for ball in self.get_queryset().prefetch_related("special"):
+        async for ball in self.get_queryset().select_related("ball").prefetch_related("special"):
             desc = ball.description(include_emoji=True, bot=self.cog.bot, is_trade=True)
             emoji_str = get_player_emoji(ball.ball.country)
             if emoji_str:

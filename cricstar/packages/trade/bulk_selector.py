@@ -67,7 +67,8 @@ class BulkSelector(Container):
             BallInstance.objects.filter(id__in=self.formatter.defaulted)
             .annotate(**self.queryset.query.annotations)
             .order_by(*self.queryset.query.order_by)
-            .select_related(*extract_select_related(self.queryset.query.select_related))
+            .select_related("ball", *extract_select_related(self.queryset.query.select_related))
+            .prefetch_related("special")
         ):
             desc = ball.description(include_emoji=True, bot=self.bot)
             emoji_str = get_player_emoji(ball.ball.country)

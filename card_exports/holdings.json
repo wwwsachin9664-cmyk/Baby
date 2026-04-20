@@ -1,5 +1,5 @@
 {
-  "exported_at": "2026-04-20T18:34:22.060110+00:00",
+  "exported_at": "2026-04-20T18:43:22.894523+00:00",
   "count": 1273,
   "holdings": [
     {
@@ -12,19 +12,6 @@
       "tradeable": true,
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-19T06:35:51.124236+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
-    {
-      "player_discord_id": 1387054957152174191,
-      "ball_player_name": "Rinku Singh",
-      "special_name": null,
-      "health_bonus": 19,
-      "attack_bonus": -14,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 1476180448030756928,
-      "catch_date": "2026-04-19T06:35:51.129110+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -497,19 +484,6 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1387054957152174191,
-      "ball_player_name": "Tilak Varma",
-      "special_name": null,
-      "health_bonus": 10,
-      "attack_bonus": -16,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 928536817001721906,
-      "catch_date": "2026-04-19T06:35:51.379498+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
-    {
       "player_discord_id": 765948116544782367,
       "ball_player_name": "Kwena Maphaka",
       "special_name": null,
@@ -923,6 +897,19 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-19T06:35:51.543212+00:00",
       "spawned_time": "2026-04-15T06:27:41.502000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1387054957152174191,
+      "ball_player_name": "Tilak Varma",
+      "special_name": null,
+      "health_bonus": 10,
+      "attack_bonus": -16,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-19T06:35:51.379498+00:00",
+      "spawned_time": null,
       "extra_data": {}
     },
     {
@@ -16288,6 +16275,19 @@
       "tradeable": true,
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-20T18:32:48.877509+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1387054957152174191,
+      "ball_player_name": "Rinku Singh",
+      "special_name": null,
+      "health_bonus": 19,
+      "attack_bonus": -14,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-04-19T06:35:51.129110+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
