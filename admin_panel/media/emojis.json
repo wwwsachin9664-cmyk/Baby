@@ -250,5 +250,54 @@
     "bet": true,
     "player": "Sir Aalastair Cook",
     "name": "AalastairIcon"
+  },
+  {
+    "id": "1495425449701015673",
+    "list": true,
+    "bet": true,
+    "player": "Dewald Brevis",
+    "name": "dewaldbrevis"
+  },
+  {
+    "id": "1495425356453384313",
+    "list": true,
+    "bet": true,
+    "player": "Joe Root",
+    "name": "joeroot"
+  },
+  {
+    "id": "1495425352866992179",
+    "list": true,
+    "bet": true,
+    "player": "Mitchell Starc",
+    "name": "mitchellstarc"
+  },
+  {
+    "id": "1495425214593634466",
+    "list": true,
+    "bet": true,
+    "player": "Muhammad Rizwan",
+    "name": "mdrizwan"
+  },
+  {
+    "id": "1495425445775282327",
+    "list": true,
+    "bet": true,
+    "player": "Hardik Pandya",
+    "name": "hardikpandya"
+  },
+  {
+    "id": "1495425212085440582",
+    "list": true,
+    "bet": true,
+    "player": "Rishabh Pant",
+    "name": "rishabhpant"
+  },
+  {
+    "id": "1495425208381866196",
+    "list": true,
+    "bet": true,
+    "player": "Rohit Sharma",
+    "name": "rohitsharma"
   }
 ]
