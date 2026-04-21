@@ -2063,7 +2063,7 @@
     "bat_score": 88,
     "ball_score": 93,
     "rarity": 0.3,
-    "spawn_chance": 799.0,
+    "spawn_chance": 10.0,
     "artwork_author": "Alex",
     "tradeable": true,
     "spawnable": true,
@@ -2080,7 +2080,7 @@
       "daily_chance": 0.0,
       "display_name": "SW",
       "credit_stroke": true,
-      "weekly_chance": 10.0,
+      "weekly_chance": 13.0,
       "foreground_border": true,
       "only_spawn_in_event": false
     }
