@@ -398,6 +398,13 @@ class BallSpawnView(View):
             catch_date=caught_time,
         )
 
+        # Daily Catcher Pack: record this catch toward the daily leaderboard
+        try:
+            from cricstar.packages.catcherpack.cog import record_catch
+            record_catch(user.id)
+        except Exception:
+            log.exception("Failed to record catch for Daily Catcher Pack leaderboard")
+
         # logging and stats
         log.log(
             logging.INFO if user.id in self.bot.catch_log else logging.DEBUG,
