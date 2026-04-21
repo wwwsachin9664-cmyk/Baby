@@ -62,6 +62,7 @@ DEFAULT_PACKAGES = (
     ("bet", "cricstar.packages.bet"),
     ("daily", "cricstar.packages.daily"),
     ("upgrade", "cricstar.packages.upgrade"),
+    ("catcherpack", "cricstar.packages.catcherpack"),
 )
 
 
