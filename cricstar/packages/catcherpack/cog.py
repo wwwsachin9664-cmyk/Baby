@@ -1,12 +1,13 @@
 """
-Catcher Pack system for CricStar.
+Daily Catcher Pack system for CricStar.
 
 Tracks how many cricketers each user catches per UTC day. The user with the most
-catches at the end of the day automatically receives one "Catcher Pack" in their
-inventory. Packs can be opened with /csopen, the leaderboard is shown with
+catches at the end of the day automatically receives one "Daily Catcher Pack" in
+their inventory. Packs can be opened with /csopen, the leaderboard is shown with
 /catchleaderboard, and bot owners can grant a pack with /ownergivepack.
 
-Pack contents (rarity tier -> weight):
+Pack contents — only cards whose badge rarity matches one of these tiers are in
+the pool, picked by weight:
     0.2 -> 5,  0.3 -> 10, 0.4 -> 20, 0.5 -> 25,
     0.6 -> 45, 0.7 -> 70, 0.8 -> 90
 """
@@ -37,7 +38,8 @@ log = logging.getLogger("cricstar.packages.catcherpack")
 DATA_FILE = Path(__file__).parent.parent.parent.parent / "data" / "catcher_pack.json"
 MEDIA_DIR = Path("admin_panel/media")
 
-# Rarity tier weights for the Catcher Pack
+# Badge-rarity tier weights for the Daily Catcher Pack.
+# Only cards whose badge_rarity matches one of these keys are in the pool.
 RARITY_WEIGHTS: dict[float, float] = {
     0.2: 5,
     0.3: 10,
@@ -47,6 +49,30 @@ RARITY_WEIGHTS: dict[float, float] = {
     0.7: 70,
     0.8: 90,
 }
+
+ALLOWED_TIERS = set(RARITY_WEIGHTS.keys())
+TIER_EPSILON = 1e-3  # tolerance for float equality
+
+
+def _badge_rarity(ball: Ball) -> float | None:
+    logic = ball.capacity_logic or {}
+    raw = logic.get("badge_rarity")
+    if raw is None:
+        return None
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return None
+
+
+def _matching_tier(value: float | None) -> float | None:
+    """Return the allowed tier equal to `value` (within tolerance), or None."""
+    if value is None:
+        return None
+    for tier in ALLOWED_TIERS:
+        if abs(value - tier) < TIER_EPSILON:
+            return tier
+    return None
 
 MIDNIGHT_UTC = time(hour=0, minute=0, tzinfo=timezone.utc)
 
@@ -123,39 +149,34 @@ def consume_pack(user_id: int) -> bool:
 
 # ── Pack contents ────────────────────────────────────────────────────────────
 
-def _round_tier(rarity: float) -> float:
-    return round(round(float(rarity) * 10) / 10, 1)
+def pick_pack_card() -> tuple[Ball, float] | None:
+    """
+    Pick a single card from the Daily Catcher Pack pool.
 
+    Only cards whose badge_rarity exactly matches one of the allowed tiers
+    (0.2/0.3/0.4/0.5/0.6/0.7/0.8) are eligible. Tiers are weighted by
+    RARITY_WEIGHTS.
 
-def pick_pack_card() -> Ball | None:
-    """Pick a single card from the Catcher Pack pool."""
-    eligible = [
-        b for b in balls_cache.values()
-        if b.enabled and b.rarity > 0 and is_ball_obtainable(b, specials.get)
-    ]
-    if not eligible:
+    Returns (ball, tier) or None if no cards qualify.
+    """
+    tiers: dict[float, list[Ball]] = {t: [] for t in RARITY_WEIGHTS}
+    for ball in balls_cache.values():
+        if not ball.enabled:
+            continue
+        if not is_ball_obtainable(ball, specials.get):
+            continue
+        tier = _matching_tier(_badge_rarity(ball))
+        if tier is None:
+            continue
+        tiers[tier].append(ball)
+
+    available = [t for t, lst in tiers.items() if lst]
+    if not available:
         return None
 
-    # Group balls by rounded rarity tier
-    tiers: dict[float, list[Ball]] = {t: [] for t in RARITY_WEIGHTS}
-    for ball in eligible:
-        tier = _round_tier(ball.rarity)
-        if tier in tiers:
-            tiers[tier].append(ball)
-
-    available_tiers = [t for t, lst in tiers.items() if lst]
-    if not available_tiers:
-        # Fallback: nearest tier per ball
-        for ball in eligible:
-            tier = min(RARITY_WEIGHTS.keys(), key=lambda t: abs(t - float(ball.rarity)))
-            tiers[tier].append(ball)
-        available_tiers = [t for t, lst in tiers.items() if lst]
-        if not available_tiers:
-            return None
-
-    weights = [RARITY_WEIGHTS[t] for t in available_tiers]
-    chosen_tier = random.choices(available_tiers, weights=weights, k=1)[0]
-    return random.choice(tiers[chosen_tier])
+    weights = [RARITY_WEIGHTS[t] for t in available]
+    chosen_tier = random.choices(available, weights=weights, k=1)[0]
+    return random.choice(tiers[chosen_tier]), chosen_tier
 
 
 def get_random_special() -> Special | None:
@@ -174,10 +195,11 @@ def get_random_special() -> Special | None:
     return random.choices(population + [None], weights=weights, k=1)[0]
 
 
-async def grant_card_from_pack(user: discord.abc.User, guild_id: int | None) -> tuple[BallInstance, Ball, Special | None, bool] | None:
-    card = pick_pack_card()
-    if not card:
+async def grant_card_from_pack(user: discord.abc.User, guild_id: int | None) -> tuple[BallInstance, Ball, Special | None, bool, float] | None:
+    picked = pick_pack_card()
+    if not picked:
         return None
+    card, tier = picked
 
     bonus_attack = random.randint(-settings.max_attack_bonus, settings.max_attack_bonus)
     bonus_health = random.randint(-settings.max_health_bonus, settings.max_health_bonus)
@@ -201,17 +223,17 @@ async def grant_card_from_pack(user: discord.abc.User, guild_id: int | None) -> 
         server_id=guild_id,
         catch_date=dj_tz.now(),
     )
-    return instance, card, special, is_new
+    return instance, card, special, is_new, tier
 
 
 # ── Animated pack opening view ───────────────────────────────────────────────
 
 FRAMES = [
-    ("🎁  Catcher Pack",            "The pack rests in your hands…",                         0x2B2D31),
-    ("✨  Catcher Pack ✨",          "You feel a strange energy radiating…",                  0x5865F2),
-    ("💫  Catcher Pack 💫",          "The seal is breaking…",                                  0xFEE75C),
-    ("🌟  C A T C H E R   P A C K", "A blinding flash escapes the wrapper…",                 0xF287B7),
-    ("⚡  R E V E A L  ⚡",          "A cricketer steps onto the field…",                     0xEB459E),
+    ("🎁  Daily Catcher Pack",                "The pack rests in your hands…",                         0x2B2D31),
+    ("✨  Daily Catcher Pack ✨",              "You feel a strange energy radiating…",                  0x5865F2),
+    ("💫  Daily Catcher Pack 💫",              "The seal is breaking…",                                  0xFEE75C),
+    ("🌟  D A I L Y   C A T C H E R   P A C K", "A blinding flash escapes the wrapper…",                 0xF287B7),
+    ("⚡  R E V E A L  ⚡",                    "A cricketer steps onto the field…",                     0xEB459E),
 ]
 
 
@@ -241,7 +263,7 @@ class OpenPackView(discord.ui.View):
         # Make sure the user still owns a pack
         if not consume_pack(interaction.user.id):
             await interaction.response.send_message(
-                "You don't have a Catcher Pack to open.", ephemeral=True
+                "You don't have a Daily Catcher Pack to open.", ephemeral=True
             )
             self.stop()
             return
@@ -251,7 +273,7 @@ class OpenPackView(discord.ui.View):
         # Animation frames
         for title, desc, color in FRAMES:
             embed = discord.Embed(title=title, description=desc, color=color)
-            embed.set_footer(text="Catcher Pack • Opening…")
+            embed.set_footer(text="Daily Catcher Pack • Opening…")
             try:
                 await interaction.edit_original_response(embed=embed, view=self)
             except discord.HTTPException:
@@ -263,7 +285,7 @@ class OpenPackView(discord.ui.View):
         if result is None:
             embed = discord.Embed(
                 title="The pack was empty!",
-                description="No cards are currently obtainable. The pack has been refunded.",
+                description="No eligible cards are currently obtainable. The pack has been refunded.",
                 color=0xED4245,
             )
             add_pack(interaction.user.id, 1)
@@ -271,7 +293,7 @@ class OpenPackView(discord.ui.View):
             self.stop()
             return
 
-        instance, card, special, is_new = result
+        instance, card, special, is_new, tier = result
 
         special_text = ""
         if special and getattr(special, "catch_phrase", ""):
@@ -281,16 +303,16 @@ class OpenPackView(discord.ui.View):
         embed = discord.Embed(
             title=f"🏏  You pulled {card.country}!",
             description=(
-                f"{interaction.user.mention} unsealed the **Catcher Pack** and revealed a card!\n\n"
+                f"{interaction.user.mention} unsealed the **Daily Catcher Pack** and revealed a card!\n\n"
                 f"**Card:** {card.country}\n"
                 f"**ID:** `#{instance.pk:0X}`\n"
                 f"**Stats:** `{instance.attack_bonus:+}% ATK / {instance.health_bonus:+}% HP`\n"
-                f"**Rarity Tier:** `{_round_tier(card.rarity)}`"
+                f"**Rarity:** `{tier:g}`"
                 f"{special_text}{new_text}"
             ),
             color=0x57F287,
         )
-        embed.set_footer(text="Catcher Pack • Opened")
+        embed.set_footer(text="Daily Catcher Pack • Opened")
 
         card_file: discord.File | None = None
         if card.collection_card:
@@ -320,9 +342,11 @@ class CatcherPackCog(commands.Cog):
     def __init__(self, bot: "CricStarBot"):
         self.bot = bot
         self.daily_award.start()
+        self.catchup_task.start()
 
     def cog_unload(self):
         self.daily_award.cancel()
+        self.catchup_task.cancel()
 
     # ── Background task: award winner at UTC midnight ────────────────────────
 
@@ -332,6 +356,34 @@ class CatcherPackCog(commands.Cog):
 
     @daily_award.before_loop
     async def _before_daily_award(self):
+        await self.bot.wait_until_ready()
+
+    # ── Catch-up task: handles missed midnights if the bot was offline ──────
+    #
+    # If the bot was down when UTC midnight passed, the scheduled task won't
+    # fire for that day. On startup (and every hour as a safety net) we check
+    # whether the stored counting date is older than today. If it is, we award
+    # the winner for that older day's catches immediately, then reset.
+
+    @tasks.loop(hours=1)
+    async def catchup_task(self):
+        data = load_data()
+        stored_date = data.get("date")
+        today = _today_str()
+        if stored_date and stored_date != today and data.get("catches"):
+            log.info(
+                "Catcher Pack catch-up: awarding missed day %s (bot was offline at midnight).",
+                stored_date,
+            )
+            await self._award_winner()
+        elif stored_date and stored_date != today:
+            # No catches recorded, just roll the date forward
+            data["date"] = today
+            data["catches"] = {}
+            save_data(data)
+
+    @catchup_task.before_loop
+    async def _before_catchup(self):
         await self.bot.wait_until_ready()
 
     async def _award_winner(self):
@@ -367,7 +419,7 @@ class CatcherPackCog(commands.Cog):
                 try:
                     await user.send(
                         f"🏆 You topped yesterday's catch leaderboard with **{count}** catches!\n"
-                        f"A **Catcher Pack** has been added to your inventory.\n"
+                        f"A **Daily Catcher Pack** has been added to your inventory.\n"
                         f"Use `/csopen` to open it."
                     )
                 except discord.HTTPException:
@@ -379,22 +431,22 @@ class CatcherPackCog(commands.Cog):
 
     # ── /csopen ──────────────────────────────────────────────────────────────
 
-    @app_commands.command(name="csopen", description="Open a Catcher Pack from your inventory.")
+    @app_commands.command(name="csopen", description="Open a Daily Catcher Pack from your inventory.")
     async def csopen(self, interaction: discord.Interaction["CricStarBot"]):
         data = load_data()
         have = int(data["packs"].get(str(interaction.user.id), 0))
         if have <= 0:
             await interaction.response.send_message(
-                "You don't own any Catcher Packs yet. "
+                "You don't own any Daily Catcher Packs yet. "
                 "Top the daily catch leaderboard or ask the bot owner for one!",
                 ephemeral=True,
             )
             return
 
         embed = discord.Embed(
-            title="🎁  Catcher Pack",
+            title="🎁  Daily Catcher Pack",
             description=(
-                f"{interaction.user.mention}, you have **{have}** Catcher Pack(s).\n\n"
+                f"{interaction.user.mention}, you have **{have}** Daily Catcher Pack(s).\n\n"
                 f"Press the button below to tear open one of them and reveal your reward!"
             ),
             color=0xFEE75C,
@@ -441,18 +493,18 @@ class CatcherPackCog(commands.Cog):
         last = data.get("last_winner")
         if last:
             embed.add_field(
-                name="Yesterday's Catcher Pack winner",
+                name="Yesterday's Daily Catcher Pack winner",
                 value=f"<@{last['user_id']}> with `{last['catches']}` catches",
                 inline=False,
             )
-        embed.set_footer(text="Top catcher at UTC midnight wins a Catcher Pack.")
+        embed.set_footer(text="Top catcher at UTC midnight wins a Daily Catcher Pack.")
         await interaction.response.send_message(embed=embed)
 
     # ── /ownergivepack ───────────────────────────────────────────────────────
 
     @app_commands.command(
         name="ownergivepack",
-        description="(Bot owner only) Give a Catcher Pack to a user.",
+        description="(Bot owner only) Give a Daily Catcher Pack to a user.",
     )
     @app_commands.describe(user="The user to receive the pack", amount="How many packs to give (default 1)")
     async def ownergivepack(
@@ -470,13 +522,13 @@ class CatcherPackCog(commands.Cog):
 
         new_total = add_pack(user.id, amount)
         await interaction.response.send_message(
-            f"✅ Gave **{amount}** Catcher Pack(s) to {user.mention}. "
+            f"✅ Gave **{amount}** Daily Catcher Pack(s) to {user.mention}. "
             f"They now have **{new_total}** pack(s).",
             ephemeral=True,
         )
         try:
             await user.send(
-                f"🎁 The bot owner gifted you **{amount}** Catcher Pack(s)! "
+                f"🎁 The bot owner gifted you **{amount}** Daily Catcher Pack(s)! "
                 f"Use `/csopen` to open."
             )
         except discord.HTTPException:
@@ -486,7 +538,7 @@ class CatcherPackCog(commands.Cog):
 
     @app_commands.command(
         name="ownerforceaward",
-        description="(Bot owner only) Force the daily Catcher Pack award now.",
+        description="(Bot owner only) Force the Daily Catcher Pack award now.",
     )
     async def ownerforceaward(self, interaction: discord.Interaction["CricStarBot"]):
         is_owner = interaction.user.id == BOT_OWNER_ID or await interaction.client.is_owner(interaction.user)

@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-21T16:04:47.289778+00:00",
-  "count": 1449,
+  "exported_at": "2026-04-21T16:17:56.530455+00:00",
+  "count": 1450,
   "holdings": [
     {
       "player_discord_id": 597499091504594945,
@@ -18836,6 +18836,19 @@
       "tradeable": true,
       "server_id": 1371364151728799856,
       "catch_date": "2026-04-21T15:48:22.163469+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Naveen ul Haq",
+      "special_name": null,
+      "health_bonus": -18,
+      "attack_bonus": 20,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-21T16:08:15.427345+00:00",
       "spawned_time": null,
       "extra_data": {}
     }
