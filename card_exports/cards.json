@@ -2084,5 +2084,68 @@
       "foreground_border": true,
       "only_spawn_in_event": false
     }
+  },
+  "Harbhajan Singh": {
+    "player_name": "Harbhajan Singh",
+    "card_name": "Harbhajan",
+    "slug": "harbhajan_singh",
+    "codename": "Bhajji",
+    "description": "An iconic game changer whose spin mastery and fierce mindset shattered partnerships and carved unforgettable victories in cricket history",
+    "bat_score": 30,
+    "ball_score": 92,
+    "rarity": 0.6,
+    "spawn_chance": 30.0,
+    "artwork_author": "Alex",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": false,
+    "catch_name": "harbhajan singh",
+    "event_id": 4,
+    "event_name": "ICONS",
+    "filename": "premade_harbhajan_singh.png",
+    "wild_card_filename": "spawn_harbhajan_singh.jpg",
+    "capacity_logic": {
+      "badge_rarity": 0.6,
+      "bg_preset": "icons_9",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 30.0,
+      "daily_chance": 0.0,
+      "display_name": "Harbhajan",
+      "forced_special": 4
+    }
+  },
+  "Ben Stokes": {
+    "player_name": "Ben Stokes",
+    "card_name": "Stokes",
+    "slug": "ben_stokes",
+    "codename": "Stokesy",
+    "description": "A modern era match winner whose explosive batting sharp bowling and fearless mindset redefine impact in the biggest moments",
+    "bat_score": 90,
+    "ball_score": 89,
+    "rarity": 0.7,
+    "spawn_chance": 20.0,
+    "artwork_author": "Alex",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": false,
+    "catch_name": "ben stokes",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_ben_stokes.png",
+    "wild_card_filename": "spawn_ben_stokes.jpg",
+    "capacity_logic": {
+      "badge_rarity": 0.7,
+      "bg_preset": "Rare",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 20.0,
+      "daily_chance": 0.0,
+      "display_name": "Stokes"
+    }
   }
 }
