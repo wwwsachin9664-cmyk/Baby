@@ -37,6 +37,18 @@ log = logging.getLogger("cricstar.packages.catcherpack")
 
 DATA_FILE = Path(__file__).parent.parent.parent.parent / "data" / "catcher_pack.json"
 MEDIA_DIR = Path("admin_panel/media")
+ASSETS_DIR = Path(__file__).parent / "assets"
+PACK_COVER = ASSETS_DIR / "pack_cover.png"
+PACK_GIF = ASSETS_DIR / "pack_open.gif"
+
+# Custom Discord emoji shown in front of "Daily Catcher Pack" everywhere
+PACK_EMOJI = "<:catcherpack:1496344403537559703>"
+PACK_LABEL = f"{PACK_EMOJI} Daily Catcher Pack"
+
+# How long the Open button stays usable
+OPEN_TIMEOUT = 35
+# How long the opening animation runs (matches the GIF length)
+ANIMATION_DURATION = 4.0
 
 # Badge-rarity tier weights for the Daily Catcher Pack.
 # Only cards whose badge_rarity matches one of these keys are in the pool.
@@ -228,20 +240,34 @@ async def grant_card_from_pack(user: discord.abc.User, guild_id: int | None) -> 
 
 # ── Animated pack opening view ───────────────────────────────────────────────
 
-FRAMES = [
-    ("🎁  Daily Catcher Pack",                "The pack rests in your hands…",                         0x2B2D31),
-    ("✨  Daily Catcher Pack ✨",              "You feel a strange energy radiating…",                  0x5865F2),
-    ("💫  Daily Catcher Pack 💫",              "The seal is breaking…",                                  0xFEE75C),
-    ("🌟  D A I L Y   C A T C H E R   P A C K", "A blinding flash escapes the wrapper…",                 0xF287B7),
-    ("⚡  R E V E A L  ⚡",                    "A cricketer steps onto the field…",                     0xEB459E),
-]
+def _cover_embed() -> discord.Embed:
+    embed = discord.Embed(
+        title=PACK_LABEL,
+        description="A pack reserved for the day's top catcher. Press the button to open it.",
+        color=0xE6B800,
+    )
+    embed.set_image(url="attachment://pack_cover.png")
+    embed.set_footer(text="Daily Catcher Pack")
+    return embed
+
+
+def _opening_embed() -> discord.Embed:
+    embed = discord.Embed(
+        title=f"{PACK_LABEL} — Opening…",
+        description="Hold tight, your card is being revealed!",
+        color=0xFEE75C,
+    )
+    embed.set_image(url="attachment://pack_open.gif")
+    embed.set_footer(text="Daily Catcher Pack • Opening…")
+    return embed
 
 
 class OpenPackView(discord.ui.View):
     def __init__(self, user_id: int):
-        super().__init__(timeout=120)
+        super().__init__(timeout=OPEN_TIMEOUT)
         self.user_id = user_id
         self.opened = False
+        self.message: discord.Message | discord.InteractionMessage | None = None
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id != self.user_id:
@@ -251,14 +277,23 @@ class OpenPackView(discord.ui.View):
             return False
         return True
 
-    @discord.ui.button(label="Open the Pack", style=discord.ButtonStyle.success, emoji="🎁")
+    async def on_timeout(self) -> None:
+        if self.opened:
+            return
+        for child in self.children:
+            child.disabled = True  # type: ignore[attr-defined]
+        if self.message:
+            try:
+                await self.message.edit(view=self)
+            except discord.HTTPException:
+                pass
+
+    @discord.ui.button(label="Open Pack", style=discord.ButtonStyle.success, emoji="🎴")
     async def open_button(self, interaction: discord.Interaction["CricStarBot"], button: discord.ui.Button):
         if self.opened:
             await interaction.response.send_message("Already opened!", ephemeral=True)
             return
         self.opened = True
-        button.disabled = True
-        button.label = "Opening…"
 
         # Make sure the user still owns a pack
         if not consume_pack(interaction.user.id):
@@ -268,17 +303,19 @@ class OpenPackView(discord.ui.View):
             self.stop()
             return
 
-        await interaction.response.edit_message(view=self)
+        button.disabled = True
+        button.label = "Opening…"
 
-        # Animation frames
-        for title, desc, color in FRAMES:
-            embed = discord.Embed(title=title, description=desc, color=color)
-            embed.set_footer(text="Daily Catcher Pack • Opening…")
-            try:
-                await interaction.edit_original_response(embed=embed, view=self)
-            except discord.HTTPException:
-                pass
-            await asyncio.sleep(0.9)
+        # Swap the cover image for the opening GIF
+        gif_file = discord.File(str(PACK_GIF), filename="pack_open.gif")
+        await interaction.response.edit_message(
+            embed=_opening_embed(),
+            view=self,
+            attachments=[gif_file],
+        )
+
+        # Animation: hold the GIF on screen for its duration
+        await asyncio.sleep(ANIMATION_DURATION)
 
         # Grant the card
         result = await grant_card_from_pack(interaction.user, interaction.guild_id)
@@ -289,7 +326,10 @@ class OpenPackView(discord.ui.View):
                 color=0xED4245,
             )
             add_pack(interaction.user.id, 1)
-            await interaction.edit_original_response(embed=embed, view=None)
+            try:
+                await interaction.edit_original_response(embed=embed, view=None, attachments=[])
+            except discord.HTTPException:
+                pass
             self.stop()
             return
 
@@ -303,7 +343,7 @@ class OpenPackView(discord.ui.View):
         embed = discord.Embed(
             title=f"🏏  You pulled {card.country}!",
             description=(
-                f"{interaction.user.mention} unsealed the **Daily Catcher Pack** and revealed a card!\n\n"
+                f"{interaction.user.mention} opened the **{PACK_LABEL}** and revealed a card!\n\n"
                 f"**Card:** {card.country}\n"
                 f"**ID:** `#{instance.pk:0X}`\n"
                 f"**Stats:** `{instance.attack_bonus:+}% ATK / {instance.health_bonus:+}% HP`\n"
@@ -314,20 +354,17 @@ class OpenPackView(discord.ui.View):
         )
         embed.set_footer(text="Daily Catcher Pack • Opened")
 
-        card_file: discord.File | None = None
+        attachments: list[discord.File] = []
         if card.collection_card:
             card_path = MEDIA_DIR / str(card.collection_card)
             if card_path.exists():
-                card_file = discord.File(str(card_path), filename=card_path.name)
+                attachments.append(discord.File(str(card_path), filename=card_path.name))
                 embed.set_image(url=f"attachment://{card_path.name}")
 
         try:
-            if card_file:
-                await interaction.edit_original_response(
-                    embed=embed, view=None, attachments=[card_file]
-                )
-            else:
-                await interaction.edit_original_response(embed=embed, view=None)
+            await interaction.edit_original_response(
+                embed=embed, view=None, attachments=attachments
+            )
         except discord.HTTPException:
             log.exception("Failed to edit final reveal message")
 
@@ -436,25 +473,27 @@ class CatcherPackCog(commands.Cog):
         data = load_data()
         have = int(data["packs"].get(str(interaction.user.id), 0))
         if have <= 0:
+            # Silent ephemeral acknowledgement so only the user sees nothing in chat
             await interaction.response.send_message(
-                "You don't own any Daily Catcher Packs yet. "
-                "Top the daily catch leaderboard or ask the bot owner for one!",
-                ephemeral=True,
+                "You don't own a Daily Catcher Pack.", ephemeral=True
             )
             return
 
-        embed = discord.Embed(
-            title="🎁  Daily Catcher Pack",
-            description=(
-                f"{interaction.user.mention}, you have **{have}** Daily Catcher Pack(s).\n\n"
-                f"Press the button below to tear open one of them and reveal your reward!"
-            ),
-            color=0xFEE75C,
+        embed = _cover_embed()
+        embed.add_field(
+            name="Owner",
+            value=f"{interaction.user.mention} • {have} pack(s)",
+            inline=False,
         )
-        embed.set_footer(text="One pack will be consumed when you press Open.")
 
+        cover_file = discord.File(str(PACK_COVER), filename="pack_cover.png")
         view = OpenPackView(interaction.user.id)
-        await interaction.response.send_message(embed=embed, view=view)
+
+        await interaction.response.send_message(embed=embed, view=view, file=cover_file)
+        try:
+            view.message = await interaction.original_response()
+        except discord.HTTPException:
+            view.message = None
 
     # ── /catchleaderboard ────────────────────────────────────────────────────
 
