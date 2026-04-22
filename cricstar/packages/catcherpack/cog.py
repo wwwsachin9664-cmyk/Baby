@@ -53,13 +53,13 @@ ANIMATION_DURATION = 4.0
 # Badge-rarity tier weights for the Daily Catcher Pack.
 # Only cards whose badge_rarity matches one of these keys are in the pool.
 RARITY_WEIGHTS: dict[float, float] = {
-    0.2: 5,
-    0.3: 10,
-    0.4: 20,
-    0.5: 25,
-    0.6: 45,
-    0.7: 70,
-    0.8: 90,
+    0.2: 15,
+    0.3: 20,
+    0.4: 25,
+    0.5: 45,
+    0.6: 60,
+    0.7: 65,
+    0.8: 70,
 }
 
 ALLOWED_TIERS = set(RARITY_WEIGHTS.keys())
