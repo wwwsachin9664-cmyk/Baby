@@ -306,13 +306,23 @@ class OpenPackView(discord.ui.View):
         button.disabled = True
         button.label = "Opening…"
 
-        # Swap the cover image for the opening GIF
+        # Defer FIRST so Discord doesn't timeout the interaction while we upload
+        # the (large) GIF. We have 15 minutes after deferring.
+        try:
+            await interaction.response.defer()
+        except discord.HTTPException:
+            log.exception("Failed to defer pack-open interaction")
+
+        # Swap the cover image for the opening GIF via the deferred edit.
         gif_file = discord.File(str(PACK_GIF), filename="pack_open.gif")
-        await interaction.response.edit_message(
-            embed=_opening_embed(),
-            view=self,
-            attachments=[gif_file],
-        )
+        try:
+            await interaction.edit_original_response(
+                embed=_opening_embed(),
+                view=self,
+                attachments=[gif_file],
+            )
+        except discord.HTTPException:
+            log.exception("Failed to swap to opening GIF")
 
         # Animation: hold the GIF on screen for its duration
         await asyncio.sleep(ANIMATION_DURATION)
