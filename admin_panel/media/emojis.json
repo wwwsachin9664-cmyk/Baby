@@ -306,5 +306,89 @@
     "bet": true,
     "player": "Sikandar Raza",
     "name": "SikandaRaza"
+  },
+  {
+    "id": "1496459926933995600",
+    "list": true,
+    "bet": true,
+    "player": "Shreyas Iyer(Ipl 2026)",
+    "name": "shreyasiyerIPL"
+  },
+  {
+    "id": "1496459923155062885",
+    "list": true,
+    "bet": true,
+    "player": "Suryakumar Yadav (IPL2026)",
+    "name": "suryakumarIPL"
+  },
+  {
+    "id": "1496459919405219870",
+    "list": true,
+    "bet": true,
+    "player": "Sanju Samson (IPL2026)",
+    "name": "sanjuIPL"
+  },
+  {
+    "id": "1496459885431492668",
+    "list": true,
+    "bet": true,
+    "player": "Rashid Khan (IPL2026)",
+    "name": "rashidIPL"
+  },
+  {
+    "id": "1496459882382233691",
+    "list": true,
+    "bet": true,
+    "player": "Axar Patel (IPL2026)",
+    "name": "axarIPL"
+  },
+  {
+    "id": "1496459877877289052",
+    "list": true,
+    "bet": true,
+    "player": "Ishan kishan (IPL2026)",
+    "name": "ishanIPL"
+  },
+  {
+    "id": "1496459852069994629",
+    "list": true,
+    "bet": true,
+    "player": "Dewald Brevis (IPL2026)",
+    "name": "brewisIPL"
+  },
+  {
+    "id": "1496459848714551326",
+    "list": true,
+    "bet": true,
+    "player": "Rishabh Pant (IPL2026)",
+    "name": "rishabhIPL"
+  },
+  {
+    "id": "1496459844360863805",
+    "list": true,
+    "bet": true,
+    "player": "Sai Sudharsan (IPL2026)",
+    "name": "saiIPL"
+  },
+  {
+    "id": "1496459818817294397",
+    "list": true,
+    "bet": true,
+    "player": "Josh Hazlewood (IPL2026)",
+    "name": "hazelwoodIPL"
+  },
+  {
+    "id": "1496459814782505130",
+    "list": true,
+    "bet": true,
+    "player": "Heinrich Klaasen  (IPL2026)",
+    "name": "heinrichIPL"
+  },
+  {
+    "id": "1496459811477262356",
+    "list": true,
+    "bet": true,
+    "player": "Hardik Pandya (IPL2026)",
+    "name": "hardikIPL"
   }
 ]

@@ -1,15 +1,20 @@
 """
-Daily Catcher Pack system for CricStar.
+Catcher Pack system for CricStar.
 
-Tracks how many cricketers each user catches per UTC day. The user with the most
-catches at the end of the day automatically receives one "Daily Catcher Pack" in
-their inventory. Packs can be opened with /csopen, the leaderboard is shown with
-/catchleaderboard, and bot owners can grant a pack with /ownergivepack.
+Each user has a personal catch counter. Every catch increments it; when the
+counter reaches CATCH_GOAL (30) the user is automatically awarded one Catcher
+Pack and the counter resets to 0.
 
-Pack contents — only cards whose badge rarity matches one of these tiers are in
-the pool, picked by weight:
-    0.2 -> 5,  0.3 -> 10, 0.4 -> 20, 0.5 -> 25,
-    0.6 -> 45, 0.7 -> 70, 0.8 -> 90
+If a user does not catch anything for INACTIVITY_RESET_SECONDS (48 hours),
+their progress is reset back to 0 the next time it is checked.
+
+Pack contents — only cards whose badge_rarity matches one of these tiers are
+in the pool, picked by weight (RARITY_WEIGHTS).
+
+Commands:
+    /csopen            — open a pack (animated)
+    /catchleaderboard  — top 10 by current catch progress
+    /ownergivepack     — bot-owner-only: give packs to a user
 """
 from __future__ import annotations
 
@@ -17,7 +22,7 @@ import asyncio
 import json
 import logging
 import random
-from datetime import date, datetime, time, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -41,16 +46,22 @@ ASSETS_DIR = Path(__file__).parent / "assets"
 PACK_COVER = ASSETS_DIR / "pack_cover.png"
 PACK_GIF = ASSETS_DIR / "pack_open.gif"
 
-# Custom Discord emoji shown in front of "Daily Catcher Pack" everywhere
+# Custom Discord emoji shown in front of "Catcher Pack" everywhere
 PACK_EMOJI = "<:catcherpack:1496344403537559703>"
-PACK_LABEL = f"{PACK_EMOJI} Daily Catcher Pack"
+PACK_LABEL = f"{PACK_EMOJI} Catcher Pack"
 
 # How long the Open button stays usable
 OPEN_TIMEOUT = 35
 # How long the opening animation runs (matches the GIF length)
 ANIMATION_DURATION = 4.0
 
-# Badge-rarity tier weights for the Daily Catcher Pack.
+# How many catches a user needs to earn one pack
+CATCH_GOAL = 30
+# If a user does not catch anything for this many seconds, their progress
+# resets back to 0.
+INACTIVITY_RESET_SECONDS = 48 * 60 * 60  # 48 hours
+
+# Badge-rarity tier weights for the Catcher Pack.
 # Only cards whose badge_rarity matches one of these keys are in the pool.
 RARITY_WEIGHTS: dict[float, float] = {
     0.2: 15,
@@ -86,20 +97,18 @@ def _matching_tier(value: float | None) -> float | None:
             return tier
     return None
 
-MIDNIGHT_UTC = time(hour=0, minute=0, tzinfo=timezone.utc)
-
 
 # ── Storage helpers ──────────────────────────────────────────────────────────
 
 _lock = asyncio.Lock()
 
 
-def _today_str() -> str:
-    return datetime.now(tz=timezone.utc).date().isoformat()
+def _now_ts() -> float:
+    return datetime.now(tz=timezone.utc).timestamp()
 
 
 def _default_data() -> dict:
-    return {"date": _today_str(), "catches": {}, "packs": {}, "last_winner": None}
+    return {"progress": {}, "last_catch": {}, "packs": {}}
 
 
 def load_data() -> dict:
@@ -110,10 +119,16 @@ def load_data() -> dict:
             data = _default_data()
     else:
         data = _default_data()
-    data.setdefault("date", _today_str())
-    data.setdefault("catches", {})
+    data.setdefault("progress", {})
+    data.setdefault("last_catch", {})
     data.setdefault("packs", {})
-    data.setdefault("last_winner", None)
+
+    # Migration: legacy keys from the old daily-winner system are no longer
+    # used. Carry over "packs" only and drop the rest silently.
+    for legacy_key in ("date", "catches", "last_winner"):
+        if legacy_key in data:
+            data.pop(legacy_key, None)
+
     return data
 
 
@@ -122,18 +137,56 @@ def save_data(data: dict) -> None:
     DATA_FILE.write_text(json.dumps(data, indent=2))
 
 
+def _expire_if_inactive(data: dict, uid: str, now: float) -> None:
+    """If the user's last catch was more than 48h ago, reset their progress."""
+    last = data["last_catch"].get(uid)
+    if last is None:
+        return
+    try:
+        last_f = float(last)
+    except (TypeError, ValueError):
+        return
+    if now - last_f >= INACTIVITY_RESET_SECONDS:
+        if data["progress"].get(uid):
+            log.info(
+                "Catcher Pack: resetting progress for %s after %.1fh inactivity",
+                uid,
+                (now - last_f) / 3600,
+            )
+        data["progress"][uid] = 0
+        # Forget the timestamp so we don't log the reset again next tick.
+        data["last_catch"].pop(uid, None)
+
+
 def record_catch(user_id: int) -> None:
-    """Record one catch for the given user for today. Safe to call from sync code."""
+    """
+    Record one catch for the given user. Safe to call from sync code.
+
+    - Resets the user's progress first if they have been inactive ≥48h.
+    - Increments the user's catch progress.
+    - When progress reaches CATCH_GOAL, awards 1 pack and resets to 0.
+    """
     try:
         data = load_data()
-        today = _today_str()
-        if data.get("date") != today:
-            # day changed mid-flight; the daily task will handle awarding,
-            # but keep counts fresh here too.
-            data["date"] = today
-            data["catches"] = {}
         uid = str(user_id)
-        data["catches"][uid] = int(data["catches"].get(uid, 0)) + 1
+        now = _now_ts()
+
+        _expire_if_inactive(data, uid, now)
+
+        progress = int(data["progress"].get(uid, 0)) + 1
+        data["last_catch"][uid] = now
+
+        if progress >= CATCH_GOAL:
+            data["packs"][uid] = int(data["packs"].get(uid, 0)) + 1
+            data["progress"][uid] = 0
+            log.info(
+                "Catcher Pack: user %s completed %d catches and earned 1 pack",
+                uid,
+                CATCH_GOAL,
+            )
+        else:
+            data["progress"][uid] = progress
+
         save_data(data)
     except Exception:
         log.exception("Failed to record catch for user %s", user_id)
@@ -163,7 +216,7 @@ def consume_pack(user_id: int) -> bool:
 
 def pick_pack_card() -> tuple[Ball, float] | None:
     """
-    Pick a single card from the Daily Catcher Pack pool.
+    Pick a single card from the Catcher Pack pool.
 
     Only cards whose badge_rarity exactly matches one of the allowed tiers
     (0.2/0.3/0.4/0.5/0.6/0.7/0.8) are eligible. Tiers are weighted by
@@ -243,11 +296,11 @@ async def grant_card_from_pack(user: discord.abc.User, guild_id: int | None) -> 
 def _cover_embed() -> discord.Embed:
     embed = discord.Embed(
         title=PACK_LABEL,
-        description="A pack reserved for the day's top catcher. Press the button to open it.",
+        description="Press the button below to open your pack.",
         color=0xE6B800,
     )
     embed.set_image(url="attachment://pack_cover.png")
-    embed.set_footer(text="Daily Catcher Pack")
+    embed.set_footer(text="Catcher Pack")
     return embed
 
 
@@ -258,7 +311,7 @@ def _opening_embed() -> discord.Embed:
         color=0xFEE75C,
     )
     embed.set_image(url="attachment://pack_open.gif")
-    embed.set_footer(text="Daily Catcher Pack • Opening…")
+    embed.set_footer(text="Catcher Pack • Opening…")
     return embed
 
 
@@ -298,7 +351,7 @@ class OpenPackView(discord.ui.View):
         # Make sure the user still owns a pack
         if not consume_pack(interaction.user.id):
             await interaction.response.send_message(
-                "You don't have a Daily Catcher Pack to open.", ephemeral=True
+                "You don't have a Catcher Pack to open.", ephemeral=True
             )
             self.stop()
             return
@@ -353,7 +406,7 @@ class OpenPackView(discord.ui.View):
         embed = discord.Embed(
             title=f"🏏  You pulled {card.country}!",
             description=(
-                f"{interaction.user.mention} opened the **{PACK_LABEL}** and revealed a card!\n\n"
+                f"{interaction.user.mention} opened a **{PACK_LABEL}** and revealed a card!\n\n"
                 f"**Card:** {card.country}\n"
                 f"**ID:** `#{instance.pk:0X}`\n"
                 f"**Stats:** `{instance.attack_bonus:+}% ATK / {instance.health_bonus:+}% HP`\n"
@@ -362,7 +415,7 @@ class OpenPackView(discord.ui.View):
             ),
             color=0x57F287,
         )
-        embed.set_footer(text="Daily Catcher Pack • Opened")
+        embed.set_footer(text="Catcher Pack • Opened")
 
         attachments: list[discord.File] = []
         if card.collection_card:
@@ -384,108 +437,51 @@ class OpenPackView(discord.ui.View):
 # ── Cog ──────────────────────────────────────────────────────────────────────
 
 class CatcherPackCog(commands.Cog):
-    """Catcher Pack: daily catch competition and pack openings."""
+    """Catcher Pack: 30 catches earn one pack, reset after 48h of inactivity."""
 
     def __init__(self, bot: "CricStarBot"):
         self.bot = bot
-        self.daily_award.start()
-        self.catchup_task.start()
+        self.inactivity_sweep.start()
 
     def cog_unload(self):
-        self.daily_award.cancel()
-        self.catchup_task.cancel()
+        self.inactivity_sweep.cancel()
 
-    # ── Background task: award winner at UTC midnight ────────────────────────
-
-    @tasks.loop(time=MIDNIGHT_UTC)
-    async def daily_award(self):
-        await self._award_winner()
-
-    @daily_award.before_loop
-    async def _before_daily_award(self):
-        await self.bot.wait_until_ready()
-
-    # ── Catch-up task: handles missed midnights if the bot was offline ──────
+    # ── Background task: sweep stale progress every hour ────────────────────
     #
-    # If the bot was down when UTC midnight passed, the scheduled task won't
-    # fire for that day. On startup (and every hour as a safety net) we check
-    # whether the stored counting date is older than today. If it is, we award
-    # the winner for that older day's catches immediately, then reset.
+    # record_catch() already resets a user's progress on their next catch if
+    # they've been inactive for 48h, but this loop ensures the leaderboard
+    # reflects expirations even when the user doesn't catch anything new.
 
     @tasks.loop(hours=1)
-    async def catchup_task(self):
-        data = load_data()
-        stored_date = data.get("date")
-        today = _today_str()
-        if stored_date and stored_date != today and data.get("catches"):
-            log.info(
-                "Catcher Pack catch-up: awarding missed day %s (bot was offline at midnight).",
-                stored_date,
-            )
-            await self._award_winner()
-        elif stored_date and stored_date != today:
-            # No catches recorded, just roll the date forward
-            data["date"] = today
-            data["catches"] = {}
-            save_data(data)
-
-    @catchup_task.before_loop
-    async def _before_catchup(self):
-        await self.bot.wait_until_ready()
-
-    async def _award_winner(self):
-        async with _lock:
-            data = load_data()
-            yesterday_catches = data.get("catches", {})
-            if not yesterday_catches:
-                # Roll the date and exit silently
-                data["date"] = _today_str()
-                save_data(data)
-                return
-
-            winner_id, count = max(yesterday_catches.items(), key=lambda kv: kv[1])
-            try:
-                winner_id_int = int(winner_id)
-            except ValueError:
-                return
-
-            data["packs"][winner_id] = int(data["packs"].get(winner_id, 0)) + 1
-            data["last_winner"] = {
-                "user_id": winner_id_int,
-                "catches": int(count),
-                "date": data.get("date"),
-            }
-            data["date"] = _today_str()
-            data["catches"] = {}
-            save_data(data)
-
-        # Try to DM the winner
+    async def inactivity_sweep(self):
         try:
-            user = self.bot.get_user(winner_id_int) or await self.bot.fetch_user(winner_id_int)
-            if user:
-                try:
-                    await user.send(
-                        f"🏆 You topped yesterday's catch leaderboard with **{count}** catches!\n"
-                        f"A **Daily Catcher Pack** has been added to your inventory.\n"
-                        f"Use `/csopen` to open it."
-                    )
-                except discord.HTTPException:
-                    pass
+            async with _lock:
+                data = load_data()
+                now = _now_ts()
+                changed = False
+                for uid in list(data["progress"].keys()):
+                    before = int(data["progress"].get(uid, 0))
+                    _expire_if_inactive(data, uid, now)
+                    if int(data["progress"].get(uid, 0)) != before:
+                        changed = True
+                if changed:
+                    save_data(data)
         except Exception:
-            log.exception("Failed to notify catcher pack winner %s", winner_id_int)
+            log.exception("Catcher Pack inactivity sweep failed")
 
-        log.info("Awarded Catcher Pack to %s (%s catches)", winner_id_int, count)
+    @inactivity_sweep.before_loop
+    async def _before_sweep(self):
+        await self.bot.wait_until_ready()
 
     # ── /csopen ──────────────────────────────────────────────────────────────
 
-    @app_commands.command(name="csopen", description="Open a Daily Catcher Pack from your inventory.")
+    @app_commands.command(name="csopen", description="Open a Catcher Pack from your inventory.")
     async def csopen(self, interaction: discord.Interaction["CricStarBot"]):
         data = load_data()
         have = int(data["packs"].get(str(interaction.user.id), 0))
         if have <= 0:
-            # Silent ephemeral acknowledgement so only the user sees nothing in chat
             await interaction.response.send_message(
-                "You don't own a Daily Catcher Pack.", ephemeral=True
+                "You don't own a Catcher Pack.", ephemeral=True
             )
             return
 
@@ -509,22 +505,35 @@ class CatcherPackCog(commands.Cog):
 
     @app_commands.command(
         name="catchleaderboard",
-        description="Show today's top 10 catchers.",
+        description=f"Show the top 10 catchers by progress toward a Catcher Pack ({CATCH_GOAL} catches).",
     )
     async def catchleaderboard(self, interaction: discord.Interaction["CricStarBot"]):
-        data = load_data()
-        catches: dict[str, int] = data.get("catches", {})
-        if not catches:
+        # Sweep stale progress on demand so the leaderboard is always fresh
+        async with _lock:
+            data = load_data()
+            now = _now_ts()
+            changed = False
+            for uid in list(data["progress"].keys()):
+                before = int(data["progress"].get(uid, 0))
+                _expire_if_inactive(data, uid, now)
+                if int(data["progress"].get(uid, 0)) != before:
+                    changed = True
+            if changed:
+                save_data(data)
+
+        progress: dict[str, int] = {
+            uid: int(c) for uid, c in data.get("progress", {}).items() if int(c) > 0
+        }
+        if not progress:
             await interaction.response.send_message(
-                "No catches have been recorded today yet. Be the first!",
+                "No catches recorded yet. Be the first!",
                 ephemeral=True,
             )
             return
 
-        ranked = sorted(catches.items(), key=lambda kv: kv[1], reverse=True)[:10]
-
+        ranked = sorted(progress.items(), key=lambda kv: kv[1], reverse=True)[:10]
         medals = ["🥇", "🥈", "🥉"] + ["🏏"] * 7
-        lines = []
+        lines: list[str] = []
         for i, (uid, count) in enumerate(ranked):
             try:
                 uid_int = int(uid)
@@ -532,28 +541,25 @@ class CatcherPackCog(commands.Cog):
                 continue
             user = self.bot.get_user(uid_int)
             name = user.mention if user else f"<@{uid_int}>"
-            lines.append(f"{medals[i]} **#{i+1}** — {name} • `{count}` catch{'es' if count != 1 else ''}")
+            lines.append(
+                f"{medals[i]} **#{i+1}** — {name} • `{count}/{CATCH_GOAL}` catches"
+            )
 
         embed = discord.Embed(
-            title="🏏 Catch Leaderboard — Today",
+            title="🏏 Catch Leaderboard",
             description="\n".join(lines),
             color=0x5865F2,
         )
-        last = data.get("last_winner")
-        if last:
-            embed.add_field(
-                name="Yesterday's Daily Catcher Pack winner",
-                value=f"<@{last['user_id']}> with `{last['catches']}` catches",
-                inline=False,
-            )
-        embed.set_footer(text="Top catcher at UTC midnight wins a Daily Catcher Pack.")
+        embed.set_footer(
+            text=f"{CATCH_GOAL} catches = 1 Catcher Pack • progress resets after 48h of inactivity"
+        )
         await interaction.response.send_message(embed=embed)
 
     # ── /ownergivepack ───────────────────────────────────────────────────────
 
     @app_commands.command(
         name="ownergivepack",
-        description="(Bot owner only) Give a Daily Catcher Pack to a user.",
+        description="(Bot owner only) Give a Catcher Pack to a user.",
     )
     @app_commands.describe(user="The user to receive the pack", amount="How many packs to give (default 1)")
     async def ownergivepack(
@@ -571,31 +577,14 @@ class CatcherPackCog(commands.Cog):
 
         new_total = add_pack(user.id, amount)
         await interaction.response.send_message(
-            f"✅ Gave **{amount}** Daily Catcher Pack(s) to {user.mention}. "
+            f"✅ Gave **{amount}** Catcher Pack(s) to {user.mention}. "
             f"They now have **{new_total}** pack(s).",
             ephemeral=True,
         )
         try:
             await user.send(
-                f"🎁 The bot owner gifted you **{amount}** Daily Catcher Pack(s)! "
+                f"🎁 The bot owner gifted you **{amount}** Catcher Pack(s)! "
                 f"Use `/csopen` to open."
             )
         except discord.HTTPException:
             pass
-
-    # ── Owner-only manual trigger for the daily award (handy for testing) ───
-
-    @app_commands.command(
-        name="ownerforceaward",
-        description="(Bot owner only) Force the Daily Catcher Pack award now.",
-    )
-    async def ownerforceaward(self, interaction: discord.Interaction["CricStarBot"]):
-        is_owner = interaction.user.id == BOT_OWNER_ID or await interaction.client.is_owner(interaction.user)
-        if not is_owner:
-            await interaction.response.send_message(
-                "Only the bot owner can use this command.", ephemeral=True
-            )
-            return
-        await interaction.response.defer(ephemeral=True)
-        await self._award_winner()
-        await interaction.followup.send("Done.", ephemeral=True)
