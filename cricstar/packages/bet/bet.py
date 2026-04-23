@@ -580,7 +580,17 @@ class BetInstance(LayoutView):
         self._winner_user_id = winner.user.id
 
         @sync_to_async
-        def _transfer():
+        def _transfer() -> tuple[int, int]:
+            """
+            Atomically transfer the loser's cards to the winner.
+
+            Returns (transferred, missing) where `missing` counts staked cards
+            that were no longer owned by the loser at resolution time (e.g. the
+            card was given/traded away while the bet was open). Missing cards
+            are silently skipped instead of cancelling the entire bet.
+            """
+            transferred = 0
+            missing = 0
             with transaction.atomic():
                 if loser.proposal:
                     loser_qs = BallInstance.objects.select_for_update().filter(
@@ -588,31 +598,39 @@ class BetInstance(LayoutView):
                         player_id=loser.player.pk,
                         deleted=False,
                     )
-                    if loser_qs.count() != len(loser.proposal):
-                        raise IntegrityError()
-                    loser_qs.update(
-                        player_id=winner.player.pk,
-                        trade_player_id=loser.player.pk,
-                        locked=None,
-                    )
+                    owned_ids = list(loser_qs.values_list("id", flat=True))
+                    transferred = len(owned_ids)
+                    missing = len(loser.proposal) - transferred
+                    if owned_ids:
+                        BallInstance.objects.filter(id__in=owned_ids).update(
+                            player_id=winner.player.pk,
+                            trade_player_id=loser.player.pk,
+                            locked=None,
+                        )
+                    # Always clear locks on any staked-but-missing loser cards
+                    # so they don't stay "locked" forever in the loser's account.
+                    stale_ids = set(loser.proposal) - set(owned_ids)
+                    if stale_ids:
+                        BallInstance.objects.filter(id__in=stale_ids).update(locked=None)
                 if winner.proposal:
                     BallInstance.objects.select_for_update().filter(
                         id__in=winner.proposal,
-                        player_id=winner.player.pk,
                         deleted=False,
                     ).update(locked=None)
+            return transferred, missing
 
         msg = getattr(self, "message", None)
 
         try:
-            await _transfer()
-        except IntegrityError:
-            # Ownership changed mid-bet — return all cards
+            transferred, missing = await _transfer()
+        except Exception:
+            # Truly unexpected failure (DB error, etc.) — return all cards
+            log.exception("Unexpected error while resolving bet, refunding all cards")
             await self._cleanup_cards()
             self.clear_items()
             self.add_item(
                 TextDisplay(
-                    "⚠️ The bet was cancelled because card ownership changed mid-bet.\n"
+                    "⚠️ The bet could not be resolved due to an internal error.\n"
                     "All staked cards have been returned to their owners."
                 )
             )
@@ -620,11 +638,20 @@ class BetInstance(LayoutView):
                 await msg.edit(view=self)
             return
 
+        # Track for the result header so the players can see what happened
+        self._missing_count = missing
+        self._transferred_count = transferred
+
         # Build the result header
         self._result_header = (
             f"## CricStar Betting\n"
             f"*The winner is* ***{winner.user.display_name}***"
         )
+        if missing > 0:
+            self._result_header += (
+                f"\n-# Note: {missing} staked card(s) were no longer available "
+                f"and were skipped."
+            )
 
         # Re-render — _fill_container will show winner-only section
         await self._build_view()
