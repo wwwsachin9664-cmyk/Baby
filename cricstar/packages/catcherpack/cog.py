@@ -473,14 +473,20 @@ class CatcherPackCog(commands.Cog):
     async def _before_sweep(self):
         await self.bot.wait_until_ready()
 
-    # ── /csopen ──────────────────────────────────────────────────────────────
+    # ── /pack open ───────────────────────────────────────────────────────────
 
-    @app_commands.command(name="csopen", description="Open a Catcher Pack from your inventory.")
-    async def csopen(self, interaction: discord.Interaction["CricStarBot"]):
+    pack_group = app_commands.Group(name="pack", description="Catcher Pack commands.")
+
+    @pack_group.command(name="open", description="Open a Catcher Pack from your inventory.")
+    async def pack_open(self, interaction: discord.Interaction["CricStarBot"]):
+        # Show the native "CricStar is thinking…" indicator while we build the
+        # response (and upload the pack cover image).
+        await interaction.response.defer(thinking=True)
+
         data = load_data()
         have = int(data["packs"].get(str(interaction.user.id), 0))
         if have <= 0:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 "You don't own a Catcher Pack.", ephemeral=True
             )
             return
@@ -495,11 +501,10 @@ class CatcherPackCog(commands.Cog):
         cover_file = discord.File(str(PACK_COVER), filename="pack_cover.png")
         view = OpenPackView(interaction.user.id)
 
-        await interaction.response.send_message(embed=embed, view=view, file=cover_file)
-        try:
-            view.message = await interaction.original_response()
-        except discord.HTTPException:
-            view.message = None
+        message = await interaction.followup.send(
+            embed=embed, view=view, file=cover_file, wait=True
+        )
+        view.message = message
 
     # ── /catchleaderboard ────────────────────────────────────────────────────
 

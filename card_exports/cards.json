@@ -2275,5 +2275,37 @@
       "foreground_border": true,
       "only_spawn_in_event": false
     }
+  },
+  "Rohit Sharma (P)": {
+    "player_name": "Rohit Sharma (P)",
+    "card_name": "Rohit (P)",
+    "slug": "rohit_sharma_p",
+    "codename": "THE RO-SHOW",
+    "description": "The undisputed architect of the modern game ruling the crease with a blend of nonchalant power and tactical genius Clad in the iconic Men in Blue he dismantles world class attacks through pure timing and his signature pull shot",
+    "bat_score": 99,
+    "ball_score": 45,
+    "rarity": 0.08,
+    "spawn_chance": 0.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": false,
+    "unobtainable": false,
+    "catch_name": "rohit sharma",
+    "event_id": 4,
+    "event_name": "ICONS",
+    "filename": "premade_rohit_sharma_p.png",
+    "wild_card_filename": "spawn_rohit_sharma_p.jpg",
+    "capacity_logic": {
+      "bg_preset": "INDIA",
+      "credit_font": "optimus",
+      "badge_rarity": 0.08,
+      "daily_chance": 0.0,
+      "display_name": "Rohit (P)",
+      "credit_stroke": true,
+      "weekly_chance": 0.1,
+      "forced_special": 4,
+      "foreground_border": true,
+      "only_spawn_in_event": false
+    }
   }
 }
