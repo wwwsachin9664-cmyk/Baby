@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-04-24T15:33:51.863559+00:00",
-  "count": 3022,
+  "exported_at": "2026-04-24T15:47:49.039029+00:00",
+  "count": 3026,
   "holdings": [
     {
       "player_discord_id": 597499091504594945,
@@ -39286,6 +39286,58 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-24T15:31:12.997122+00:00",
       "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 820893612489179136,
+      "ball_player_name": "Rachin Ravindra",
+      "special_name": null,
+      "health_bonus": 16,
+      "attack_bonus": -19,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-04-24T15:34:45.893423+00:00",
+      "spawned_time": "2026-04-24T15:34:17.906000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1170728448432553994,
+      "ball_player_name": "Abdul Samad",
+      "special_name": null,
+      "health_bonus": -15,
+      "attack_bonus": 1,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-04-24T15:35:24.450103+00:00",
+      "spawned_time": "2026-04-24T15:34:03.668000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 675084969596420099,
+      "ball_player_name": "Rinku Singh",
+      "special_name": null,
+      "health_bonus": -15,
+      "attack_bonus": -7,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1211694312828702801,
+      "catch_date": "2026-04-24T15:35:47.729122+00:00",
+      "spawned_time": "2026-04-24T15:35:33.074000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 675084969596420099,
+      "ball_player_name": "Will Jacks",
+      "special_name": null,
+      "health_bonus": -6,
+      "attack_bonus": -3,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1211694312828702801,
+      "catch_date": "2026-04-24T15:45:54.076696+00:00",
+      "spawned_time": "2026-04-24T15:45:39.146000+00:00",
       "extra_data": {}
     }
   ]

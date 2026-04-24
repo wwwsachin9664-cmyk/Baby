@@ -4,7 +4,12 @@ import textwrap
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
+from PIL import Image, ImageDraw, ImageFile, ImageFilter, ImageFont, ImageOps
+
+# Discord uploads sometimes deliver slightly-truncated PNG/JPG files that PIL
+# refuses to load by default. Enabling this lets PIL read them gracefully
+# instead of raising "image file is truncated" mid-render.
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 from settings.models import settings
 
@@ -446,7 +451,15 @@ def draw_premade_card(
             width=BORDER,
         )
 
-    fg = Image.open(str(foreground_path)).convert("RGBA")
+    try:
+        fg = Image.open(str(foreground_path))
+        fg.load()  # force decode now so we catch corrupt/truncated files here
+        fg = fg.convert("RGBA")
+    except Exception as fg_err:
+        raise ValueError(
+            "Foreground image is corrupt or truncated. Please re-upload the "
+            "player image and try again."
+        ) from fg_err
     fg_fitted = ImageOps.fit(fg, (FRAME_W, FRAME_H), Image.LANCZOS)
     bg.paste(fg_fitted, (FRAME_X, FRAME_Y), mask=fg_fitted)
     fg.close()

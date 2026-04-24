@@ -739,8 +739,20 @@ class Admin(commands.Cog):
                     credit_font=credit_font,
                 )
 
-            with ThreadPoolExecutor() as pool:
-                image, img_kwargs = await self.bot.loop.run_in_executor(pool, _generate)
+            try:
+                with ThreadPoolExecutor() as pool:
+                    image, img_kwargs = await self.bot.loop.run_in_executor(pool, _generate)
+            except ValueError as gen_err:
+                await ctx.send(f"❌ {gen_err}", ephemeral=True)
+                return
+            except Exception as gen_err:
+                log.exception("cardmaker: image generation failed")
+                await ctx.send(
+                    f"❌ Failed to generate the card image: `{gen_err}`. "
+                    f"Please re-upload the foreground/background images and try again.",
+                    ephemeral=True,
+                )
+                return
 
             card_path = media_dir / filename
             image.save(str(card_path), **img_kwargs)
