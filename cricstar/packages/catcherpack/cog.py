@@ -41,6 +41,7 @@ if TYPE_CHECKING:
 log = logging.getLogger("cricstar.packages.catcherpack")
 
 DATA_FILE = Path(__file__).parent.parent.parent.parent / "data" / "catcher_pack.json"
+PACKABLE_FILE = Path(__file__).parent.parent.parent.parent / "data" / "pack_disabled.json"
 MEDIA_DIR = Path("admin_panel/media")
 ASSETS_DIR = Path(__file__).parent / "assets"
 PACK_COVER = ASSETS_DIR / "pack_cover.png"
@@ -201,6 +202,51 @@ def add_pack(user_id: int, count: int = 1) -> int:
     return data["packs"][uid]
 
 
+# ── Pack-eligibility (per-cricketer "packable" flag) ─────────────────────────
+#
+# A cricketer is packable by default. /packset can disable specific cricketers
+# from appearing in any Catcher Pack. This file only tracks the EXPLICITLY
+# disabled cards by ball ID; everything else is considered packable.
+
+def load_disabled_ids() -> set[int]:
+    if not PACKABLE_FILE.exists():
+        return set()
+    try:
+        raw = json.loads(PACKABLE_FILE.read_text())
+        return {int(x) for x in raw.get("disabled", [])}
+    except Exception:
+        return set()
+
+
+def save_disabled_ids(ids: set[int]) -> None:
+    PACKABLE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    PACKABLE_FILE.write_text(json.dumps({"disabled": sorted(ids)}, indent=2))
+
+
+def set_packable(ball_id: int, packable: bool) -> bool:
+    """
+    Set whether a specific cricketer is allowed in Catcher Packs.
+    Returns True if the state actually changed.
+    """
+    disabled = load_disabled_ids()
+    if packable:
+        if ball_id in disabled:
+            disabled.discard(ball_id)
+            save_disabled_ids(disabled)
+            return True
+        return False
+    else:
+        if ball_id not in disabled:
+            disabled.add(ball_id)
+            save_disabled_ids(disabled)
+            return True
+        return False
+
+
+def is_packable(ball_id: int) -> bool:
+    return ball_id not in load_disabled_ids()
+
+
 def consume_pack(user_id: int) -> bool:
     data = load_data()
     uid = str(user_id)
@@ -224,9 +270,12 @@ def pick_pack_card() -> tuple[Ball, float] | None:
 
     Returns (ball, tier) or None if no cards qualify.
     """
+    disabled_ids = load_disabled_ids()
     tiers: dict[float, list[Ball]] = {t: [] for t in RARITY_WEIGHTS}
     for ball in balls_cache.values():
         if not ball.enabled:
+            continue
+        if ball.pk in disabled_ids:
             continue
         if not is_ball_obtainable(ball, specials.get):
             continue
@@ -589,7 +638,77 @@ class CatcherPackCog(commands.Cog):
         try:
             await user.send(
                 f"🎁 The bot owner gifted you **{amount}** Catcher Pack(s)! "
-                f"Use `/csopen` to open."
+                f"Use `/pack open` to open."
             )
         except discord.HTTPException:
             pass
+
+    # ── /packset ────────────────────────────────────────────────────────────
+    #
+    # Toggle whether a specific cricketer can appear in Catcher Packs.
+    # This setting ONLY affects pack openings; it has no effect on spawns,
+    # daily rewards, or weekly rewards.
+
+    async def _packset_player_autocomplete(
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> list[app_commands.Choice[str]]:
+        current_lower = current.lower()
+        choices: list[app_commands.Choice[str]] = []
+        # Sort by name for predictable autocomplete ordering
+        for ball in sorted(balls_cache.values(), key=lambda b: b.country.lower()):
+            if not getattr(ball, "country", None):
+                continue
+            if current_lower and current_lower not in ball.country.lower():
+                continue
+            choices.append(app_commands.Choice(name=ball.country, value=ball.country))
+            if len(choices) >= 25:
+                break
+        return choices
+
+    @app_commands.command(
+        name="packset",
+        description="(Bot owner only) Allow or disallow a cricketer in Catcher Packs.",
+    )
+    @app_commands.describe(
+        player="The cricketer to configure",
+        packable="True = can appear in packs, False = cannot appear in packs",
+    )
+    @app_commands.autocomplete(player=_packset_player_autocomplete)
+    async def packset(
+        self,
+        interaction: discord.Interaction["CricStarBot"],
+        player: str,
+        packable: bool,
+    ):
+        is_owner = (
+            interaction.user.id == BOT_OWNER_ID
+            or await interaction.client.is_owner(interaction.user)
+        )
+        if not is_owner:
+            await interaction.response.send_message(
+                "Only the bot owner can use this command.", ephemeral=True
+            )
+            return
+
+        # Resolve the cricketer by exact (case-insensitive) name
+        target: Ball | None = None
+        for ball in balls_cache.values():
+            if ball.country and ball.country.lower() == player.lower():
+                target = ball
+                break
+
+        if target is None:
+            await interaction.response.send_message(
+                f"No cricketer named **{player}** was found.", ephemeral=True
+            )
+            return
+
+        changed = set_packable(target.pk, packable)
+        state = "✅ packable" if packable else "🚫 NOT packable"
+        if changed:
+            msg = f"{state} — **{target.country}** updated."
+        else:
+            msg = f"{state} — **{target.country}** was already in that state."
+        await interaction.response.send_message(msg, ephemeral=True)
