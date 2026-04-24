@@ -1694,15 +1694,15 @@
     "filename": "premade_virat_dhoni_rohit.png",
     "wild_card_filename": "premade_virat_dhoni_rohit.png",
     "capacity_logic": {
-      "badge_rarity": 0.05,
-      "bg_preset": "B",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
+      "bg_preset": "Duosss",
       "credit_font": "optimus",
-      "weekly_chance": 0.1,
+      "badge_rarity": 0.05,
       "daily_chance": 0.1,
-      "display_name": "VDR"
+      "display_name": "VDR",
+      "credit_stroke": true,
+      "weekly_chance": 0.1,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   },
   "Morne Morkel": {
@@ -2253,7 +2253,7 @@
     "bat_score": 83,
     "ball_score": 30,
     "rarity": 7.0,
-    "spawn_chance": 600.0,
+    "spawn_chance": 500.0,
     "artwork_author": "Marco",
     "tradeable": true,
     "spawnable": true,
@@ -2580,6 +2580,70 @@
       "weekly_chance": 0.0,
       "foreground_border": true,
       "only_spawn_in_event": false
+    }
+  },
+  "Suresh Raina (IPL2026)": {
+    "player_name": "Suresh Raina (IPL2026)",
+    "card_name": "Raina",
+    "slug": "suresh_raina_ipl2026",
+    "codename": "Mr IPL",
+    "description": "Suresh Raina is an IPL legend known for fearless middle order batting. A key pillar of CSK, he dominated bowlers with aggressive intent, delivered in big matches, and added elite fielding, making him one of the greatest IPL match winners ever.",
+    "bat_score": 98,
+    "ball_score": 74,
+    "rarity": 0.2,
+    "spawn_chance": 0.0,
+    "artwork_author": "Marco",
+    "tradeable": true,
+    "spawnable": false,
+    "unobtainable": false,
+    "catch_name": "suresh raina",
+    "event_id": 3,
+    "event_name": "IPL2026",
+    "filename": "premade_suresh_raina_ipl2026.png",
+    "wild_card_filename": "spawn_suresh_raina_ipl2026.jpg",
+    "capacity_logic": {
+      "badge_rarity": 0.2,
+      "bg_preset": "IPLLEGENDS",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 0.0,
+      "daily_chance": 0.0,
+      "display_name": "Raina",
+      "forced_special": 3
+    }
+  },
+  "Michael Clarke": {
+    "player_name": "Michael Clarke",
+    "card_name": "Clarke",
+    "slug": "michael_clarke",
+    "codename": "Pup",
+    "description": "Michael Clarke is a legendary right handed batter and a tactical mastermind who captained Australia with immense flair and aggression Known for his exceptional footwork against spin he remains an iconic figure of Australian batting excellence",
+    "bat_score": 91,
+    "ball_score": 0,
+    "rarity": 0.5,
+    "spawn_chance": 50.0,
+    "artwork_author": "Nash X",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": false,
+    "catch_name": "michael clarke",
+    "event_id": 4,
+    "event_name": "ICONS",
+    "filename": "premade_michael_clarke.png",
+    "wild_card_filename": "spawn_michael_clarke.jpg",
+    "capacity_logic": {
+      "badge_rarity": 0.5,
+      "bg_preset": "icons_9",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 100.0,
+      "daily_chance": 10.0,
+      "display_name": "Clarke",
+      "forced_special": 4
     }
   }
 }
