@@ -2645,5 +2645,36 @@
       "display_name": "Clarke",
       "forced_special": 4
     }
+  },
+  "Ross - Kane": {
+    "player_name": "Ross - Kane",
+    "card_name": "RK",
+    "slug": "ross_kane",
+    "codename": "RosKane",
+    "description": "These kiwi legends define greatness through immense runs and leadership as one pioneered three formats with power while the other mastered technique to secure world test glory with humble grace",
+    "bat_score": 97,
+    "ball_score": 32,
+    "rarity": 0.5,
+    "spawn_chance": 50.0,
+    "artwork_author": "Sachin",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": false,
+    "catch_name": "rk",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_ross_kane.png",
+    "wild_card_filename": "premade_ross_kane.png",
+    "capacity_logic": {
+      "badge_rarity": 0.5,
+      "bg_preset": "Duosss",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 50.0,
+      "daily_chance": 0.0,
+      "display_name": "RK"
+    }
   }
 }

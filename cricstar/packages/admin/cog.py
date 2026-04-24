@@ -8,7 +8,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Literal, cast
 
 import discord
 from discord import app_commands
@@ -29,6 +29,13 @@ from cricstar.card_sync import (
 from cricstar.core.bot import impersonations
 from cricstar.core.discord import LayoutView
 from cricstar.core.image_generator.image_gen import draw_premade_card, get_neon_color, save_neon_color
+from cricstar.core.foreground_border_overrides import (
+    bump_override as _bump_border_override,
+    describe_override as _describe_border_override,
+    resolve_border as _resolve_border_for_player,
+    set_override as _set_border_override,
+    STEP as _BORDER_STEP,
+)
 from cricstar.core.utils.emojis import add_emoji, format_emoji, get_player_emoji, list_emojis, parse_emoji_input, remove_emoji
 from cricstar.core.utils import checks
 from cricstar.core.utils.buttons import ConfirmChoiceView
@@ -1077,6 +1084,8 @@ class Admin(commands.Cog):
 
                 _resolved_credit_font = credit_font if credit_font else _stored_credit_font
 
+                _border_size = _resolve_border_for_player(ball.pk, fg_path)
+
                 def _generate() -> tuple:
                     return draw_premade_card(
                         bg_path, fg_path, _card_name, _codename, _description,
@@ -1085,6 +1094,7 @@ class Admin(commands.Cog):
                         foreground_border=_stored_fg_border,
                         credit_stroke=_stored_credit_stroke,
                         credit_font=_resolved_credit_font,
+                        border_size=_border_size,
                     )
 
                 with ThreadPoolExecutor() as pool:
@@ -1302,6 +1312,152 @@ class Admin(commands.Cog):
             if current_lower in ball.country.lower()
         ]
         return matches[:25]
+
+    # ── /foregroundfixer ───────────────────────────────────────────────────
+    #
+    # Adjusts the white border thickness around the foreground image on a
+    # specific player's card. "+" thickens the border, "-" thins it, and
+    # "auto" picks a thickness based on the foreground image's dimensions.
+    # The card is regenerated and saved in place so the change is visible
+    # immediately.
+
+    @commands.hybrid_command(name="foregroundfixer")
+    @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
+    @app_commands.check(checks.is_developer)
+    @checks.is_superuser()
+    @app_commands.describe(
+        playername="The cricketer whose foreground border to adjust",
+        mode="'+' = bigger border, '-' = smaller border, 'auto' = size from foreground image",
+    )
+    @app_commands.autocomplete(playername=_player_name_autocomplete)
+    async def foregroundfixer(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        playername: str,
+        mode: Literal["+", "-", "auto"],
+    ):
+        """Tune the white border around a specific player's foreground image."""
+        # Resolve the cricketer by name (case-insensitive exact match)
+        target: Ball | None = None
+        for ball in balls_cache.values():
+            if ball.country and ball.country.lower() == playername.lower():
+                target = ball
+                break
+
+        if target is None:
+            await ctx.send(
+                f"❌ No cricketer named **{playername}** was found.",
+                ephemeral=True,
+            )
+            return
+
+        # Update the stored override
+        if mode == "auto":
+            _set_border_override(target.pk, "auto")
+        elif mode == "+":
+            _bump_border_override(target.pk, _BORDER_STEP)
+        else:  # "-"
+            _bump_border_override(target.pk, -_BORDER_STEP)
+
+        # Now regenerate this player's card so the change is visible
+        slug = re.sub(r"[^a-z0-9]+", "_", target.country.lower().strip()).strip("_")
+        media_dir = Path("admin_panel/media")
+        backgrounds_dir = Path("admin_panel/media/backgrounds")
+        foregrounds_dir = Path("admin_panel/media/foregrounds")
+
+        logic = dict(target.capacity_logic or {})
+        bg_preset = (logic.get("bg_preset") or "custom_bg").strip()
+
+        # Locate background and foreground source files
+        def _find(search_dir: Path, name: str) -> Path | None:
+            for ext in (".png", ".jpg", ".jpeg", ".webp", ""):
+                candidate = search_dir / f"{name}{ext}"
+                if candidate.exists():
+                    return candidate
+            return None
+
+        bg_src = _find(backgrounds_dir, bg_preset)
+        fg_src = _find(foregrounds_dir, slug)
+
+        if bg_src is None:
+            await ctx.send(
+                f"❌ Could not find background preset `{bg_preset}` in `{backgrounds_dir}`.",
+                ephemeral=True,
+            )
+            return
+        if fg_src is None:
+            await ctx.send(
+                f"❌ Could not find foreground preset `{slug}` in `{foregrounds_dir}`. "
+                f"Re-run `/cardmaker` or `/editcard` with a foreground image first.",
+                ephemeral=True,
+            )
+            return
+
+        existing_collection = (
+            target.collection_card.name if target.collection_card else ""
+        )
+        output_filename = existing_collection or f"premade_{slug}.png"
+        card_path = media_dir / output_filename
+
+        _card_name = logic.get("display_name") or target.country
+        _codename = target.capacity_name or ""
+        _description = target.capacity_description or ""
+        _rarity = logic.get("badge_rarity", target.rarity)
+        _bat = target.health
+        _ball = target.attack
+        _author = target.credits or ""
+        _stored_fg_border = logic.get("foreground_border", True)
+        _stored_credit_stroke = logic.get("credit_stroke", True)
+        _stored_credit_font = logic.get("credit_font", "default")
+
+        _border_size = _resolve_border_for_player(target.pk, str(fg_src))
+
+        def _generate() -> tuple:
+            return draw_premade_card(
+                str(bg_src), str(fg_src), _card_name, _codename, _description,
+                _rarity, _bat, _ball, _author, None,
+                neon_color=get_neon_color(target.country),
+                foreground_border=_stored_fg_border,
+                credit_stroke=_stored_credit_stroke,
+                credit_font=_stored_credit_font,
+                border_size=_border_size,
+            )
+
+        try:
+            with ThreadPoolExecutor() as pool:
+                image, img_kwargs = await self.bot.loop.run_in_executor(pool, _generate)
+        except ValueError as gen_err:
+            await ctx.send(f"❌ {gen_err}", ephemeral=True)
+            return
+        except Exception as gen_err:
+            log.exception("foregroundfixer: image generation failed")
+            await ctx.send(
+                f"❌ Failed to regenerate the card image: `{gen_err}`.",
+                ephemeral=True,
+            )
+            return
+
+        try:
+            image.save(str(card_path), **img_kwargs)
+        finally:
+            image.close()
+
+        stored_label = _describe_border_override(target.pk)
+        try:
+            preview = discord.File(str(card_path), filename=output_filename)
+            await ctx.send(
+                f"✅ **{target.country}** foreground border updated.\n"
+                f"Mode: `{mode}` | Stored: `{stored_label}` | Applied this render: `{_border_size}px`",
+                file=preview,
+            )
+        except Exception as send_err:
+            log.error("foregroundfixer: preview send failed: %s", send_err)
+            await ctx.send(
+                f"✅ **{target.country}** border updated to `{stored_label}` "
+                f"(`{_border_size}px` rendered), but preview upload failed: {send_err}",
+                ephemeral=True,
+            )
 
     @commands.hybrid_command(name="setspawnimg")
     @app_commands.default_permissions()

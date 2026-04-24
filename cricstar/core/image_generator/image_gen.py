@@ -338,6 +338,7 @@ def draw_premade_card(
     foreground_border: bool = True,
     credit_stroke: bool = True,
     credit_font: str = "default",
+    border_size: int | None = None,
 ) -> "tuple[Image.Image, dict[str, Any]]":
     """
     Generate a cricket trading card.
@@ -442,8 +443,8 @@ def draw_premade_card(
     )
 
     # ── 3. Image frame — white border outline + foreground image ─────────────
-    BORDER = 5
-    if foreground_border:
+    BORDER = int(border_size) if border_size is not None else 5
+    if foreground_border and BORDER > 0:
         draw.rectangle(
             [(FRAME_X - BORDER, FRAME_Y - BORDER),
              (FRAME_X + FRAME_W + BORDER, FRAME_BOTTOM + BORDER)],
