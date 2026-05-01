@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from discord import app_commands
 
 from .cog import Admin
+from .ownercheck import ownercheck as ownercheck_command
 
 if TYPE_CHECKING:
     from cricstar.core.bot import CricStarBot
@@ -41,3 +42,4 @@ async def setup(bot: "CricStarBot"):
         strip_descriptions(n)
         log.warn("/admin command too long, stripping descriptions.")
     await bot.add_cog(n)
+    bot.tree.add_command(ownercheck_command)
