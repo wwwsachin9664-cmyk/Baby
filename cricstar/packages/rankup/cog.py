@@ -352,7 +352,7 @@ class RankUp(commands.GroupCog, name="rankup"):
         )
 
 
-    @rankup.command(name="regenerate", description="[Admin] Re-generate shiny card images for all existing shiny cards.")
+    @app_commands.command(name="regenerate", description="[Admin] Re-generate shiny card images for all existing shiny cards.")
     @app_commands.default_permissions(administrator=True)
     async def rankup_regenerate(self, interaction: Interaction):
         await interaction.response.defer(ephemeral=True)

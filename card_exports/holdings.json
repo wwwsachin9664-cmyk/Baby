@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-05-01T03:01:53.505687+00:00",
-  "count": 8890,
+  "exported_at": "2026-05-01T03:07:48.322810+00:00",
+  "count": 8892,
   "holdings": [
     {
       "player_discord_id": 597499091504594945,
@@ -83138,21 +83138,6 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1317288099075850243,
-      "ball_player_name": "Odi World Cup",
-      "special_name": "Shiny",
-      "health_bonus": -17,
-      "attack_bonus": 10,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": null,
-      "catch_date": "2026-05-01T02:58:04.678111+00:00",
-      "spawned_time": null,
-      "extra_data": {
-        "shiny_card": "premade_odi_world_cup_shiny.png"
-      }
-    },
-    {
       "player_discord_id": 1256971233149587478,
       "ball_player_name": "Muhammad Rizwan",
       "special_name": null,
@@ -92145,6 +92130,45 @@
       "tradeable": true,
       "server_id": null,
       "catch_date": "2026-04-28T13:27:21.674536+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Odi World Cup",
+      "special_name": null,
+      "health_bonus": -9,
+      "attack_bonus": -4,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-05-01T03:03:35.571686+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Odi World Cup",
+      "special_name": null,
+      "health_bonus": -18,
+      "attack_bonus": 4,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-05-01T03:03:42.486139+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Odi World Cup",
+      "special_name": null,
+      "health_bonus": -16,
+      "attack_bonus": 19,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-05-01T03:03:50.594232+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
