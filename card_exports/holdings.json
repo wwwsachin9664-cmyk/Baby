@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-05-01T04:36:35.493166+00:00",
-  "count": 8939,
+  "exported_at": "2026-05-01T04:47:49.645307+00:00",
+  "count": 8955,
   "holdings": [
     {
       "player_discord_id": 597499091504594945,
@@ -106954,19 +106954,6 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1317288099075850243,
-      "ball_player_name": "Odi World Cup",
-      "special_name": "Trophy",
-      "health_bonus": 3,
-      "attack_bonus": -2,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 1476180448030756928,
-      "catch_date": "2026-05-01T03:46:08.503489+00:00",
-      "spawned_time": "2026-05-01T03:46:01.901000+00:00",
-      "extra_data": {}
-    },
-    {
       "player_discord_id": 1322496330433695847,
       "ball_player_name": "Matheesha Pathirana",
       "special_name": null,
@@ -110672,6 +110659,75 @@
       "extra_data": {}
     },
     {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Odi World Cup",
+      "special_name": "Shiny",
+      "health_bonus": 3,
+      "attack_bonus": -2,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-05-01T04:39:03.990088+00:00",
+      "spawned_time": null,
+      "extra_data": {
+        "shiny_card": "premade_odi_world_cup_shiny.png"
+      }
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Odi World Cup",
+      "special_name": "Shiny",
+      "health_bonus": -3,
+      "attack_bonus": -13,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-05-01T04:41:32.938066+00:00",
+      "spawned_time": null,
+      "extra_data": {
+        "shiny_card": "premade_odi_world_cup_shiny.png"
+      }
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": 1,
+      "attack_bonus": 13,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:45:28.413865+00:00",
+      "spawned_time": "2026-05-01T04:45:17.190000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": -2,
+      "attack_bonus": 19,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:45:37.226359+00:00",
+      "spawned_time": "2026-05-01T04:45:17.840000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": 11,
+      "attack_bonus": -2,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:45:45.445060+00:00",
+      "spawned_time": "2026-05-01T04:45:18.594000+00:00",
+      "extra_data": {}
+    },
+    {
       "player_discord_id": 839337058308456449,
       "ball_player_name": "Aaron Hardie",
       "special_name": null,
@@ -110695,6 +110751,162 @@
       "server_id": 1211694312828702801,
       "catch_date": "2026-04-30T15:52:35.487276+00:00",
       "spawned_time": "2026-04-30T15:52:21.722000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": -4,
+      "attack_bonus": 7,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:45:53.366283+00:00",
+      "spawned_time": "2026-05-01T04:45:19.263000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": 20,
+      "attack_bonus": 2,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:46:01.554186+00:00",
+      "spawned_time": "2026-05-01T04:45:19.992000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": 6,
+      "attack_bonus": 14,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:46:09.728994+00:00",
+      "spawned_time": "2026-05-01T04:45:20.803000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": -10,
+      "attack_bonus": 10,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:46:21.125454+00:00",
+      "spawned_time": "2026-05-01T04:45:21.497000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": 10,
+      "attack_bonus": 14,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:46:29.454889+00:00",
+      "spawned_time": "2026-05-01T04:45:22.077000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": -12,
+      "attack_bonus": -1,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:46:37.566726+00:00",
+      "spawned_time": "2026-05-01T04:45:22.536000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": 14,
+      "attack_bonus": 18,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:46:45.492798+00:00",
+      "spawned_time": "2026-05-01T04:45:23.125000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": -16,
+      "attack_bonus": 15,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:46:53.859931+00:00",
+      "spawned_time": "2026-05-01T04:45:27.711000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": -14,
+      "attack_bonus": -16,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:47:02.508498+00:00",
+      "spawned_time": "2026-05-01T04:45:28.419000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": -18,
+      "attack_bonus": -10,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:47:10.380707+00:00",
+      "spawned_time": "2026-05-01T04:45:29.141000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": -1,
+      "attack_bonus": 4,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:47:24.305877+00:00",
+      "spawned_time": "2026-05-01T04:45:29.782000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": 18,
+      "attack_bonus": 16,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T04:47:33.419738+00:00",
+      "spawned_time": "2026-05-01T04:45:30.847000+00:00",
       "extra_data": {}
     },
     {

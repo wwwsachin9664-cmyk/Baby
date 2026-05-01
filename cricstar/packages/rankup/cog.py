@@ -231,12 +231,16 @@ class RankUp(commands.GroupCog, name="rankup"):
             return
 
         target_copy = all_copies[0]
+        # Only consume exactly `required` copies — extras are kept
+        copies_to_consume = all_copies[:required]
+        extras = len(all_copies) - required
 
         confirm_view = ConfirmView(timeout=30)
+        extra_note = f"\n{extras} extra cop{'ies' if extras != 1 else 'y'} will be kept." if extras > 0 else ""
         await interaction.followup.send(
             f"⚠️ **Rankup Confirmation**\n\n"
-            f"You are about to sacrifice **ALL {len(all_copies)} copies** of "
-            f"**{player}** to create a ✨ **shiny** version.\n\n"
+            f"You are about to sacrifice **{required} cop{'ies' if required != 1 else 'y'}** of "
+            f"**{player}** to create a ✨ **shiny** version.{extra_note}\n\n"
             f"This **cannot be undone**. Do you want to continue?",
             view=confirm_view,
             ephemeral=True,
@@ -247,9 +251,9 @@ class RankUp(commands.GroupCog, name="rankup"):
             await interaction.followup.send("❌ Rankup cancelled.", ephemeral=True)
             return
 
-        # Delete ALL non-shiny copies
-        all_ids = [c.id for c in all_copies]
-        await BallInstance.objects.filter(id__in=all_ids).aupdate(deleted=True)
+        # Delete only the required number of copies, leave extras untouched
+        consume_ids = [c.id for c in copies_to_consume]
+        await BallInstance.objects.filter(id__in=consume_ids).aupdate(deleted=True)
 
         # Try to generate shiny card image if shiny bg is configured
         shiny_extra: dict = {}
@@ -348,7 +352,7 @@ class RankUp(commands.GroupCog, name="rankup"):
 
         log.info(
             "User %s (%d) ranked up %s to shiny. New card ID: %d. %d copies consumed.",
-            interaction.user, interaction.user.id, player, shiny_card.id, len(all_copies),
+            interaction.user, interaction.user.id, player, shiny_card.id, len(consume_ids),
         )
 
 
