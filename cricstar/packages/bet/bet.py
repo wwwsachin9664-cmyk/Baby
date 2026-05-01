@@ -194,6 +194,7 @@ class BetInstance(LayoutView):
         self._resolved: bool = False  # True once finish_bet() has run
         self._timed_out: bool = False  # True once the custom timeout fires
         self.edit_lock = asyncio.Lock()
+        self._finish_lock = asyncio.Lock()  # Prevents finish_bet from running twice
         self.confirmation_phase_start: datetime | None = None
 
         self._timeout_task = asyncio.create_task(
@@ -501,6 +502,11 @@ class BetInstance(LayoutView):
                 "Both players need to lock their proposals first!", ephemeral=True
             )
             return
+        if self._resolved:
+            await interaction.response.send_message(
+                "This bet has already been resolved!", ephemeral=True
+            )
+            return
         bettor.confirmed = True
         await interaction.response.send_message(
             "Your confirmation has been recorded. Waiting for the other player...",
@@ -508,8 +514,10 @@ class BetInstance(LayoutView):
         )
 
         if self.bettor1.confirmed and self.bettor2.confirmed:
-            # Both confirmed — resolve the bet
-            await self.finish_bet()
+            # Both confirmed — use lock to ensure finish_bet runs exactly once
+            async with self._finish_lock:
+                if not self._resolved:
+                    await self.finish_bet()
         else:
             await self._update(None)
 
@@ -601,6 +609,11 @@ class BetInstance(LayoutView):
         Pick a random winner, atomically transfer the loser's cards,
         then post the result message.
         """
+        # Guard: should never run twice — _finish_lock in _confirm_callback
+        # provides the primary protection; this is a final safety net.
+        if self._resolved:
+            log.warning("finish_bet called on already-resolved bet — ignoring")
+            return
         self._resolved = True
         self._do_cleanup_sync()
 
