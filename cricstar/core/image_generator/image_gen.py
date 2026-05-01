@@ -186,6 +186,13 @@ def draw_card(ball_instance: "BallInstance") -> tuple[Image.Image, dict[str, Any
     # BUT agar event active hai aur foreground_overlay hai toh overlay lagao.
     card_name_field = str(ball.collection_card.name) if ball.collection_card else ""
     if card_name_field.startswith("premade_"):
+        # Check for per-instance shiny card override first
+        shiny_override = (ball_instance.extra_data or {}).get("shiny_card")
+        if shiny_override:
+            _shiny_path = MEDIA_DIR / shiny_override
+            if _shiny_path.exists():
+                card_name_field = shiny_override
+
         # Open via direct filesystem path so we always read the latest file on
         # disk (bypasses any Django storage caching that could return stale data).
         premade_path = MEDIA_DIR / card_name_field
