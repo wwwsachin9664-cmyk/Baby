@@ -354,3 +354,7 @@ class Bet(commands.GroupCog, name="bet"):
         view.add_item(selector)
         await selector.configure(self.bot, self, query)
         await interaction.followup.send(view=view, ephemeral=True)
+
+
+async def setup(bot: "CricStarBot"):
+    await bot.add_cog(Bet(bot))

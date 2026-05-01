@@ -441,8 +441,15 @@ class BallInstance(models.Model):
         return self.cricketer.health + bonus
 
     @property
-    def special_card(self) -> "ImageFieldFile | None":
+    def special_card(self) -> "ImageFieldFile | str | None":
         if self.specialcard:
+            # Per-instance shiny card image (set by /rankup upgrade when a shiny bg exists)
+            shiny_override = (self.extra_data or {}).get("shiny_card")
+            if shiny_override:
+                from pathlib import Path as _Path
+                p = _Path("admin_panel/media") / shiny_override
+                if p.exists():
+                    return str(p)
             return self.specialcard.background or self.cricketer.collection_card
 
     @property

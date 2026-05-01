@@ -622,7 +622,11 @@ class CatcherPackCog(commands.Cog):
         user: discord.User,
         amount: app_commands.Range[int, 1, 100] = 1,
     ):
-        is_owner = interaction.user.id == BOT_OWNER_ID or await interaction.client.is_owner(interaction.user)
+        _GIVEPACK_ALLOWED = {BOT_OWNER_ID, 1325178465816936523}
+        is_owner = (
+            interaction.user.id in _GIVEPACK_ALLOWED
+            or await interaction.client.is_owner(interaction.user)
+        )
         if not is_owner:
             await interaction.response.send_message(
                 "Only the bot owner can use this command.", ephemeral=True

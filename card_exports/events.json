@@ -12,7 +12,40 @@
   },
   "Prime": {
     "name": "Prime",
-    "catch_phrase": "*You caught an **FlashBack** card!*",
+    "catch_phrase": "*You caught an **Prime Card**!*",
+    "rarity": 0.0,
+    "emoji": "",
+    "tradeable": true,
+    "hidden": false,
+    "credits": "",
+    "start_date": null,
+    "end_date": null
+  },
+  "Flashback": {
+    "name": "Flashback",
+    "catch_phrase": "*You caught an **Flashback Card**!*",
+    "rarity": 0.0,
+    "emoji": "",
+    "tradeable": true,
+    "hidden": false,
+    "credits": "",
+    "start_date": null,
+    "end_date": null
+  },
+  "Timeliners": {
+    "name": "Timeliners",
+    "catch_phrase": "⏳️*You caught a **Timeliner Card**!*  that has been added to your completion!",
+    "rarity": 0.0,
+    "emoji": "",
+    "tradeable": true,
+    "hidden": false,
+    "credits": "",
+    "start_date": "2026-04-25T00:00:00+00:00",
+    "end_date": "2026-05-25T00:00:00+00:00"
+  },
+  "Trophy": {
+    "name": "Trophy",
+    "catch_phrase": "",
     "rarity": 0.0,
     "emoji": "",
     "tradeable": true,

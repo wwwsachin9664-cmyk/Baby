@@ -63,6 +63,7 @@ DEFAULT_PACKAGES = (
     ("daily", "cricstar.packages.daily"),
     ("upgrade", "cricstar.packages.upgrade"),
     ("catcherpack", "cricstar.packages.catcherpack"),
+    ("rankup", "cricstar.packages.rankup"),
 )
 
 

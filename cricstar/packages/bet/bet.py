@@ -85,10 +85,13 @@ class BettingUser:
 
     async def card_list_text(self, bot: CricStarBot) -> str:
         from cricstar.core.utils.emojis import get_player_emoji
+
         if not self.proposal:
             return "*Empty*"
         lines = []
-        async for ball in self.get_queryset().select_related("ball").prefetch_related("special"):
+        async for ball in (
+            self.get_queryset().select_related("ball").prefetch_related("special")
+        ):
             desc = ball.description(include_emoji=True, bot=bot, is_trade=True)
             emoji_str = get_player_emoji(ball.ball.country)
             if emoji_str:
@@ -105,7 +108,12 @@ class BettingUser:
             raise CancelledError()
         proposal: set[int] = set()
         async for ball in queryset.only(
-            "id", "locked", "player_id", "tradeable", "ball__tradeable", "special__tradeable"
+            "id",
+            "locked",
+            "player_id",
+            "tradeable",
+            "ball__tradeable",
+            "special__tradeable",
         ):
             if ball.player_id != self.player.pk:
                 raise OwnershipError()
@@ -145,6 +153,7 @@ class BettingUser:
 async def _combined_card_text(all_ids: set[int], bot: CricStarBot) -> str:
     """Return a card list string for a combined set of ball IDs."""
     from cricstar.core.utils.emojis import get_player_emoji
+
     if not all_ids:
         return "*No cards staked*"
     lines = []
@@ -182,8 +191,8 @@ class BetInstance(LayoutView):
         self.bettor2: BettingUser
         self.message: discord.Message
 
-        self._resolved: bool = False        # True once finish_bet() has run
-        self._timed_out: bool = False       # True once the custom timeout fires
+        self._resolved: bool = False  # True once finish_bet() has run
+        self._timed_out: bool = False  # True once the custom timeout fires
         self.edit_lock = asyncio.Lock()
         self.confirmation_phase_start: datetime | None = None
 
@@ -206,9 +215,11 @@ class BetInstance(LayoutView):
     def confirmation_phase(self) -> bool:
         return self.bettor1.locked and self.bettor2.locked and not self.cancelled
 
-    # ── Error handling ───────────────────────────────────────────
+    # ── Error handling a��──────────────────────────────────────────
 
-    async def on_error(self, interaction: Interaction, error: Exception, item: Item) -> None:
+    async def on_error(
+        self, interaction: Interaction, error: Exception, item: Item
+    ) -> None:
         if isinstance(error, discord.NotFound) and error.code in UNKNOWN_INTERACTION:
             log.warning("Expired bet interaction", exc_info=error)
             return
@@ -279,26 +290,34 @@ class BetInstance(LayoutView):
             container.add_item(Separator())
 
             winner = b1 if b1.user.id == self._winner_user_id else b2
-            loser  = b2 if b1.user.id == self._winner_user_id else b1
+            loser = b2 if b1.user.id == self._winner_user_id else b1
 
             # Winner's name — plain, no emoji prefix
             container.add_item(TextDisplay(f"**{winner.user.display_name}**"))
 
             # All cards the winner now holds (their stake + loser's captured cards)
             all_won_ids = winner.proposal | loser.proposal
-            container.add_item(TextDisplay(await _combined_card_text(all_won_ids, self.cog.bot)))
+            container.add_item(
+                TextDisplay(await _combined_card_text(all_won_ids, self.cog.bot))
+            )
             return
 
         # ── Cancelled / timed-out ────────────────────────────────────────────
         if self.cancelled or self._timed_out:
-            reason = "The bet has been cancelled." if self.cancelled else "The bet timed out."
+            reason = (
+                "The bet has been cancelled."
+                if self.cancelled
+                else "The bet timed out."
+            )
             container.add_item(TextDisplay(f"## CricStar Betting\n{reason}"))
             return
 
         # ── Intro mention (only while bet is live) ───────────────────────────
-        container.add_item(TextDisplay(
-            f"Hey {b2.user.mention}, **{b1.user.display_name}** is proposing a CricStar Bet with you!"
-        ))
+        container.add_item(
+            TextDisplay(
+                f"Hey {b2.user.mention}, **{b1.user.display_name}** is proposing a CricStar Bet with you!"
+            )
+        )
         container.add_item(Separator())
 
         # ── Header ───────────────────────────────────────────────────────────
@@ -400,10 +419,14 @@ class BetInstance(LayoutView):
     async def _lock_callback(self, interaction: Interaction):
         bettor = self._get_bettor(interaction.user.id)
         if bettor is None:
-            await interaction.response.send_message("You are not part of this bet!", ephemeral=True)
+            await interaction.response.send_message(
+                "You are not part of this bet!", ephemeral=True
+            )
             return
         if bettor.locked:
-            await interaction.response.send_message("You have already locked your proposal!", ephemeral=True)
+            await interaction.response.send_message(
+                "You have already locked your proposal!", ephemeral=True
+            )
             return
         await interaction.response.defer()
         bettor.locked = True
@@ -411,18 +434,25 @@ class BetInstance(LayoutView):
             self.confirmation_phase_start = datetime.now()
         await self._update(interaction)
         await interaction.followup.send(
-            "Your proposal has been locked. Now confirm again to end the bet.", ephemeral=True
+            "Your proposal has been locked. Now confirm again to end the bet.",
+            ephemeral=True,
         )
 
     async def _reset_callback(self, interaction: Interaction):
         bettor = self._get_bettor(interaction.user.id)
         if bettor is None:
-            await interaction.response.send_message("You are not part of this bet!", ephemeral=True)
+            await interaction.response.send_message(
+                "You are not part of this bet!", ephemeral=True
+            )
             return
         if bettor.locked:
-            await interaction.response.send_message("You have already locked your proposal!", ephemeral=True)
+            await interaction.response.send_message(
+                "You have already locked your proposal!", ephemeral=True
+            )
             return
-        view = ConfirmChoiceView(interaction, accept_message="Clearing your proposal...")
+        view = ConfirmChoiceView(
+            interaction, accept_message="Clearing your proposal..."
+        )
         await interaction.response.send_message(
             "Are you sure you want to clear your proposal?", view=view, ephemeral=True
         )
@@ -439,7 +469,9 @@ class BetInstance(LayoutView):
     async def _cancel_callback(self, interaction: Interaction):
         bettor = self._get_bettor(interaction.user.id)
         if bettor is None:
-            await interaction.response.send_message("You are not part of this bet!", ephemeral=True)
+            await interaction.response.send_message(
+                "You are not part of this bet!", ephemeral=True
+            )
             return
         view = ConfirmChoiceView(
             interaction,
@@ -460,7 +492,9 @@ class BetInstance(LayoutView):
     async def _confirm_callback(self, interaction: Interaction):
         bettor = self._get_bettor(interaction.user.id)
         if bettor is None:
-            await interaction.response.send_message("You are not part of this bet!", ephemeral=True)
+            await interaction.response.send_message(
+                "You are not part of this bet!", ephemeral=True
+            )
             return
         if not self.confirmation_phase:
             await interaction.response.send_message(
@@ -561,19 +595,15 @@ class BetInstance(LayoutView):
         except Exception:
             pass
 
-    # ── Resolution ───────────────────────────────────────────────
-
+            # ── Resolution ───────────────────────────────────────────────
     async def finish_bet(self):
         """
         Pick a random winner, atomically transfer the loser's cards,
         then post the result message.
         """
         self._resolved = True
-
-        # Deregister immediately so no further /bet add commands can reference this bet
         self._do_cleanup_sync()
 
-        # Random winner
         winner, loser = random.choice(
             [(self.bettor1, self.bettor2), (self.bettor2, self.bettor1)]
         )
@@ -581,14 +611,6 @@ class BetInstance(LayoutView):
 
         @sync_to_async
         def _transfer() -> tuple[int, int]:
-            """
-            Atomically transfer the loser's cards to the winner.
-
-            Returns (transferred, missing) where `missing` counts staked cards
-            that were no longer owned by the loser at resolution time (e.g. the
-            card was given/traded away while the bet was open). Missing cards
-            are silently skipped instead of cancelling the entire bet.
-            """
             transferred = 0
             missing = 0
             with transaction.atomic():
@@ -607,16 +629,18 @@ class BetInstance(LayoutView):
                             trade_player_id=loser.player.pk,
                             locked=None,
                         )
-                    # Always clear locks on any staked-but-missing loser cards
-                    # so they don't stay "locked" forever in the loser's account.
                     stale_ids = set(loser.proposal) - set(owned_ids)
                     if stale_ids:
                         BallInstance.objects.filter(id__in=stale_ids).update(locked=None)
+
                 if winner.proposal:
                     BallInstance.objects.select_for_update().filter(
                         id__in=winner.proposal,
                         deleted=False,
-                    ).update(locked=None)
+                    ).update(
+                        locked=None,
+                        trade_player_id=winner.player.pk,
+                    )
             return transferred, missing
 
         msg = getattr(self, "message", None)
@@ -624,7 +648,6 @@ class BetInstance(LayoutView):
         try:
             transferred, missing = await _transfer()
         except Exception:
-            # Truly unexpected failure (DB error, etc.) — return all cards
             log.exception("Unexpected error while resolving bet, refunding all cards")
             await self._cleanup_cards()
             self.clear_items()
@@ -638,11 +661,6 @@ class BetInstance(LayoutView):
                 await msg.edit(view=self)
             return
 
-        # Track for the result header so the players can see what happened
-        self._missing_count = missing
-        self._transferred_count = transferred
-
-        # Build the result header
         self._result_header = (
             f"## CricStar Betting\n"
             f"*The winner is* ***{winner.user.display_name}***"
@@ -653,7 +671,7 @@ class BetInstance(LayoutView):
                 f"and were skipped."
             )
 
-        # Re-render — _fill_container will show winner-only section
         await self._build_view()
         if msg:
             await msg.edit(view=self)
+    

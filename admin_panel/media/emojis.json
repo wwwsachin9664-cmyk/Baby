@@ -1,12 +1,5 @@
 [
   {
-    "id": "1491713107708481637",
-    "list": true,
-    "bet": true,
-    "player": "MS DHONI",
-    "name": "MS_DHONI"
-  },
-  {
     "id": "1491713110304886805",
     "list": true,
     "bet": true,
@@ -31,7 +24,7 @@
     "id": "1493528394342862939",
     "list": true,
     "bet": true,
-    "player": "Mitchell Starc (F)",
+    "player": "Mitchell Starc (P)",
     "name": "Starc_Aus"
   },
   {
@@ -248,7 +241,7 @@
     "id": "1494604827269926912",
     "list": true,
     "bet": true,
-    "player": "Sir Aalastair Cook",
+    "player": "Sir Alastair Cook",
     "name": "AalastairIcon"
   },
   {
@@ -383,5 +376,124 @@
     "bet": true,
     "player": "Hardik Pandya (IPL2026)",
     "name": "hardikIPL"
+  },
+  {
+    "id": "1498924598320959498",
+    "list": true,
+    "bet": true,
+    "player": "Ben Stokes",
+    "name": "benstokes"
+  },
+  {
+    "id": "1498924596194312242",
+    "list": true,
+    "bet": true,
+    "player": "Carlos Brathwaite",
+    "name": "carlosbrathwaite"
+  },
+  {
+    "id": "1498924593656762388",
+    "list": true,
+    "bet": true,
+    "player": "Chennai Super Kings",
+    "name": "csk"
+  },
+  {
+    "id": "1498924591253291148",
+    "list": true,
+    "bet": true,
+    "player": "Royal Challengers Bengaluru",
+    "name": "rcb"
+  },
+  {
+    "id": "1498924588460019752",
+    "list": true,
+    "bet": true,
+    "player": "Rajasthan Royals",
+    "name": "rr"
+  },
+  {
+    "id": "1498924580755210292",
+    "list": true,
+    "bet": true,
+    "player": "Priyansh Arya",
+    "name": "priyansharya"
+  },
+  {
+    "id": "1498924600531353611",
+    "list": true,
+    "bet": true,
+    "player": "Finn Allen",
+    "name": "finnallen"
+  },
+  {
+    "id": "1498924582848167936",
+    "list": true,
+    "bet": true,
+    "player": "Rachin Ravindra",
+    "name": "rachinravindra"
+  },
+  {
+    "id": "1498924577810546708",
+    "list": true,
+    "bet": true,
+    "player": "Mohammed Shami",
+    "name": "mohammedshami"
+  },
+  {
+    "id": "1498924574811619439",
+    "list": true,
+    "bet": true,
+    "player": "Mitchell Starc",
+    "name": "mitchellstarc"
+  },
+  {
+    "id": "1498924572198572113",
+    "list": true,
+    "bet": true,
+    "player": "Marco Jansen",
+    "name": "marcojansen"
+  },
+  {
+    "id": "1498924570030243891",
+    "list": true,
+    "bet": true,
+    "player": "Kagiso Rabada",
+    "name": "kagisorabada"
+  },
+  {
+    "id": "1498924567282974800",
+    "list": true,
+    "bet": true,
+    "player": "Jonny Bairstow",
+    "name": "jonnybairstow"
+  },
+  {
+    "id": "1498924564242239488",
+    "list": true,
+    "bet": true,
+    "player": "Jitesh Sharma",
+    "name": "jiteshsharma"
+  },
+  {
+    "id": "1498924561322741780",
+    "list": true,
+    "bet": true,
+    "player": "Haris Rauf",
+    "name": "harisrauf"
+  },
+  {
+    "id": "1498924558944702554",
+    "list": true,
+    "bet": true,
+    "player": "Glenn Maxwell",
+    "name": "glennmaxwell"
+  },
+  {
+    "id": "1498986098607784049",
+    "list": true,
+    "bet": true,
+    "player": "Adam \u2013 Ricky \u2013 Matthew",
+    "name": "ARM"
   }
 ]

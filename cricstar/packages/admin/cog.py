@@ -858,6 +858,86 @@ class Admin(commands.Cog):
                     f"but preview upload failed: {send_err}"
                 )
                 
+    # ── /makeshinybackground ────────────────────────────────────────────────
+    #
+    # Sets a global shiny background image used when a card is ranked up to
+    # shiny via /rankup upgrade. Only the background changes — the player
+    # foreground and all card text are preserved.
+
+    @commands.hybrid_command(name="makeshinybackground")
+    @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
+    @app_commands.check(checks.is_developer)
+    @checks.is_superuser()
+    @app_commands.describe(url="Direct URL of the shiny background image (PNG/JPG)")
+    async def makeshinybackground(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        url: str,
+    ):
+        """Set the global shiny background used for ranked-up shiny cards."""
+        await ctx.defer()
+
+        import ssl
+        import urllib.request
+
+        dest = Path("admin_panel/media/shiny_bg.png")
+        url = url.strip()
+        if not url.startswith(("http://", "https://")):
+            await ctx.send("❌ Please provide a direct http/https URL.", ephemeral=True)
+            return
+
+        def _download() -> None:
+            ssl_ctx = ssl.create_default_context()
+            ssl_ctx.check_hostname = False
+            ssl_ctx.verify_mode = ssl.CERT_NONE
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": "Mozilla/5.0"},
+            )
+            with urllib.request.urlopen(req, timeout=20, context=ssl_ctx) as resp:
+                data = resp.read(20 * 1024 * 1024)
+            with open(str(dest), "wb") as f:
+                f.write(data)
+
+        try:
+            with ThreadPoolExecutor() as pool:
+                await self.bot.loop.run_in_executor(pool, _download)
+        except Exception as e:
+            await ctx.send(f"❌ Failed to download image: `{e}`", ephemeral=True)
+            return
+
+        file_size_kb = dest.stat().st_size // 1024
+        await ctx.send(
+            f"✅ Shiny background saved ({file_size_kb} KB).\n"
+            f"From now on, `/rankup upgrade` will use this image as the background "
+            f"for all newly created shiny cards.",
+            file=discord.File(str(dest), filename="shiny_bg.png"),
+        )
+
+    # ── /shinybgremover ─────────────────────────────────────────────────────
+
+    @commands.hybrid_command(name="shinybgremover")
+    @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
+    @app_commands.check(checks.is_developer)
+    @checks.is_superuser()
+    async def shinybgremover(self, ctx: commands.Context["CricStarBot"]):
+        """Remove the global shiny background image."""
+        dest = Path("admin_panel/media/shiny_bg.png")
+        if not dest.exists():
+            await ctx.send(
+                "❌ No shiny background is currently set. Use `/makeshinybackground` to add one.",
+                ephemeral=True,
+            )
+            return
+        dest.unlink()
+        await ctx.send(
+            "✅ Shiny background removed. Future `/rankup upgrade` calls will no longer "
+            "generate a custom shiny card image.",
+            ephemeral=True,
+        )
+
     @commands.hybrid_command(name="editcard")
     @app_commands.default_permissions()
     @app_commands.guilds(checks.ADMIN_GUILD_ID)
