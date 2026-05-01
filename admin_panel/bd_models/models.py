@@ -530,12 +530,17 @@ class BallInstance(models.Model):
 
         catch_time_msg = f" in {catch_time.total_seconds():.3f}s" if catch_time else ""
 
+        shiny_line = ""
+        if self.specialcard and self.specialcard.name == "Shiny":
+            shiny_line = "\n✨ **SHINY** ✨"
+
         content = (
             f"ID: `#{self.pk:0X}`\n"
             f"Caught on {format_dt(self.catch_date)}{catch_time_msg} ({format_dt(self.catch_date, style='R')}).\n"
             f"{trade_content}\n"
             f"ATK: {self.attack} ({self.attack_bonus:+d}%)\n"
             f"HP: {self.health} ({self.health_bonus:+d}%)"
+            f"{shiny_line}"
         )
 
         # draw image
