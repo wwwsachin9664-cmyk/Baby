@@ -352,5 +352,93 @@ class RankUp(commands.GroupCog, name="rankup"):
         )
 
 
+    @rankup.command(name="regenerate", description="[Admin] Re-generate shiny card images for all existing shiny cards.")
+    @app_commands.default_permissions(administrator=True)
+    async def rankup_regenerate(self, interaction: Interaction):
+        await interaction.response.defer(ephemeral=True)
+
+        if not SHINY_BG_PATH.exists():
+            await interaction.followup.send(
+                "❌ No shiny background set. Run `/makeshinybackground` first.", ephemeral=True
+            )
+            return
+
+        from cricstar.core.image_generator.image_gen import draw_premade_card, get_neon_color
+        from cricstar.core.foreground_border_overrides import resolve_border as _resolve_border
+
+        foregrounds_dir = Path("admin_panel/media/foregrounds")
+        _bg_str = str(SHINY_BG_PATH)
+
+        updated = 0
+        skipped = 0
+        failed = 0
+
+        shiny_instances = BallInstance.objects.filter(
+            special__name=SHINY_SPECIAL_NAME,
+            deleted=False,
+        ).select_related("ball")
+
+        async for inst in shiny_instances:
+            ball = inst.ball
+            slug = re.sub(r"[^a-z0-9]+", "_", ball.country.lower().strip()).strip("_")
+
+            fg_src: Path | None = None
+            for ext in ("", ".png", ".jpg", ".jpeg", ".webp"):
+                candidate = foregrounds_dir / f"{slug}{ext}"
+                if candidate.exists():
+                    fg_src = candidate
+                    break
+
+            if fg_src is None:
+                skipped += 1
+                continue
+
+            logic = dict(ball.capacity_logic or {})
+            _card_name = logic.get("display_name") or ball.country
+            _codename = ball.capacity_name or ""
+            _description = ball.capacity_description or ""
+            _rarity = logic.get("badge_rarity", ball.rarity)
+            _fg_border = logic.get("foreground_border", True)
+            _credit_stroke = logic.get("credit_stroke", True)
+            _credit_font = logic.get("credit_font", "default")
+            _border_size = _resolve_border(ball.pk, str(fg_src))
+            _fg_src_str = str(fg_src)
+
+            def _gen(
+                _bg=_bg_str, _fg=_fg_src_str, _cn=_card_name, _co=_codename,
+                _de=_description, _ra=_rarity, _he=ball.health, _at=ball.attack,
+                _cr=ball.credits or "", _nc=get_neon_color(ball.country),
+                _fb=_fg_border, _cs=_credit_stroke, _cf=_credit_font, _bs=_border_size,
+            ):
+                return draw_premade_card(
+                    _bg, _fg, _cn, _co, _de, _ra, _he, _at, _cr, None,
+                    neon_color=_nc, foreground_border=_fb,
+                    credit_stroke=_cs, credit_font=_cf, border_size=_bs,
+                )
+
+            try:
+                with ThreadPoolExecutor() as pool:
+                    shiny_img, shiny_kwargs = await self.bot.loop.run_in_executor(pool, _gen)
+                shiny_filename = f"premade_{slug}_shiny.png"
+                shiny_card_path = Path("admin_panel/media") / shiny_filename
+                shiny_img.save(str(shiny_card_path), **shiny_kwargs)
+                shiny_img.close()
+
+                extra = dict(inst.extra_data or {})
+                extra["shiny_card"] = shiny_filename
+                await BallInstance.objects.filter(pk=inst.pk).aupdate(extra_data=extra)
+                updated += 1
+                log.info("rankup regenerate: updated shiny card for instance #%d (%s)", inst.pk, ball.country)
+            except Exception as e:
+                failed += 1
+                log.warning("rankup regenerate: failed for instance #%d (%s): %s", inst.pk, ball.country, e)
+
+        await interaction.followup.send(
+            f"✅ Shiny card regeneration complete.\n"
+            f"**Updated:** {updated} | **Skipped** (no foreground): {skipped} | **Failed:** {failed}",
+            ephemeral=True,
+        )
+
+
 async def setup(bot: "CricStarBot"):
     await bot.add_cog(RankUp(bot))

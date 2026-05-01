@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-05-01T02:29:45.088517+00:00",
-  "count": 8886,
+  "exported_at": "2026-05-01T03:01:53.505687+00:00",
+  "count": 8890,
   "holdings": [
     {
       "player_discord_id": 597499091504594945,
@@ -3851,21 +3851,6 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1317288099075850243,
-      "ball_player_name": "Odi World Cup",
-      "special_name": "Shiny",
-      "health_bonus": 19,
-      "attack_bonus": 2,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": null,
-      "catch_date": "2026-05-01T02:22:49.256391+00:00",
-      "spawned_time": null,
-      "extra_data": {
-        "shiny_card": "premade_odi_world_cup_shiny.png"
-      }
-    },
-    {
       "player_discord_id": 675084969596420099,
       "ball_player_name": "Jasprit Bumrah",
       "special_name": null,
@@ -7597,21 +7582,6 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1317288099075850243,
-      "ball_player_name": "Odi World Cup",
-      "special_name": "Shiny",
-      "health_bonus": -11,
-      "attack_bonus": 7,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": null,
-      "catch_date": "2026-05-01T02:24:50.376727+00:00",
-      "spawned_time": null,
-      "extra_data": {
-        "shiny_card": "premade_odi_world_cup_shiny.png"
-      }
-    },
-    {
       "player_discord_id": 1451600000273350829,
       "ball_player_name": "Jasprit Bumrah",
       "special_name": null,
@@ -8817,6 +8787,19 @@
       "tradeable": true,
       "server_id": null,
       "catch_date": "2026-04-21T14:38:05.746561+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1277524604973219917,
+      "ball_player_name": "Phil salt",
+      "special_name": null,
+      "health_bonus": -8,
+      "attack_bonus": 15,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T02:30:50.627018+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -10394,6 +10377,19 @@
       "extra_data": {}
     },
     {
+      "player_discord_id": 1170728448432553994,
+      "ball_player_name": "Naveen ul Haq",
+      "special_name": null,
+      "health_bonus": -10,
+      "attack_bonus": -4,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1344336505845584012,
+      "catch_date": "2026-05-01T02:46:14.788231+00:00",
+      "spawned_time": "2026-05-01T02:45:53.966000+00:00",
+      "extra_data": {}
+    },
+    {
       "player_discord_id": 755822991987966082,
       "ball_player_name": "Joe Root",
       "special_name": null,
@@ -11460,6 +11456,19 @@
       "extra_data": {}
     },
     {
+      "player_discord_id": 1307952343278686221,
+      "ball_player_name": "Muhammad Rizwan",
+      "special_name": null,
+      "health_bonus": -15,
+      "attack_bonus": 0,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T02:47:02.893005+00:00",
+      "spawned_time": "2026-05-01T02:46:55.636000+00:00",
+      "extra_data": {}
+    },
+    {
       "player_discord_id": 728324197285101648,
       "ball_player_name": "Sanju Samson",
       "special_name": null,
@@ -12185,6 +12194,19 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-21T14:38:06.804297+00:00",
       "spawned_time": "2026-04-19T07:37:39.645000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1220257490181034104,
+      "ball_player_name": "Priyansh Arya",
+      "special_name": null,
+      "health_bonus": 5,
+      "attack_bonus": -5,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 875585551766544424,
+      "catch_date": "2026-05-01T02:47:19.639370+00:00",
+      "spawned_time": "2026-05-01T02:47:07.225000+00:00",
       "extra_data": {}
     },
     {
@@ -83113,6 +83135,34 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-04-28T09:31:48.967909+00:00",
       "spawned_time": "2026-04-28T09:31:41.691000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Odi World Cup",
+      "special_name": "Shiny",
+      "health_bonus": -17,
+      "attack_bonus": 10,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": null,
+      "catch_date": "2026-05-01T02:58:04.678111+00:00",
+      "spawned_time": null,
+      "extra_data": {
+        "shiny_card": "premade_odi_world_cup_shiny.png"
+      }
+    },
+    {
+      "player_discord_id": 1256971233149587478,
+      "ball_player_name": "Muhammad Rizwan",
+      "special_name": null,
+      "health_bonus": 3,
+      "attack_bonus": 7,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1256977633078415450,
+      "catch_date": "2026-05-01T03:00:16.013360+00:00",
+      "spawned_time": "2026-05-01T02:57:26.013000+00:00",
       "extra_data": {}
     },
     {
