@@ -5408,5 +5408,36 @@
       "daily_chance": 0.0,
       "display_name": "KDG"
     }
+  },
+  "Shaheen Shah Afridi": {
+    "player_name": "Shaheen Shah Afridi",
+    "card_name": "Shaheen",
+    "slug": "shaheen_shah_afridi",
+    "codename": "Eagles",
+    "description": "Shaheen Shah Afridi the Pakistani fast bowler who has been carrying Pakistan bowling from years now known for his left arm fast bowling",
+    "bat_score": 35,
+    "ball_score": 92,
+    "rarity": 2.0,
+    "spawn_chance": 300.0,
+    "artwork_author": "Zeeshan",
+    "tradeable": true,
+    "spawnable": true,
+    "unobtainable": false,
+    "catch_name": "shaheen shah afridi",
+    "event_id": null,
+    "event_name": "",
+    "filename": "premade_shaheen_shah_afridi.png",
+    "wild_card_filename": "spawn_shaheen_shah_afridi.jpg",
+    "capacity_logic": {
+      "badge_rarity": 2.0,
+      "bg_preset": "base_card",
+      "foreground_border": true,
+      "credit_stroke": true,
+      "only_spawn_in_event": false,
+      "credit_font": "optimus",
+      "weekly_chance": 0.0,
+      "daily_chance": 100.0,
+      "display_name": "Shaheen"
+    }
   }
 }

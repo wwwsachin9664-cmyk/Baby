@@ -524,12 +524,20 @@ class CatcherPackCog(commands.Cog):
 
     # ── /pack open ───────────────────────────────────────────────────────────
 
-    pack_group = app_commands.Group(name="pack", description="Catcher Pack commands.")
+    pack_group = app_commands.Group(name="pack", description="Pack commands.")
 
-    @pack_group.command(name="open", description="Open a Catcher Pack from your inventory.")
-    async def pack_open(self, interaction: discord.Interaction["CricStarBot"]):
-        # Show the native "CricStar is thinking…" indicator while we build the
-        # response (and upload the pack cover image).
+    @pack_group.command(name="open", description="Open a pack from your inventory.")
+    @app_commands.describe(packs="Which pack to open")
+    @app_commands.choices(packs=[
+        app_commands.Choice(name="Catcher Pack", value="catcher"),
+        app_commands.Choice(name="Legendary Pack", value="legendary"),
+    ])
+    async def pack_open(self, interaction: discord.Interaction["CricStarBot"], packs: app_commands.Choice[str]):
+        if packs.value == "legendary":
+            await self._open_legendary_pack(interaction)
+            return
+
+        # ── Catcher Pack flow ─────────────────────────────────────────────
         await interaction.response.defer(thinking=True)
 
         data = load_data()
@@ -549,6 +557,38 @@ class CatcherPackCog(commands.Cog):
 
         cover_file = discord.File(str(PACK_COVER), filename="pack_cover.png")
         view = OpenPackView(interaction.user.id)
+
+        message = await interaction.followup.send(
+            embed=embed, view=view, file=cover_file, wait=True
+        )
+        view.message = message
+
+    async def _open_legendary_pack(self, interaction: discord.Interaction["CricStarBot"]):
+        from cricstar.packages.legendarypack.cog import (
+            OpenLegendaryPackView,
+            get_legendary_pack_count,
+            _cover_embed as legendary_cover_embed,
+            PACK_COVER as LEGENDARY_PACK_COVER,
+        )
+
+        await interaction.response.defer(thinking=True)
+
+        have = get_legendary_pack_count(interaction.user.id)
+        if have <= 0:
+            await interaction.followup.send(
+                "You don't own a Legendary Pack.", ephemeral=True
+            )
+            return
+
+        embed = legendary_cover_embed()
+        embed.add_field(
+            name="Owner",
+            value=f"{interaction.user.mention} • {have} legendary pack(s)",
+            inline=False,
+        )
+
+        cover_file = discord.File(str(LEGENDARY_PACK_COVER), filename="legendary_pack_cover.png")
+        view = OpenLegendaryPackView(interaction.user.id)
 
         message = await interaction.followup.send(
             embed=embed, view=view, file=cover_file, wait=True
