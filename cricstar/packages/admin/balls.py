@@ -186,6 +186,13 @@ async def give(ctx: commands.Context[CricStarBot], user: discord.User, *, flags:
     """
     await ctx.defer(ephemeral=True)
 
+    # If the special being assigned is Shiny, generate the shiny card image first
+    extra_data: dict = {}
+    if flags.special and flags.special.name.lower() == "shiny":
+        from cricstar.core.utils.shiny_gen import generate_shiny_extra
+        loop = ctx.bot.loop
+        extra_data = await generate_shiny_extra(flags.cricketer, loop)
+
     player, created = await Player.objects.aget_or_create(discord_id=user.id)
     instance = await BallInstance.objects.acreate(
         ball=flags.cricketer,
@@ -201,6 +208,7 @@ async def give(ctx: commands.Context[CricStarBot], user: discord.User, *, flags:
             else random.randint(-settings.max_health_bonus, settings.max_health_bonus)
         ),
         special=flags.special,
+        extra_data=extra_data,
     )
     player_emoji = get_player_emoji(flags.cricketer.country)
     await ctx.send(
