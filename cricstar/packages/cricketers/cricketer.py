@@ -387,6 +387,15 @@ class BallSpawnView(View):
         if not special:
             special = self.get_random_special()
 
+        # If the special is Shiny, generate shiny card image for extra_data
+        extra_data: dict = {}
+        if special and special.name.lower() == "shiny":
+            try:
+                from cricstar.core.utils.shiny_gen import generate_shiny_extra
+                extra_data = await generate_shiny_extra(self.model, self.bot.loop)
+            except Exception:
+                log.exception("Failed to generate shiny card image during spawn")
+
         ball = await BallInstance.objects.acreate(
             ball=self.model,
             player=player,
@@ -396,6 +405,7 @@ class BallSpawnView(View):
             server_id=guild.id if guild else None,
             spawned_time=self.message.created_at,
             catch_date=caught_time,
+            extra_data=extra_data,
         )
 
         # Daily Catcher Pack: record this catch toward the daily leaderboard
