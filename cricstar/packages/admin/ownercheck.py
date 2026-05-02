@@ -17,13 +17,19 @@ if TYPE_CHECKING:
 
 log = logging.getLogger(__name__)
 
-CATEGORIES = ["trades", "bets", "packs", "gives", "catches"]
+CATEGORIES = ["trades", "bets", "packs", "gives", "catches", "admingive", "adminspawn"]
 CAT_LABELS = {
-    "trades":  "📊 Trades",
-    "bets":    "🎲 Bets",
-    "packs":   "📦 Packs",
-    "gives":   "🎁 Gives",
-    "catches": "🏏 Catches",
+    "trades":     "📊 Trades",
+    "bets":       "🎲 Bets",
+    "packs":      "📦 Packs",
+    "gives":      "🎁 Gives",
+    "catches":    "🏏 Catches",
+    "admingive":  "🛡️ Admin Give",
+    "adminspawn": "🚀 Admin Spawn",
+}
+CAT_ROWS = {
+    "trades": 0, "bets": 0, "packs": 0, "gives": 0, "catches": 0,
+    "admingive": 1, "adminspawn": 1,
 }
 PAGE_SIZE = 10
 
@@ -92,6 +98,50 @@ async def _get_catches(discord_id: str, days: int) -> list[str]:
     return lines
 
 
+async def _get_admin_gives(discord_id: str, days: int) -> list[str]:
+    """Cards this admin user has given to others via /admin cricketer give."""
+    since = timezone.now() - timedelta(days=days)
+    qs = BallInstance.objects.filter(
+        catch_date__gte=since,
+        extra_data__admin_giver_id=discord_id,
+    ).select_related("ball", "special", "player").order_by("-catch_date")
+
+    lines = []
+    count = 0
+    async for bi in qs:
+        if count >= 50:
+            break
+        special = f" ✦ {bi.special.name}" if bi.special_id else ""
+        receiver = f"<@{bi.player.discord_id}>"
+        lines.append(
+            f"`#{bi.pk:0X}` {format_dt(bi.catch_date, 'R')} — **{bi.ball.country}**{special} → {receiver}"
+        )
+        count += 1
+    return lines
+
+
+async def _get_admin_spawns(discord_id: str, days: int) -> list[str]:
+    """Cards this admin user spawned via /admin cricketer spawn (caught by anyone)."""
+    since = timezone.now() - timedelta(days=days)
+    qs = BallInstance.objects.filter(
+        catch_date__gte=since,
+        extra_data__admin_spawner_id=discord_id,
+    ).select_related("ball", "special", "player").order_by("-catch_date")
+
+    lines = []
+    count = 0
+    async for bi in qs:
+        if count >= 50:
+            break
+        special = f" ✦ {bi.special.name}" if bi.special_id else ""
+        catcher = f"<@{bi.player.discord_id}>"
+        lines.append(
+            f"`#{bi.pk:0X}` {format_dt(bi.catch_date, 'R')} — **{bi.ball.country}**{special} → caught by {catcher}"
+        )
+        count += 1
+    return lines
+
+
 class OwnerCheckView(discord.ui.View):
     def __init__(self, user: discord.User, days: int, data: dict[str, list[str]]):
         super().__init__(timeout=120)
@@ -109,7 +159,7 @@ class OwnerCheckView(discord.ui.View):
                 label=CAT_LABELS[cat],
                 style=discord.ButtonStyle.primary if cat == self.current else discord.ButtonStyle.secondary,
                 custom_id=f"cat_{cat}",
-                row=0,
+                row=CAT_ROWS[cat],
             )
             btn.callback = self._make_cat_callback(cat)
             self.add_item(btn)
@@ -117,11 +167,17 @@ class OwnerCheckView(discord.ui.View):
         lines = self.data.get(self.current, [])
         total_pages = max(1, (len(lines) + PAGE_SIZE - 1) // PAGE_SIZE)
 
-        prev_btn = discord.ui.Button(label="◀ Prev", style=discord.ButtonStyle.secondary, row=1, disabled=self.page == 0)
+        prev_btn = discord.ui.Button(
+            label="◀ Prev", style=discord.ButtonStyle.secondary,
+            row=2, disabled=self.page == 0,
+        )
         prev_btn.callback = self._prev_page
         self.add_item(prev_btn)
 
-        next_btn = discord.ui.Button(label="Next ▶", style=discord.ButtonStyle.secondary, row=1, disabled=self.page >= total_pages - 1)
+        next_btn = discord.ui.Button(
+            label="Next ▶", style=discord.ButtonStyle.secondary,
+            row=2, disabled=self.page >= total_pages - 1,
+        )
         next_btn.callback = self._next_page
         self.add_item(next_btn)
 
@@ -152,11 +208,13 @@ class OwnerCheckView(discord.ui.View):
         page_lines = lines[self.page * PAGE_SIZE : (self.page + 1) * PAGE_SIZE]
 
         colour_map = {
-            "trades": discord.Colour.blue(),
-            "bets":   discord.Colour.gold(),
-            "packs":  discord.Colour.green(),
-            "gives":  discord.Colour.purple(),
-            "catches": discord.Colour.og_blurple(),
+            "trades":     discord.Colour.blue(),
+            "bets":       discord.Colour.gold(),
+            "packs":      discord.Colour.green(),
+            "gives":      discord.Colour.purple(),
+            "catches":    discord.Colour.og_blurple(),
+            "admingive":  discord.Colour.dark_red(),
+            "adminspawn": discord.Colour.teal(),
         }
 
         embed = discord.Embed(
@@ -191,17 +249,21 @@ async def ownercheck(interaction: discord.Interaction["CricStarBot"], user: disc
     await interaction.response.defer(ephemeral=True)
 
     uid = str(user.id)
-    trades  = await _get_trades(uid, days)
-    packs   = await _get_packs(uid, days)
-    gives   = await _get_gives(uid, days)
-    catches = await _get_catches(uid, days)
+    trades      = await _get_trades(uid, days)
+    packs       = await _get_packs(uid, days)
+    gives       = await _get_gives(uid, days)
+    catches     = await _get_catches(uid, days)
+    admingives  = await _get_admin_gives(uid, days)
+    adminspawns = await _get_admin_spawns(uid, days)
 
     data = {
-        "trades":  trades,
-        "bets":    [],
-        "packs":   packs,
-        "gives":   gives,
-        "catches": catches,
+        "trades":     trades,
+        "bets":       [],
+        "packs":      packs,
+        "gives":      gives,
+        "catches":    catches,
+        "admingive":  admingives,
+        "adminspawn": adminspawns,
     }
 
     view = OwnerCheckView(user, days, data)

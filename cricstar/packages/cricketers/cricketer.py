@@ -396,6 +396,11 @@ class BallSpawnView(View):
             except Exception:
                 log.exception("Failed to generate shiny card image during spawn")
 
+        # Track which admin spawned this card (set by /admin cricketer spawn)
+        spawner_id = getattr(self, "spawner_id", None)
+        if spawner_id:
+            extra_data["admin_spawner_id"] = str(spawner_id)
+
         ball = await BallInstance.objects.acreate(
             ball=self.model,
             player=player,

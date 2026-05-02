@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-05-02T10:19:06.036669+00:00",
-  "count": 9801,
+  "exported_at": "2026-05-02T10:30:46.414419+00:00",
+  "count": 9806,
   "holdings": [
     {
       "player_discord_id": 1194208866540453899,
@@ -92752,6 +92752,71 @@
       "server_id": 1351149098677567509,
       "catch_date": "2026-05-02T10:16:37.750930+00:00",
       "spawned_time": "2026-05-02T10:16:28.020000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 696055184765354024,
+      "ball_player_name": "Jasprit Bumrah",
+      "special_name": null,
+      "health_bonus": -13,
+      "attack_bonus": -20,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1421832633926553753,
+      "catch_date": "2026-05-02T10:20:47.836948+00:00",
+      "spawned_time": "2026-05-02T10:20:00.737000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Sam Konstas",
+      "special_name": null,
+      "health_bonus": -8,
+      "attack_bonus": -19,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-05-02T10:22:04.268771+00:00",
+      "spawned_time": "2026-05-02T10:20:36.267000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1230222430958649487,
+      "ball_player_name": "Mitchell Santner",
+      "special_name": null,
+      "health_bonus": 11,
+      "attack_bonus": -6,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1373977553634721833,
+      "catch_date": "2026-05-02T10:25:04.001782+00:00",
+      "spawned_time": "2026-05-02T10:24:18.517000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1170728448432553994,
+      "ball_player_name": "Kuldeep Yadav",
+      "special_name": null,
+      "health_bonus": -2,
+      "attack_bonus": 19,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1435553926932860973,
+      "catch_date": "2026-05-02T10:25:29.439583+00:00",
+      "spawned_time": "2026-05-02T10:25:19.978000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1170728448432553994,
+      "ball_player_name": "Jonny Bairstow",
+      "special_name": null,
+      "health_bonus": -20,
+      "attack_bonus": 2,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-02T10:26:01.410845+00:00",
+      "spawned_time": "2026-05-02T10:25:53.231000+00:00",
       "extra_data": {}
     },
     {

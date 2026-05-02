@@ -49,6 +49,7 @@ async def _spawn_bomb(
     special: Special | None = None,
     atk_bonus: int | None = None,
     hp_bonus: int | None = None,
+    spawner_id: int | None = None,
 ):
     spawned = 0
     message: discord.Message
@@ -76,6 +77,8 @@ async def _spawn_bomb(
             ball.special = special
             ball.atk_bonus = atk_bonus
             ball.hp_bonus = hp_bonus
+            if spawner_id:
+                ball.spawner_id = spawner_id
             result = await ball.spawn(channel)
             if not result:
                 task.cancel()
@@ -138,6 +141,7 @@ async def spawn(ctx: commands.Context[CricStarBot], *, flags: SpawnFlags):
             flags.special,
             flags.atk_bonus,
             flags.hp_bonus,
+            spawner_id=ctx.author.id,
         )
         log.info(
             f"{ctx.author} spawned {settings.collectible_name}"
@@ -155,6 +159,7 @@ async def spawn(ctx: commands.Context[CricStarBot], *, flags: SpawnFlags):
     ball.special = flags.special
     ball.atk_bonus = flags.atk_bonus
     ball.hp_bonus = flags.hp_bonus
+    ball.spawner_id = ctx.author.id
     target_channel = flags.channel or ctx.channel
     result = await ball.spawn(target_channel)  # type: ignore
 
@@ -192,6 +197,9 @@ async def give(ctx: commands.Context[CricStarBot], user: discord.User, *, flags:
         from cricstar.core.utils.shiny_gen import generate_shiny_extra
         loop = ctx.bot.loop
         extra_data = await generate_shiny_extra(flags.cricketer, loop)
+
+    # Track which admin gave this card
+    extra_data["admin_giver_id"] = str(ctx.author.id)
 
     player, created = await Player.objects.aget_or_create(discord_id=user.id)
     instance = await BallInstance.objects.acreate(
