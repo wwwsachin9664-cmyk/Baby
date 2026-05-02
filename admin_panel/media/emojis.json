@@ -495,5 +495,12 @@
     "bet": true,
     "player": "Adam \u2013 Ricky \u2013 Matthew",
     "name": "ARM"
+  },
+  {
+    "id": "1500067199929417789",
+    "list": true,
+    "bet": true,
+    "player": "Odi World Cup",
+    "name": "OdiWc"
   }
 ]
