@@ -16,6 +16,7 @@ from cricstar.core.utils.sorting import FilteringChoices, SortingChoices, filter
 from cricstar.core.utils.transformers import (
     BallEnabledTransform,
     BallInstanceTransform,
+    EventEnabledTransform,
     SpecialEnabledTransform,
     TradeCommandType,
 )
@@ -28,6 +29,136 @@ from .cricketers_paginator import CricketersDuplicateSource, CricketersViewer
 
 if TYPE_CHECKING:
     from cricstar.core.bot import CricStarBot
+
+
+EMOJIS_PER_ROW = 25
+ROWS_PER_PAGE = 4
+EMOJIS_PER_PAGE = EMOJIS_PER_ROW * ROWS_PER_PAGE  # 100
+
+
+class CompletionView(discord.ui.View):
+    """Paginated completion view — 25 emojis/row × 4 rows = 100/page."""
+
+    def __init__(
+        self,
+        user_obj: discord.User | discord.Member,
+        owned: list[str],
+        missing: list[str],
+        header: str,
+        colour: discord.Colour = discord.Colour.og_blurple(),
+    ):
+        super().__init__(timeout=180)
+        self.user_obj = user_obj
+        self.owned = owned
+        self.missing = missing
+        self.header = header
+        self.colour = colour
+        self.page = 0
+
+        self._pages: list[tuple[str, list[str]]] = []
+        if owned:
+            for i in range(0, len(owned), EMOJIS_PER_PAGE):
+                self._pages.append(("owned", owned[i : i + EMOJIS_PER_PAGE]))
+        else:
+            self._pages.append(("owned", []))
+        if missing:
+            for i in range(0, len(missing), EMOJIS_PER_PAGE):
+                self._pages.append(("missing", missing[i : i + EMOJIS_PER_PAGE]))
+
+        self.total_pages = max(1, len(self._pages))
+        self._refresh_buttons()
+
+    def _format_rows(self, emojis: list[str]) -> str:
+        lines: list[str] = []
+        for i in range(0, len(emojis), EMOJIS_PER_ROW):
+            row = emojis[i : i + EMOJIS_PER_ROW]
+            lines.append("".join(row))
+        return "\n".join(lines)
+
+    def _refresh_buttons(self) -> None:
+        self.clear_items()
+        at_start = self.page == 0
+        at_end = self.page >= self.total_pages - 1
+
+        b_first = discord.ui.Button(label="<<", style=discord.ButtonStyle.secondary, disabled=at_start, row=0)
+        b_first.callback = self._go_first
+        self.add_item(b_first)
+
+        b_back = discord.ui.Button(label="Back", style=discord.ButtonStyle.secondary, disabled=at_start, row=0)
+        b_back.callback = self._go_back
+        self.add_item(b_back)
+
+        b_next = discord.ui.Button(label="Next", style=discord.ButtonStyle.primary, disabled=at_end, row=0)
+        b_next.callback = self._go_next
+        self.add_item(b_next)
+
+        b_last = discord.ui.Button(label=">>", style=discord.ButtonStyle.secondary, disabled=at_end, row=0)
+        b_last.callback = self._go_last
+        self.add_item(b_last)
+
+        b_quit = discord.ui.Button(label="Quit", style=discord.ButtonStyle.danger, row=0)
+        b_quit.callback = self._quit
+        self.add_item(b_quit)
+
+    def build_embed(self) -> discord.Embed:
+        section, emojis = self._pages[self.page]
+        embed = discord.Embed(colour=self.colour)
+        embed.set_author(name=self.user_obj.display_name, icon_url=self.user_obj.display_avatar.url)
+
+        desc_parts: list[str] = [self.header, ""]
+
+        if section == "owned":
+            total_owned = len(self.owned)
+            desc_parts.append(f"**Owned {settings.plural_collectible_name} ({total_owned})**")
+            if emojis:
+                desc_parts.append(self._format_rows(emojis))
+            else:
+                desc_parts.append("Nothing yet.")
+            owned_pages = [p for p in self._pages if p[0] == "owned"]
+            is_last_owned = owned_pages[-1][1] is emojis
+            if is_last_owned and not self.missing:
+                desc_parts.append(f"\n🎉 **No missing {settings.plural_collectible_name}, congratulations!** 🎉")
+        else:
+            total_missing = len(self.missing)
+            desc_parts.append(f"**Missing {settings.plural_collectible_name} ({total_missing})**")
+            if emojis:
+                desc_parts.append(self._format_rows(emojis))
+            else:
+                desc_parts.append("Nothing missing!")
+
+        embed.description = "\n".join(desc_parts)
+        embed.set_footer(text=f"Page {self.page + 1}/{self.total_pages}")
+        return embed
+
+    async def _go_first(self, interaction: discord.Interaction) -> None:
+        self.page = 0
+        self._refresh_buttons()
+        await interaction.response.edit_message(embed=self.build_embed(), view=self)
+
+    async def _go_back(self, interaction: discord.Interaction) -> None:
+        self.page = max(0, self.page - 1)
+        self._refresh_buttons()
+        await interaction.response.edit_message(embed=self.build_embed(), view=self)
+
+    async def _go_next(self, interaction: discord.Interaction) -> None:
+        self.page = min(self.total_pages - 1, self.page + 1)
+        self._refresh_buttons()
+        await interaction.response.edit_message(embed=self.build_embed(), view=self)
+
+    async def _go_last(self, interaction: discord.Interaction) -> None:
+        self.page = self.total_pages - 1
+        self._refresh_buttons()
+        await interaction.response.edit_message(embed=self.build_embed(), view=self)
+
+    async def _quit(self, interaction: discord.Interaction) -> None:
+        self.stop()
+        for item in self.children:
+            item.disabled = True  # type: ignore[union-attr]
+        await interaction.response.edit_message(view=self)
+
+    async def on_timeout(self) -> None:
+        for item in self.children:
+            item.disabled = True  # type: ignore[union-attr]
 
 log = logging.getLogger("cricstar.packages.cricketers")
 
@@ -117,6 +248,7 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
         reverse: bool = False,
         cricketer: BallEnabledTransform | None = None,
         special: SpecialEnabledTransform | None = None,
+        event: EventEnabledTransform | None = None,
         filter: FilteringChoices | None = None,
     ):
         """
@@ -133,7 +265,9 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
         cricketer: Ball
             Filter the list by a specific cricketer.
         special: Special
-            Filter the list by a specific special event.
+            Filter the list by a specific special (e.g. Shiny).
+        event: Special
+            Filter the list by a specific event (e.g. ICONS, IPL2026).
         filter: FilteringChoices
             Filter the list by a specific filter.
         """
@@ -172,6 +306,12 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
             query = query.filter(ball=cricketer)
         if special:
             query = query.filter(special=special)
+        if event:
+            event_ball_ids = [
+                k for k, v in balls.items()
+                if (v.capacity_logic or {}).get("forced_special") == event.id
+            ]
+            query = query.filter(ball_id__in=event_ball_ids) if event_ball_ids else query.none()
         if sort:
             query = sort_balls(sort, query)
         else:
@@ -179,18 +319,10 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
 
         if not await query.aexists():
             ball_txt = cricketer.country if cricketer else ""
-            special_txt = special if special else ""
-
-            if special_txt and ball_txt:
-                combined = f"{special_txt} {ball_txt}"
-            elif special_txt:
-                combined = special_txt
-            elif ball_txt:
-                combined = ball_txt
-            else:
-                combined = ""
-
-            combined_txt = f"{combined} " if combined else ""
+            special_txt = special.name if special else ""
+            event_txt = event.name if event else ""
+            parts = [p for p in [special_txt, event_txt, ball_txt] if p]
+            combined_txt = f"{' '.join(parts)} " if parts else ""
             if user_obj == interaction.user:
                 await interaction.followup.send(
                     f"You don't have any {combined_txt}{settings.plural_collectible_name} yet."
@@ -220,6 +352,8 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
         interaction: discord.Interaction["CricStarBot"],
         user: discord.User | None = None,
         special: SpecialEnabledTransform | None = None,
+        event: EventEnabledTransform | None = None,
+        unobtainable: bool | None = None,
         filter: FilteringChoices | None = None,
         duplicates: bool = False,
     ):
@@ -231,7 +365,11 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
         user: discord.User
             The user whose completion you want to view, if not yours.
         special: Special
-            The special you want to see the completion of
+            Filter completion to a specific special (e.g. Shiny).
+        event: Special
+            Filter completion to a specific event (e.g. ICONS, IPL2026).
+        unobtainable: bool
+            True = show only unobtainable cards. False = hide unobtainable cards.
         filter: FilteringChoices
             Filter the list by a specific filter.
         duplicates: bool
@@ -239,7 +377,10 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
         """
         user_obj = user or interaction.user
         await interaction.response.defer(thinking=True)
-        extra_text = f"{special.name} " if special else ""
+
+        label_parts = [x for x in [special.name if special else "", event.name if event else ""] if x]
+        extra_text = f"{' '.join(label_parts)} " if label_parts else ""
+
         if user is not None:
             try:
                 player = await Player.objects.aget(discord_id=user_obj.id)
@@ -264,32 +405,30 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
 
             if await inventory_privacy(self.bot, interaction, player, user_obj) is False:
                 return
-        # Filter disabled balls, they do not count towards progression
-        # Maps ball_id -> (emoji_id, country) for owned/missing display
-        bot_cricketers: dict[int, tuple[int, str]] = {
-            x: (y.emoji_id, y.country) for x, y in balls.items() if y.enabled
-        }
 
-        # Set of ball IDs owned by the player
         filters: dict = {"player__discord_id": user_obj.id, "ball__enabled": True}
-        if special:
-            # Only include balls that force this specific special event
+
+        if event:
+            event_ball_ids = {
+                x for x, y in balls.items()
+                if y.enabled and (y.capacity_logic or {}).get("forced_special") == event.id
+            }
+            bot_cricketers: dict[int, tuple[int, str]] = {
+                x: (y.emoji_id, y.country) for x, y in balls.items() if x in event_ball_ids
+            }
+            filters["ball_id__in"] = list(event_ball_ids) if event_ball_ids else [-1]
+
+        elif special:
             event_ball_ids = {
                 x for x, y in balls.items()
                 if y.enabled and (y.capacity_logic or {}).get("forced_special") == special.id
             }
             if event_ball_ids:
-                # Show only event-specific balls; owned is matched by ball ID (not by
-                # BallInstance.special) so cards caught when the special cache was cold still count.
                 bot_cricketers = {
-                    x: (y.emoji_id, y.country)
-                    for x, y in balls.items()
-                    if x in event_ball_ids
+                    x: (y.emoji_id, y.country) for x, y in balls.items() if x in event_ball_ids
                 }
                 filters["ball_id__in"] = list(event_ball_ids)
             else:
-                # Fallback for events with no forced-special cards: use date-based scope
-                # and match on the BallInstance special field.
                 bot_cricketers = {
                     x: (y.emoji_id, y.country)
                     for x, y in balls.items()
@@ -301,10 +440,15 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
                 }
                 filters["special"] = special
 
-        if filter:
-            query = filter_balls(filter, BallInstance.objects.filter(**filters), interaction.guild_id)
         else:
-            query = BallInstance.objects.filter(**filters)
+            bot_cricketers = {x: (y.emoji_id, y.country) for x, y in balls.items() if y.enabled}
+
+        if unobtainable is True:
+            bot_cricketers = {k: v for k, v in bot_cricketers.items() if balls.get(k) and balls[k].unobtainable}
+            filters["ball__unobtainable"] = True
+        elif unobtainable is False:
+            bot_cricketers = {k: v for k, v in bot_cricketers.items() if balls.get(k) and not balls[k].unobtainable}
+            filters["ball__unobtainable"] = False
 
         if not bot_cricketers:
             await interaction.followup.send(
@@ -313,75 +457,52 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
             )
             return
 
+        if filter:
+            query = filter_balls(filter, BallInstance.objects.filter(**filters), interaction.guild_id)
+        else:
+            query = BallInstance.objects.filter(**filters)
+
         if duplicates:
             query = query.values("ball_id").annotate(count=Count("ball_id")).filter(count__gt=1)
 
-        owned_cricketers = set(
-            [
-                x[0]
-                async for x in query
-                .distinct()
-                .values_list("ball_id")
-            ]
-        )
-
-        special_str = f" ({special.name})" if special else ""
-        original_catcher_string = " " + filter.value.replace("_", " ") + " " if filter else ""
-        duplicates_str = " duplicates" if duplicates else ""
-        text = (
-            f"## {settings.bot_name}{original_catcher_string}{special_str}{duplicates_str} progression: "
-            f"**{round(len(owned_cricketers) / len(bot_cricketers) * 100, 1)}%**\n"
+        owned_cricketers: set[int] = set(
+            [x[0] async for x in query.distinct().values_list("ball_id")]
         )
 
         player_emoji_map = get_player_emoji_map()
 
-        def fill_fields(title: str, ball_ids: set[int]):
-            nonlocal text
-            text += f"### {title}\n"
-            if not ball_ids:
-                text += "Nothing yet.\n"
-                return
-            found_any = False
-            for ball_id in ball_ids:
-                entry = bot_cricketers.get(ball_id)
-                if entry is None:
-                    continue
-                emoji_id, country = entry
-                # Player emoji from emojis.json takes priority
-                player_emoji_str = player_emoji_map.get(country.strip().lower())
-                if player_emoji_str:
-                    text += f"{player_emoji_str} "
-                    found_any = True
-                else:
-                    # Fall back to the ball's uploaded Discord emoji
-                    emoji = self.bot.get_emoji(emoji_id) if emoji_id and emoji_id > 0 else None
-                    if emoji:
-                        text += f"{emoji} "
-                        found_any = True
-            if not found_any:
-                text += "*No emojis set yet*"
-            text += "\n"
+        def get_emoji_str(ball_id: int) -> str | None:
+            entry = bot_cricketers.get(ball_id)
+            if entry is None:
+                return None
+            emoji_id, country = entry
+            player_emoji_str = player_emoji_map.get(country.strip().lower())
+            if player_emoji_str:
+                return player_emoji_str
+            emoji = self.bot.get_emoji(emoji_id) if emoji_id and emoji_id > 0 else None
+            return str(emoji) if emoji else None
 
-        # Getting the list of emoji IDs from the IDs of the owned cricketers
-        fill_fields(f"Owned {settings.plural_collectible_name}", owned_cricketers)
+        owned_emojis = [e for bid in owned_cricketers if (e := get_emoji_str(bid)) is not None]
+        missing_ids = [x for x in bot_cricketers if x not in owned_cricketers]
+        missing_emojis = [e for bid in missing_ids if (e := get_emoji_str(bid)) is not None]
 
-        missing_ids = set(x for x in bot_cricketers if x not in owned_cricketers)
-        if missing_ids:
-            fill_fields(f"Missing {settings.plural_collectible_name}", missing_ids)
-        else:
-            text += f"### :tada: No missing {settings.plural_collectible_name}, congratulations! :tada:"
+        special_str = f" ({special.name})" if special else ""
+        event_str = f" ({event.name})" if event else ""
+        filter_str = f" {filter.value.replace('_', ' ')}" if filter else ""
+        dupes_str = " duplicates" if duplicates else ""
+        unobt_str = " [unobtainable]" if unobtainable is True else " [obtainable only]" if unobtainable is False else ""
+        pct = round(len(owned_cricketers) / len(bot_cricketers) * 100, 1) if bot_cricketers else 0.0
+        header = (
+            f"## {settings.bot_name}{filter_str}{special_str}{event_str}{unobt_str}{dupes_str} progression: "
+            f"**{pct}%**"
+        )
 
-        view = LayoutView()
-        container = Container()
+        colour = discord.Colour.gold() if event else discord.Colour.og_blurple()
+        view = CompletionView(user_obj, owned_emojis, missing_emojis, header, colour)
+        embed = view.build_embed()
         if user is not None and user != interaction.user:
-            header = TextDisplay(f"Viewing {user_obj.display_name}'s completion")
-            container.add_item(header)
-        display = TextDisplay("")
-        container.add_item(display)
-        view.add_item(container)
-        menu = Menu(self.bot, view, TextSource(text, delims=[" \n###", " "]), TextFormatter(display))
-        await menu.init()
-        await interaction.followup.send(view=view)
+            embed.description = f"*Viewing {user_obj.display_name}'s completion*\n" + (embed.description or "")
+        await interaction.followup.send(embed=embed, view=view)
 
     @app_commands.command()
     @app_commands.checks.cooldown(1, 5, key=lambda i: i.user.id)

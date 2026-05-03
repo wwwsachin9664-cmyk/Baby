@@ -15,6 +15,7 @@ REQUIRED_SPECIALS = [
         "tradeable": True,
         "hidden": False,
         "credits": "CricStar",
+        "is_event": True,
     },
     {
         "name": "IPL2026",
@@ -24,6 +25,7 @@ REQUIRED_SPECIALS = [
         "tradeable": True,
         "hidden": False,
         "credits": "CricStar",
+        "is_event": True,
     },
     {
         "name": "ICONS",
@@ -33,8 +35,11 @@ REQUIRED_SPECIALS = [
         "tradeable": True,
         "hidden": False,
         "credits": "CricStar",
+        "is_event": True,
     },
 ]
+
+EVENT_NAMES = {"T20 World Cup", "IPL2026", "ICONS"}
 
 
 class Command(BaseCommand):
@@ -52,7 +57,13 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(f"  Created special: {name} (id={obj.id})"))
                 created_count += 1
             else:
-                self.stdout.write(f"  Special already exists: {name} (id={obj.id})")
+                updated = False
+                if not obj.is_event and name in EVENT_NAMES:
+                    obj.is_event = True
+                    obj.save(update_fields=["is_event"])
+                    updated = True
+                suffix = " (updated is_event=True)" if updated else ""
+                self.stdout.write(f"  Special already exists: {name} (id={obj.id}){suffix}")
 
         if created_count:
             self.stdout.write(self.style.SUCCESS(f"setup_specials: {created_count} special(s) created."))

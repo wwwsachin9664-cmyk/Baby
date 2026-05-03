@@ -16,6 +16,33 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - Server spawn configuration is mirrored to `card_exports/guild_configs.json`; `/config disable`, `/config enable`, `/setspawn remove`, `/setspawn enable`, and `/setspawn disable` update this file so settings survive remix/restores.
 - CricStar uses a per-server in-process spawn lock to prevent overlapping message events from creating duplicate spawns in the same running bot process. If every server receives duplicate spawns at the same time, another Replit/remix is likely also running with the same Discord bot token.
 
+### Events vs Specials (migration 0019)
+- `Special.is_event` (BooleanField, default=False) separates card-series events from seasonal overlay specials.
+- **Events** (is_event=True): IPL2026, ICONS, Prime, Timeliners, Flashback, Trophy, T20 World Cup — shown in `event:` autocomplete in `/cricstar completion` and `/cricstar list`.
+- **Specials** (is_event=False): Shiny, and future seasonal overlays (Diwali, Ramadan) — shown in `special:` autocomplete.
+- `Special.overlay_text` (CharField, max 64) — if set, appears below the card image in `/cricstar info` and `/cricstar last`.
+- `setup_specials` management command sets `is_event=True` for all required event entries.
+
+### Completion Command Overhaul (`/cricstar completion`)
+- Layout: 25 emojis/row × 4 rows = 100 emojis per page via `CompletionView` in `cricstar/packages/collection/cog.py`.
+- Navigation buttons: `<<` (first), `Back`, `Next`, `>>` (last), `Quit` — all in row 0.
+- New `event:` parameter (EventEnabledTransform) — filters to a specific card-series event.
+- New `unobtainable:` bool parameter — `True` = only unobtainable cards, `False` = only obtainable cards.
+- Owned pages shown first (blue), then missing pages; embed colour = gold for events, blurple for others.
+
+### List Command Update (`/cricstar list`)
+- New `event:` parameter — filters BallInstance results by `ball.capacity_logic.forced_special == event.id` using in-memory `balls` cache.
+
+### New Admin Commands
+- `/createspecial` — create a seasonal overlay special (is_event=False) with name, emoji, catch_phrase, overlay_text, rarity, tradeable, hidden.
+- `/editspecial` — edit an existing overlay special (autocomplete filters is_event=False); update any subset of fields.
+- `/deletespecial` — delete an overlay special (autocomplete filters is_event=False) with confirmation prompt.
+- `/evmake` and `/createevent` — both now accept `overlay_text` param and set `is_event=True` on creation.
+
+### Transformer Updates (`cricstar/core/utils/transformers.py`)
+- `SpecialEnabledTransform` = `SpecialTransformer(hidden=False, is_event=False)` — specials only.
+- `EventEnabledTransform` = `SpecialTransformer(hidden=False, is_event=True)` — events only.
+
 ## Stack
 
 - **Monorepo tool**: pnpm workspaces

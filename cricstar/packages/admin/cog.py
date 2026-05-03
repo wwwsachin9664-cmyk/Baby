@@ -1875,6 +1875,7 @@ class Admin(commands.Cog):
         name="Event name (e.g. IPL 2026, T20 World Cup) — must be unique",
         emoji="An emoji or Discord emoji ID shown next to the event name",
         catch_phrase="Message shown when catching a card with this event (max 128 chars)",
+        overlay_text="Text shown below the card when displayed (e.g. 🏏IPL 2026🏏, max 64 chars)",
         start_date="When the event starts (YYYY-MM-DD or YYYY-MM-DD HH:MM). Leave blank to start immediately",
         end_date="When the event ends (YYYY-MM-DD or YYYY-MM-DD HH:MM). Leave blank to never expire",
         tradeable="Whether cards with this event can be traded (default True)",
@@ -1886,6 +1887,7 @@ class Admin(commands.Cog):
         name: str,
         emoji: str = "",
         catch_phrase: str = "",
+        overlay_text: str = "",
         start_date: str = "",
         end_date: str = "",
         tradeable: bool = True,
@@ -1965,15 +1967,24 @@ class Admin(commands.Cog):
             await ctx.send("❌ End date must be after start date.", ephemeral=True)
             return
 
+        if overlay_text and len(overlay_text) > 64:
+            await ctx.send(
+                f"❌ Overlay text is too long ({len(overlay_text)} chars). Maximum is 64 characters.",
+                ephemeral=True,
+            )
+            return
+
         special = await Special.objects.acreate(
             name=name,
             rarity=0.0,
             emoji=emoji.strip() or None,
             catch_phrase=catch_phrase.strip() or None,
+            overlay_text=overlay_text.strip() or None,
             start_date=parsed_start,
             end_date=parsed_end,
             tradeable=tradeable,
             hidden=hidden,
+            is_event=True,
         )
             
         specials_cache[special.id] = special
@@ -2010,12 +2021,24 @@ class Admin(commands.Cog):
     async def _event_name_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
-        """Return up to 25 event names matching the current input."""
+        """Return up to 25 event names (is_event=True) matching the current input."""
         current_lower = current.lower()
         matches = [
             app_commands.Choice(name=special.name, value=special.name)
             for special in specials_cache.values()
-            if current_lower in special.name.lower()
+            if current_lower in special.name.lower() and special.is_event
+        ]
+        return matches[:25]
+
+    async def _special_name_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> list[app_commands.Choice[str]]:
+        """Return up to 25 overlay-special names (is_event=False) matching the current input."""
+        current_lower = current.lower()
+        matches = [
+            app_commands.Choice(name=special.name, value=special.name)
+            for special in specials_cache.values()
+            if current_lower in special.name.lower() and not special.is_event
         ]
         return matches[:25]
 
@@ -2110,12 +2133,14 @@ class Admin(commands.Cog):
     @app_commands.describe(
         event_name="Name of the event (must be unique)",
         catch_phrase="Message shown when a player catches a card from this event (max 128 chars)",
+        overlay_text="Text shown below the card when displayed (e.g. 🏏IPL 2026🏏, max 64 chars)",
     )
     async def evmake(
         self,
         ctx: commands.Context["CricStarBot"],
         event_name: str,
         catch_phrase: str = "",
+        overlay_text: str = "",
     ):
         """
         Create an event with a name and optional catch phrase.
@@ -2141,6 +2166,13 @@ class Admin(commands.Cog):
             )
             return
 
+        if overlay_text and len(overlay_text) > 64:
+            await ctx.send(
+                f"❌ Overlay text is too long ({len(overlay_text)} chars). Maximum is 64 characters.",
+                ephemeral=True,
+            )
+            return
+
         if await Special.objects.filter(name=event_name).aexists():
             await ctx.send(
                 f"❌ An event named **{event_name}** already exists. Choose a different name.",
@@ -2152,8 +2184,10 @@ class Admin(commands.Cog):
             name=event_name,
             rarity=0.1,
             catch_phrase=catch_phrase.strip() or None,
+            overlay_text=overlay_text.strip() or None,
             tradeable=True,
             hidden=False,
+            is_event=True,
         )
 
         specials_cache[special.id] = special
@@ -2162,6 +2196,7 @@ class Admin(commands.Cog):
         lines = [
             f"✅ **Event `{event_name}` created!** (ID: `{special.id}`)",
             f"• **Catch phrase:** {catch_phrase.strip() or '*(none)*'}",
+            f"• **Overlay text:** {overlay_text.strip() or '*(none)*'}",
             f"\nUse `/cardmaker` → event field to assign cards to **{event_name}**.",
         ]
         await ctx.send("\n".join(lines), ephemeral=True)
@@ -2201,6 +2236,236 @@ class Admin(commands.Cog):
         log.info(f"evremover: '{event_name}' (id={special_id}) removed by {ctx.author}")
         await ctx.send(
             f"✅ Event **{event_name}** (ID: `{special_id}`) has been removed.",
+            ephemeral=True,
+        )
+
+    @commands.hybrid_command(name="createspecial")
+    @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
+    @app_commands.check(checks.is_developer)
+    @checks.is_superuser()
+    @app_commands.describe(
+        name="Special name (e.g. Diwali, Ramadan) — must be unique",
+        emoji="Emoji shown next to the special name (e.g. 🪔)",
+        catch_phrase="Message shown when catching a card with this special (max 128 chars)",
+        overlay_text="Text shown below the card when displayed (e.g. 🪔Diwali🪔, max 64 chars)",
+        rarity="Spawn chance 0.0–1.0 (e.g. 0.05 = 5%). 0 = never spawns with this special.",
+        tradeable="Whether cards with this special can be traded (default True)",
+        hidden="Hide from player-facing commands (default False)",
+    )
+    async def createspecial(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        name: str,
+        emoji: str = "",
+        catch_phrase: str = "",
+        overlay_text: str = "",
+        rarity: app_commands.Range[float, 0.0, 1.0] = 0.0,
+        tradeable: bool = True,
+        hidden: bool = False,
+    ):
+        """
+        Create a new seasonal overlay special (e.g. Diwali, Ramadan, Eid).
+        Unlike events, specials are visual overlays applied to cards during a season.
+        """
+        await ctx.defer(ephemeral=True)
+
+        name = name.strip()
+        if not name:
+            await ctx.send("❌ Special name cannot be blank.", ephemeral=True)
+            return
+
+        if len(name) > 64:
+            await ctx.send(
+                f"❌ Special name is too long ({len(name)} chars). Maximum is 64 characters.",
+                ephemeral=True,
+            )
+            return
+
+        if catch_phrase and len(catch_phrase) > 128:
+            await ctx.send(
+                f"❌ Catch phrase is too long ({len(catch_phrase)} chars). Maximum is 128 characters.",
+                ephemeral=True,
+            )
+            return
+
+        if overlay_text and len(overlay_text) > 64:
+            await ctx.send(
+                f"❌ Overlay text is too long ({len(overlay_text)} chars). Maximum is 64 characters.",
+                ephemeral=True,
+            )
+            return
+
+        if await Special.objects.filter(name=name).aexists():
+            await ctx.send(
+                f"❌ A special named **{name}** already exists. Choose a different name.",
+                ephemeral=True,
+            )
+            return
+
+        special = await Special.objects.acreate(
+            name=name,
+            rarity=rarity,
+            emoji=emoji.strip() or None,
+            catch_phrase=catch_phrase.strip() or None,
+            overlay_text=overlay_text.strip() or None,
+            tradeable=tradeable,
+            hidden=hidden,
+            is_event=False,
+        )
+
+        specials_cache[special.id] = special
+        log.info(f"createspecial: '{name}' (id={special.id}) created by {ctx.author}")
+
+        lines = [
+            f"✅ **Special `{name}` created!** (ID: `{special.id}`)\n",
+            f"• **Emoji:** {emoji.strip() or '*(none)*'}",
+            f"• **Catch phrase:** {catch_phrase.strip() or '*(none)*'}",
+            f"• **Overlay text:** {overlay_text.strip() or '*(none)*'}",
+            f"• **Rarity:** {rarity}",
+            f"• **Tradeable:** {tradeable}",
+            f"• **Status:** {'Hidden' if hidden else 'Visible'}",
+            f"\nUse the Django admin panel to set the card background image for **{name}**.",
+        ]
+        await ctx.send("\n".join(lines), ephemeral=True)
+
+    @commands.hybrid_command(name="editspecial")
+    @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
+    @app_commands.check(checks.is_developer)
+    @checks.is_superuser()
+    @app_commands.describe(
+        special_name="Name of the special to edit (autocomplete available)",
+        emoji="New emoji (leave blank to keep current)",
+        catch_phrase="New catch phrase — use a single space to clear (max 128 chars)",
+        overlay_text="New overlay text — use a single space to clear (max 64 chars)",
+        rarity="New spawn rarity 0.0–1.0",
+        tradeable="Update tradeable setting",
+        hidden="Update hidden setting",
+    )
+    @app_commands.autocomplete(special_name=_special_name_autocomplete)
+    async def editspecial(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        special_name: str,
+        emoji: str = "",
+        catch_phrase: str = "",
+        overlay_text: str = "",
+        rarity: app_commands.Range[float, 0.0, 1.0] | None = None,
+        tradeable: bool | None = None,
+        hidden: bool | None = None,
+    ):
+        """
+        Edit an existing seasonal special overlay (name, emoji, catch phrase, overlay text, rarity).
+        """
+        await ctx.defer(ephemeral=True)
+
+        special_name = special_name.strip()
+        try:
+            special = await Special.objects.aget(name=special_name, is_event=False)
+        except Special.DoesNotExist:
+            close = [s.name for s in specials_cache.values() if special_name.lower() in s.name.lower() and not s.is_event][:5]
+            hint = f"\nDid you mean: {', '.join(close)}?" if close else ""
+            await ctx.send(f"❌ No special named **{special_name}** found.{hint}", ephemeral=True)
+            return
+
+        update_fields: list[str] = []
+
+        if emoji.strip():
+            special.emoji = emoji.strip()
+            update_fields.append("emoji")
+
+        if catch_phrase:
+            special.catch_phrase = catch_phrase.strip() or None
+            update_fields.append("catch_phrase")
+
+        if overlay_text:
+            if len(overlay_text.strip()) > 64:
+                await ctx.send(
+                    f"❌ Overlay text is too long ({len(overlay_text.strip())} chars). Maximum is 64 characters.",
+                    ephemeral=True,
+                )
+                return
+            special.overlay_text = overlay_text.strip() or None
+            update_fields.append("overlay_text")
+
+        if rarity is not None:
+            special.rarity = rarity
+            update_fields.append("rarity")
+
+        if tradeable is not None:
+            special.tradeable = tradeable
+            update_fields.append("tradeable")
+
+        if hidden is not None:
+            special.hidden = hidden
+            update_fields.append("hidden")
+
+        if not update_fields:
+            await ctx.send("❌ No changes provided. Specify at least one field to update.", ephemeral=True)
+            return
+
+        await special.asave(update_fields=update_fields)
+        specials_cache[special.id] = special
+
+        log.info(f"editspecial: '{special_name}' updated fields {update_fields} by {ctx.author}")
+
+        changes = ", ".join(update_fields)
+        await ctx.send(
+            f"✅ Special **{special_name}** updated.\n• **Fields changed:** {changes}",
+            ephemeral=True,
+        )
+
+    @commands.hybrid_command(name="deletespecial")
+    @app_commands.default_permissions()
+    @app_commands.guilds(checks.ADMIN_GUILD_ID)
+    @app_commands.check(checks.is_developer)
+    @checks.is_superuser()
+    @app_commands.describe(
+        special_name="Name of the special to remove (autocomplete available)",
+    )
+    @app_commands.autocomplete(special_name=_special_name_autocomplete)
+    async def deletespecial(
+        self,
+        ctx: commands.Context["CricStarBot"],
+        special_name: str,
+    ):
+        """
+        Remove a seasonal special overlay by name. This deletes it from the database and cache.
+        """
+        await ctx.defer(ephemeral=True)
+
+        special_name = special_name.strip()
+        try:
+            special = await Special.objects.aget(name=special_name, is_event=False)
+        except Special.DoesNotExist:
+            await ctx.send(f"❌ No special named **{special_name}** was found.", ephemeral=True)
+            return
+
+        confirm_view = ConfirmChoiceView(
+            ctx,
+            user=ctx.author,
+            accept_message="Deleting special...",
+            cancel_message="Deletion cancelled.",
+        )
+        await ctx.send(
+            f"⚠️ Delete special **{special_name}** (ID: `{special.id}`)?\n"
+            f"This cannot be undone.",
+            view=confirm_view,
+            ephemeral=True,
+        )
+        await confirm_view.wait()
+
+        if not confirm_view.value:
+            return
+
+        special_id = special.id
+        await special.adelete()
+        specials_cache.pop(special_id, None)
+
+        log.info(f"deletespecial: '{special_name}' (id={special_id}) removed by {ctx.author}")
+        await ctx.send(
+            f"✅ Special **{special_name}** (ID: `{special_id}`) has been removed.",
             ephemeral=True,
         )
 

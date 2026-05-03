@@ -218,7 +218,12 @@ class EnabledManager[T: models.Model](Manager[T]):
 
 class SpecialEnabledManager(Manager["Special"]):
     def get_queryset(self) -> models.QuerySet[Special]:
-        return super().get_queryset().filter(hidden=False)
+        return super().get_queryset().filter(hidden=False, is_event=False)
+
+
+class EventEnabledManager(Manager["Special"]):
+    def get_queryset(self) -> models.QuerySet[Special]:
+        return super().get_queryset().filter(hidden=False, is_event=True)
 
 
 class BaseBallInstanceManager[T: models.Model](Manager[T]):
@@ -272,9 +277,20 @@ class Special(models.Model):
     tradeable = models.BooleanField(help_text="Whether balls of this event can be traded", default=True)
     hidden = models.BooleanField(help_text="Hides the event from user commands", default=False)
     credits = models.CharField(max_length=64, help_text="Author of the special event artwork", null=True)
+    is_event = models.BooleanField(
+        default=False,
+        help_text="True = card series event (ICONS, IPL2026). False = seasonal overlay special (Shiny, Diwali).",
+    )
+    overlay_text = models.CharField(
+        max_length=64,
+        blank=True,
+        null=True,
+        help_text="Text shown below the card when displayed (e.g. 🪔Diwali🪔). Supports emoji and markdown.",
+    )
 
     objects: Manager[Self] = Manager()
     enabled_objects = SpecialEnabledManager()
+    event_objects = EventEnabledManager()
 
     class Meta:
         managed = True
@@ -534,6 +550,10 @@ class BallInstance(models.Model):
         if self.specialcard and self.specialcard.name == "Shiny":
             shiny_line = "\n✨ **SHINY** ✨"
 
+        overlay_line = ""
+        if self.specialcard and self.specialcard.overlay_text:
+            overlay_line = f"\n{self.specialcard.overlay_text}"
+
         content = (
             f"ID: `#{self.pk:0X}`\n"
             f"Caught on {format_dt(self.catch_date)}{catch_time_msg} ({format_dt(self.catch_date, style='R')}).\n"
@@ -541,6 +561,7 @@ class BallInstance(models.Model):
             f"ATK: {self.attack} ({self.attack_bonus:+d}%)\n"
             f"HP: {self.health} ({self.health_bonus:+d}%)"
             f"{shiny_line}"
+            f"{overlay_line}"
         )
 
         # draw image

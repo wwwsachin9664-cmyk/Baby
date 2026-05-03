@@ -26,7 +26,16 @@ if TYPE_CHECKING:
 
 log = logging.getLogger("cricstar.core.utils.transformers")
 
-__all__ = ("BallTransform", "BallInstanceTransform", "SpecialTransform", "RegimeTransform", "EconomyTransform")
+__all__ = (
+    "BallTransform",
+    "BallInstanceTransform",
+    "SpecialTransform",
+    "RegimeTransform",
+    "EconomyTransform",
+    "SpecialEnabledTransform",
+    "EventEnabledTransform",
+    "BallEnabledTransform",
+)
 
 
 class TradeCommandType(Enum):
@@ -299,5 +308,6 @@ BallInstanceTransform = app_commands.Transform[BallInstance, BallInstanceTransfo
 SpecialTransform = app_commands.Transform[Special, SpecialTransformer]
 RegimeTransform = app_commands.Transform[Regime, RegimeTransformer]
 EconomyTransform = app_commands.Transform[Economy, EconomyTransformer]
-SpecialEnabledTransform = app_commands.Transform[Special, SpecialTransformer(hidden=False)]
+SpecialEnabledTransform = app_commands.Transform[Special, SpecialTransformer(hidden=False, is_event=False)]
+EventEnabledTransform = app_commands.Transform[Special, SpecialTransformer(hidden=False, is_event=True)]
 BallEnabledTransform = app_commands.Transform[Ball, BallTransformer(enabled=True)]
