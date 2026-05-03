@@ -502,5 +502,12 @@
     "bet": true,
     "player": "Odi World Cup",
     "name": "OdiWc"
+  },
+  {
+    "id": "1500089158931054746",
+    "list": true,
+    "bet": true,
+    "player": "Champions Trophy",
+    "name": "ChampionTrophy"
   }
 ]

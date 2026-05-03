@@ -38,6 +38,8 @@ from cricstar.core.foreground_border_overrides import (
 )
 from cricstar.core.utils.emojis import add_emoji, format_emoji, get_player_emoji, list_emojis, parse_emoji_input, remove_emoji
 from cricstar.core.utils import checks
+
+SHINY_BG_PATH = Path("admin_panel/media/shiny_bg.png")
 from cricstar.core.utils.buttons import ConfirmChoiceView
 from cricstar.core.utils.menus import (
     ItemFormatter,
@@ -1186,6 +1188,34 @@ class Admin(commands.Cog):
 
                 ball.collection_card = output_filename
                 changed_fields.append("collection_card")
+
+                # --- Regenerate shiny card if one exists for this card ---
+                shiny_filename = f"premade_{slug}_shiny.png"
+                shiny_card_path = media_dir / shiny_filename
+                if shiny_card_path.exists():
+                    shiny_card_path.unlink()
+                if SHINY_BG_PATH.exists():
+                    _shiny_bg_str = str(SHINY_BG_PATH)
+
+                    def _generate_shiny() -> tuple:
+                        return draw_premade_card(
+                            _shiny_bg_str, fg_path, _card_name, _codename, _description,
+                            _rarity, _bat, _ball, _author, logo_path,
+                            neon_color=get_neon_color(player_name),
+                            foreground_border=_stored_fg_border,
+                            credit_stroke=_stored_credit_stroke,
+                            credit_font=_resolved_credit_font,
+                            border_size=_border_size,
+                        )
+
+                    try:
+                        with ThreadPoolExecutor() as pool:
+                            shiny_img, shiny_kwargs = await self.bot.loop.run_in_executor(pool, _generate_shiny)
+                        shiny_img.save(str(shiny_card_path), **shiny_kwargs)
+                        shiny_img.close()
+                        log.info("editcard: regenerated shiny card %s", shiny_filename)
+                    except Exception as _shiny_err:
+                        log.warning("editcard: failed to regenerate shiny card %s: %s", shiny_filename, _shiny_err)
 
         # --- Apply text / stat field changes ---
         if display_name.strip():
