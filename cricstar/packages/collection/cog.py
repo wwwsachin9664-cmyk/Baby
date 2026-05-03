@@ -37,7 +37,12 @@ EMOJIS_PER_PAGE = EMOJIS_PER_ROW * ROWS_PER_PAGE  # 100
 
 
 class CompletionView(discord.ui.View):
-    """Paginated completion view — 25 emojis/row × 4 rows = 100/page."""
+    """
+    Paginated completion view.
+    Both Owned and Missing sections appear on the same page.
+    25 emojis per row × 4 rows = 100 emojis per page.
+    Section headers are placed inline where they naturally fall in the combined list.
+    """
 
     def __init__(
         self,
@@ -55,25 +60,104 @@ class CompletionView(discord.ui.View):
         self.colour = colour
         self.page = 0
 
-        self._pages: list[tuple[str, list[str]]] = []
-        if owned:
-            for i in range(0, len(owned), EMOJIS_PER_PAGE):
-                self._pages.append(("owned", owned[i : i + EMOJIS_PER_PAGE]))
-        else:
-            self._pages.append(("owned", []))
-        if missing:
-            for i in range(0, len(missing), EMOJIS_PER_PAGE):
-                self._pages.append(("missing", missing[i : i + EMOJIS_PER_PAGE]))
-
+        self._pages = self._build_pages(owned, missing)
         self.total_pages = max(1, len(self._pages))
         self._refresh_buttons()
 
-    def _format_rows(self, emojis: list[str]) -> str:
+    # ------------------------------------------------------------------
+    # Page building
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _build_pages(
+        owned: list[str], missing: list[str]
+    ) -> list[list[tuple[str, str]]]:
+        """
+        Returns a list of pages. Each page is a list of (type, value) items where
+        type is "header", "text", or "emoji". Headers and text items are free;
+        only emoji items count toward the EMOJIS_PER_PAGE cap.
+        """
+        # Build the flat item list
+        items: list[tuple[str, str]] = []
+
+        owned_header = f"**Owned cricketers ({len(owned)})**"
+        missing_header = f"**Missing cricketers ({len(missing)})**"
+
+        items.append(("header", owned_header))
+        if owned:
+            for e in owned:
+                items.append(("emoji", e))
+        else:
+            items.append(("text", "Nothing yet."))
+
+        items.append(("header", missing_header))
+        if missing:
+            for e in missing:
+                items.append(("emoji", e))
+        else:
+            items.append(("text", "🎉 No missing cricketers, congratulations! 🎉"))
+
+        # Split into pages: each page holds EMOJIS_PER_PAGE emoji items.
+        # Header/text items fall into whatever page they land in.
+        pages: list[list[tuple[str, str]]] = []
+        current_page: list[tuple[str, str]] = []
+        emoji_count = 0
+
+        for item in items:
+            if item[0] == "emoji":
+                current_page.append(item)
+                emoji_count += 1
+                if emoji_count == EMOJIS_PER_PAGE:
+                    pages.append(current_page)
+                    current_page = []
+                    emoji_count = 0
+            else:
+                current_page.append(item)
+
+        if current_page:
+            pages.append(current_page)
+
+        return pages or [[("text", "Nothing yet.")]]
+
+    # ------------------------------------------------------------------
+    # Rendering
+    # ------------------------------------------------------------------
+
+    def _render_page(self, page_items: list[tuple[str, str]]) -> str:
+        """Convert a page's item list into formatted text (25 emojis/row)."""
         lines: list[str] = []
-        for i in range(0, len(emojis), EMOJIS_PER_ROW):
-            row = emojis[i : i + EMOJIS_PER_ROW]
-            lines.append("".join(row))
+        emoji_row: list[str] = []
+
+        for item_type, value in page_items:
+            if item_type == "emoji":
+                emoji_row.append(value)
+                if len(emoji_row) == EMOJIS_PER_ROW:
+                    lines.append("".join(emoji_row))
+                    emoji_row = []
+            else:
+                # Flush any pending emoji row before header/text
+                if emoji_row:
+                    lines.append("".join(emoji_row))
+                    emoji_row = []
+                lines.append(value)
+
+        if emoji_row:
+            lines.append("".join(emoji_row))
+
         return "\n".join(lines)
+
+    def build_embed(self) -> discord.Embed:
+        embed = discord.Embed(colour=self.colour)
+        embed.set_author(name=self.user_obj.display_name, icon_url=self.user_obj.display_avatar.url)
+
+        page_text = self._render_page(self._pages[self.page])
+        embed.description = f"{self.header}\n\n{page_text}"
+        embed.set_footer(text=f"Page {self.page + 1}/{self.total_pages}")
+        return embed
+
+    # ------------------------------------------------------------------
+    # Buttons
+    # ------------------------------------------------------------------
 
     def _refresh_buttons(self) -> None:
         self.clear_items()
@@ -99,36 +183,6 @@ class CompletionView(discord.ui.View):
         b_quit = discord.ui.Button(label="Quit", style=discord.ButtonStyle.danger, row=0)
         b_quit.callback = self._quit
         self.add_item(b_quit)
-
-    def build_embed(self) -> discord.Embed:
-        section, emojis = self._pages[self.page]
-        embed = discord.Embed(colour=self.colour)
-        embed.set_author(name=self.user_obj.display_name, icon_url=self.user_obj.display_avatar.url)
-
-        desc_parts: list[str] = [self.header, ""]
-
-        if section == "owned":
-            total_owned = len(self.owned)
-            desc_parts.append(f"**Owned {settings.plural_collectible_name} ({total_owned})**")
-            if emojis:
-                desc_parts.append(self._format_rows(emojis))
-            else:
-                desc_parts.append("Nothing yet.")
-            owned_pages = [p for p in self._pages if p[0] == "owned"]
-            is_last_owned = owned_pages[-1][1] is emojis
-            if is_last_owned and not self.missing:
-                desc_parts.append(f"\n🎉 **No missing {settings.plural_collectible_name}, congratulations!** 🎉")
-        else:
-            total_missing = len(self.missing)
-            desc_parts.append(f"**Missing {settings.plural_collectible_name} ({total_missing})**")
-            if emojis:
-                desc_parts.append(self._format_rows(emojis))
-            else:
-                desc_parts.append("Nothing missing!")
-
-        embed.description = "\n".join(desc_parts)
-        embed.set_footer(text=f"Page {self.page + 1}/{self.total_pages}")
-        return embed
 
     async def _go_first(self, interaction: discord.Interaction) -> None:
         self.page = 0
