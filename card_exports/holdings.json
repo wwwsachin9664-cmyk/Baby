@@ -1,5 +1,5 @@
 {
-  "exported_at": "2026-05-03T05:40:11.958840+00:00",
+  "exported_at": "2026-05-03T05:49:00.971478+00:00",
   "count": 10724,
   "holdings": [
     {
@@ -78029,7 +78029,7 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1011335871393443852,
+      "player_discord_id": 1476265074749345872,
       "ball_player_name": "Jacques Kallis",
       "special_name": "ICONS",
       "health_bonus": -15,
@@ -116689,7 +116689,7 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1011335871393443852,
+      "player_discord_id": 1476265074749345872,
       "ball_player_name": "Ms Dhoni (P)",
       "special_name": null,
       "health_bonus": 15,
@@ -117521,7 +117521,7 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1476265074749345872,
+      "player_discord_id": 418257082295517184,
       "ball_player_name": "Gautam Gambhir (IPL 26)",
       "special_name": "IPL2026",
       "health_bonus": 6,
@@ -118985,19 +118985,6 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 418257082295517184,
-      "ball_player_name": "Gautam Gambhir (IPL 26)",
-      "special_name": "IPL2026",
-      "health_bonus": -9,
-      "attack_bonus": 3,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 1476180448030756928,
-      "catch_date": "2026-05-01T06:54:04.452711+00:00",
-      "spawned_time": "2026-05-01T06:54:00.823000+00:00",
-      "extra_data": {}
-    },
-    {
       "player_discord_id": 1434609486403997718,
       "ball_player_name": "Kwena Maphaka",
       "special_name": "Shiny",
@@ -119041,6 +119028,19 @@
       "extra_data": {
         "shiny_card": "premade_sachin_tendulkar_p_shiny.png"
       }
+    },
+    {
+      "player_discord_id": 1476265074749345872,
+      "ball_player_name": "Gautam Gambhir (IPL 26)",
+      "special_name": "IPL2026",
+      "health_bonus": -9,
+      "attack_bonus": 3,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-01T06:54:04.452711+00:00",
+      "spawned_time": "2026-05-01T06:54:00.823000+00:00",
+      "extra_data": {}
     },
     {
       "player_discord_id": 1322496330433695847,
@@ -130952,7 +130952,7 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1011335871393443852,
+      "player_discord_id": 1476265074749345872,
       "ball_player_name": "Dale Steyn",
       "special_name": "ICONS",
       "health_bonus": 5,
@@ -130967,7 +130967,7 @@
       }
     },
     {
-      "player_discord_id": 1011335871393443852,
+      "player_discord_id": 1476265074749345872,
       "ball_player_name": "Noobzinator",
       "special_name": null,
       "health_bonus": 3,
@@ -131786,7 +131786,20 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1011335871393443852,
+      "player_discord_id": 1476265074749345872,
+      "ball_player_name": "Naseem Shah",
+      "special_name": null,
+      "health_bonus": 18,
+      "attack_bonus": 4,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-02T14:38:19.561204+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1476265074749345872,
       "ball_player_name": "Garfield Sobers",
       "special_name": "ICONS",
       "health_bonus": 11,
@@ -131799,19 +131812,6 @@
       "extra_data": {
         "admin_spawner_id": "1325178465816936523"
       }
-    },
-    {
-      "player_discord_id": 1011335871393443852,
-      "ball_player_name": "Naseem Shah",
-      "special_name": null,
-      "health_bonus": 18,
-      "attack_bonus": 4,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 1476180448030756928,
-      "catch_date": "2026-05-02T14:38:19.561204+00:00",
-      "spawned_time": null,
-      "extra_data": {}
     },
     {
       "player_discord_id": 1322496330433695847,
@@ -133901,7 +133901,7 @@
       }
     },
     {
-      "player_discord_id": 1011335871393443852,
+      "player_discord_id": 1476265074749345872,
       "ball_player_name": "Sachin Tendulkar",
       "special_name": null,
       "health_bonus": 18,
@@ -139817,7 +139817,7 @@
       "extra_data": {}
     },
     {
-      "player_discord_id": 1011335871393443852,
+      "player_discord_id": 1476265074749345872,
       "ball_player_name": "Aaron Hardie",
       "special_name": null,
       "health_bonus": 5,

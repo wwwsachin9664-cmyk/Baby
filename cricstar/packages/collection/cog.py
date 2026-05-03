@@ -124,7 +124,7 @@ class CompletionView(discord.ui.View):
     # ------------------------------------------------------------------
 
     def _render_page(self, page_items: list[tuple[str, str]]) -> str:
-        """Convert a page's item list into formatted text (25 emojis/row)."""
+        """Convert a page's item list into formatted text (25 emojis/row, blank line between rows)."""
         lines: list[str] = []
         emoji_row: list[str] = []
 
@@ -133,16 +133,23 @@ class CompletionView(discord.ui.View):
                 emoji_row.append(value)
                 if len(emoji_row) == EMOJIS_PER_ROW:
                     lines.append("".join(emoji_row))
+                    lines.append("")  # blank line gap between rows
                     emoji_row = []
             else:
                 # Flush any pending emoji row before header/text
                 if emoji_row:
                     lines.append("".join(emoji_row))
+                    lines.append("")
                     emoji_row = []
                 lines.append(value)
 
         if emoji_row:
             lines.append("".join(emoji_row))
+            lines.append("")
+
+        # Strip trailing blank line
+        while lines and lines[-1] == "":
+            lines.pop()
 
         return "\n".join(lines)
 
