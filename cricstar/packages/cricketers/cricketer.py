@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 import logging
 import math
 import random
@@ -276,8 +277,10 @@ class BallSpawnView(View):
                     emoji=self.bot.get_emoji(self.model.emoji_id),
                 )
 
+                with open(self.model.wild_card.path, "rb") as _f:
+                    _buf = io.BytesIO(_f.read())
                 self.message = await channel.send(
-                    spawn_message, view=self, file=discord.File(self.model.wild_card.path, filename=file_name)
+                    spawn_message, view=self, file=discord.File(_buf, filename=file_name)
                 )
                 return True
             else:

@@ -16,6 +16,7 @@ Commands:
 from __future__ import annotations
 
 import asyncio
+import io
 import json
 import logging
 import random
@@ -286,7 +287,8 @@ class OpenLegendaryPackView(discord.ui.View):
         except discord.HTTPException:
             log.exception("Failed to defer legendary pack-open interaction")
 
-        gif_file = discord.File(str(PACK_GIF), filename="legendary_pack_open.gif")
+        with open(PACK_GIF, "rb") as _f:
+            gif_file = discord.File(io.BytesIO(_f.read()), filename="legendary_pack_open.gif")
         try:
             await interaction.edit_original_response(
                 embed=_opening_embed(),
@@ -338,7 +340,8 @@ class OpenLegendaryPackView(discord.ui.View):
         if card.collection_card:
             card_path = MEDIA_DIR / str(card.collection_card)
             if card_path.exists():
-                attachments.append(discord.File(str(card_path), filename=card_path.name))
+                with open(card_path, "rb") as _f:
+                    attachments.append(discord.File(io.BytesIO(_f.read()), filename=card_path.name))
                 embed.set_image(url=f"attachment://{card_path.name}")
 
         try:

@@ -1,4 +1,5 @@
 import enum
+import io
 import logging
 from typing import TYPE_CHECKING, cast
 
@@ -1157,8 +1158,9 @@ class Balls(commands.GroupCog, group_name=settings.cricstar_slash_name):
             if cricketer.emoji_id:
                 embed.set_thumbnail(url=f"https://cdn.discordapp.com/emojis/{cricketer.emoji_id}.png?size=128")
             else:
-                file_location = cricketer.wild_card.path
-                file = discord.File(file_location, filename="cricketer.png")
+                with open(cricketer.wild_card.path, "rb") as _f:
+                    _buf = io.BytesIO(_f.read())
+                file = discord.File(_buf, filename="cricketer.png")
                 embed.set_thumbnail(url="attachment://cricketer.png")
                 await interaction.followup.send(embed=embed, file=file)
                 return

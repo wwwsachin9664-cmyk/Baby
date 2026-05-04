@@ -1,3 +1,4 @@
+import io
 import json
 import logging
 import random
@@ -156,7 +157,9 @@ async def _give_card(
     card_file: discord.File | None = None
     card_path = MEDIA_DIR / str(card.collection_card)
     if card_path.exists():
-        card_file = discord.File(str(card_path), filename=card_path.name)
+        with open(card_path, "rb") as _f:
+            _buf = io.BytesIO(_f.read())
+        card_file = discord.File(_buf, filename=card_path.name)
 
     await interaction.followup.send(content=message, file=card_file) if card_file else \
         await interaction.followup.send(content=message)

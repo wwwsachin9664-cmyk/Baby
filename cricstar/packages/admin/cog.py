@@ -1,3 +1,4 @@
+import io
 import logging
 import os
 import re
@@ -844,7 +845,9 @@ class Admin(commands.Cog):
             except Exception as export_err:
                 log.warning("card_sync export failed (non-critical): %s", export_err)
 
-            preview_file = discord.File(str(card_path), filename=filename)
+            with open(card_path, "rb") as _f:
+                _buf = io.BytesIO(_f.read())
+            preview_file = discord.File(_buf, filename=filename)
             try:
                 await ctx.send(
                     f"✅ **{player_name}** card created!{event_text}\n"
@@ -914,7 +917,7 @@ class Admin(commands.Cog):
             f"✅ Shiny background saved ({file_size_kb} KB).\n"
             f"From now on, `/rankup upgrade` will use this image as the background "
             f"for all newly created shiny cards.",
-            file=discord.File(str(dest), filename="shiny_bg.png"),
+            file=discord.File(io.BytesIO(open(str(dest), "rb").read()), filename="shiny_bg.png"),
         )
 
     # ── /shinybgremover ─────────────────────────────────────────────────────
@@ -1398,7 +1401,9 @@ class Admin(commands.Cog):
         card_path = media_dir / output_filename
 
         if regen and card_path.exists():
-            preview_file = discord.File(str(card_path), filename=output_filename)
+            with open(card_path, "rb") as _f:
+                _buf = io.BytesIO(_f.read())
+            preview_file = discord.File(_buf, filename=output_filename)
             try:
                 await ctx.send(
                     f"✅ **{player_name}** updated!\n{summary}",
@@ -1555,7 +1560,9 @@ class Admin(commands.Cog):
 
         stored_label = _describe_border_override(target.pk)
         try:
-            preview = discord.File(str(card_path), filename=output_filename)
+            with open(card_path, "rb") as _f:
+                _buf = io.BytesIO(_f.read())
+            preview = discord.File(_buf, filename=output_filename)
             await ctx.send(
                 f"✅ **{target.country}** foreground border updated.\n"
                 f"Mode: `{mode}` | Stored: `{stored_label}` | Applied this render: `{_border_size}px`",
@@ -1744,7 +1751,9 @@ class Admin(commands.Cog):
         _export_spawn_image(ball.country, slug, dest_path)
 
         extra = f"\n• Preset saved as `{saved_preset}` — reuse with `path_name:{path_name}`" if saved_preset else ""
-        preview_file = discord.File(dest_path, filename=filename)
+        with open(dest_path, "rb") as _f:
+            _buf = io.BytesIO(_f.read())
+        preview_file = discord.File(_buf, filename=filename)
         try:
             await ctx.send(
                 f"✅ Spawn image permanently set for **{ball.country}** (from {source_label})!\n"

@@ -19,6 +19,7 @@ Commands:
 from __future__ import annotations
 
 import asyncio
+import io
 import json
 import logging
 import random
@@ -416,7 +417,8 @@ class OpenPackView(discord.ui.View):
             log.exception("Failed to defer pack-open interaction")
 
         # Swap the cover image for the opening GIF via the deferred edit.
-        gif_file = discord.File(str(PACK_GIF), filename="pack_open.gif")
+        with open(PACK_GIF, "rb") as _f:
+            gif_file = discord.File(io.BytesIO(_f.read()), filename="pack_open.gif")
         try:
             await interaction.edit_original_response(
                 embed=_opening_embed(),
@@ -470,7 +472,8 @@ class OpenPackView(discord.ui.View):
         if card.collection_card:
             card_path = MEDIA_DIR / str(card.collection_card)
             if card_path.exists():
-                attachments.append(discord.File(str(card_path), filename=card_path.name))
+                with open(card_path, "rb") as _f:
+                    attachments.append(discord.File(io.BytesIO(_f.read()), filename=card_path.name))
                 embed.set_image(url=f"attachment://{card_path.name}")
 
         try:
@@ -555,7 +558,8 @@ class CatcherPackCog(commands.Cog):
             inline=False,
         )
 
-        cover_file = discord.File(str(PACK_COVER), filename="pack_cover.png")
+        with open(PACK_COVER, "rb") as _f:
+            cover_file = discord.File(io.BytesIO(_f.read()), filename="pack_cover.png")
         view = OpenPackView(interaction.user.id)
 
         message = await interaction.followup.send(
@@ -587,7 +591,8 @@ class CatcherPackCog(commands.Cog):
             inline=False,
         )
 
-        cover_file = discord.File(str(LEGENDARY_PACK_COVER), filename="legendary_pack_cover.png")
+        with open(LEGENDARY_PACK_COVER, "rb") as _f:
+            cover_file = discord.File(io.BytesIO(_f.read()), filename="legendary_pack_cover.png")
         view = OpenLegendaryPackView(interaction.user.id)
 
         message = await interaction.followup.send(
