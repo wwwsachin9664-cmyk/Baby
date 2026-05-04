@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-05-04T11:58:32.293636+00:00",
-  "count": 12115,
+  "exported_at": "2026-05-04T12:08:32.738899+00:00",
+  "count": 12120,
   "holdings": [
     {
       "player_discord_id": 1194208866540453899,
@@ -158307,6 +158307,71 @@
       "server_id": 1436227701248888904,
       "catch_date": "2026-05-04T11:55:16.380647+00:00",
       "spawned_time": "2026-05-04T11:55:02.033000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 963892298469503027,
+      "ball_player_name": "Jonny Bairstow",
+      "special_name": null,
+      "health_bonus": -8,
+      "attack_bonus": -1,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-04T12:00:44.955988+00:00",
+      "spawned_time": "2026-05-04T12:00:05.056000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1339891662259753020,
+      "ball_player_name": "Naveen ul Haq",
+      "special_name": null,
+      "health_bonus": 7,
+      "attack_bonus": -15,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1313882298890063903,
+      "catch_date": "2026-05-04T12:03:40.725195+00:00",
+      "spawned_time": "2026-05-04T12:03:29.196000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 917048116115542016,
+      "ball_player_name": "Kwena Maphaka",
+      "special_name": null,
+      "health_bonus": 2,
+      "attack_bonus": -17,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1151142425830633535,
+      "catch_date": "2026-05-04T12:03:46.977519+00:00",
+      "spawned_time": "2026-05-04T12:03:08.717000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Shivam Dube",
+      "special_name": null,
+      "health_bonus": 14,
+      "attack_bonus": -12,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 928536817001721906,
+      "catch_date": "2026-05-04T12:07:13.853060+00:00",
+      "spawned_time": "2026-05-04T12:07:02.726000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 877082463166406746,
+      "ball_player_name": "Kul-Cha",
+      "special_name": null,
+      "health_bonus": -13,
+      "attack_bonus": 2,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1494224311677096020,
+      "catch_date": "2026-05-04T12:07:57.979860+00:00",
+      "spawned_time": "2026-05-04T12:04:44.918000+00:00",
       "extra_data": {}
     }
   ]
