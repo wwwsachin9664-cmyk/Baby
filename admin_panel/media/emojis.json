@@ -607,5 +607,82 @@
     "bet": true,
     "player": "Amelia Kerr",
     "name": "AmeliaKerr"
+  },
+  {
+    "id": "1500677320459948042",
+    "list": true,
+    "bet": true,
+    "player": "Garfield Sobers",
+    "name": "GarfieldSobers"
+  },
+  {
+    "id": "1500677315036713000",
+    "list": true,
+    "bet": true,
+    "player": "Aiden Markram",
+    "name": "AidenMarkram"
+  },
+  {
+    "id": "1500677317666668584",
+    "list": true,
+    "bet": true,
+    "player": "Aaron Hardie",
+    "name": "AaronHardie"
+  },
+  {
+    "id": "1500677301023805571",
+    "list": true,
+    "bet": true,
+    "player": "Jos Buttler",
+    "name": "josbuttler"
+  },
+  {
+    "id": "1500677303552839891",
+    "list": true,
+    "bet": true,
+    "player": "Harry Brook",
+    "name": "HarryBrook"
+  },
+  {
+    "id": "1500677298020683806",
+    "list": true,
+    "bet": true,
+    "player": "Kane Williamson",
+    "name": "KaneWilliamson"
+  },
+  {
+    "id": "1500680411410464896",
+    "list": true,
+    "bet": true,
+    "player": "Lauren Bell",
+    "name": "Laurenbell"
+  },
+  {
+    "id": "1500680405265678536",
+    "list": true,
+    "bet": true,
+    "player": "Matt Henry",
+    "name": "MattHenry"
+  },
+  {
+    "id": "1500680408663330897",
+    "list": true,
+    "bet": true,
+    "player": "Nitish Reddy",
+    "name": "NitishReddy"
+  },
+  {
+    "id": "1500681850488885299",
+    "list": true,
+    "bet": true,
+    "player": "Noor Ahmad",
+    "name": "NoorAhmad"
+  },
+  {
+    "id": "1500681852883570729",
+    "list": true,
+    "bet": true,
+    "player": "Smriti Mandhana",
+    "name": "SmritiMandhana"
   }
 ]

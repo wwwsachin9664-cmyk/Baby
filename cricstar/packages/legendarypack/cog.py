@@ -363,6 +363,7 @@ class LegendaryPackCog(commands.Cog):
         name="ownergivelegendarypack",
         description="(Bot owner only) Give a Legendary Pack to a user.",
     )
+    @app_commands.default_permissions(administrator=True)
     @app_commands.describe(
         user="The user to receive the legendary pack",
         amount="How many packs to give (default 1)",

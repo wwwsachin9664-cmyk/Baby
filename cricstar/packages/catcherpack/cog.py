@@ -655,6 +655,7 @@ class CatcherPackCog(commands.Cog):
         name="ownergivepack",
         description="(Bot owner only) Give a Catcher Pack to a user.",
     )
+    @app_commands.default_permissions(administrator=True)
     @app_commands.describe(user="The user to receive the pack", amount="How many packs to give (default 1)")
     async def ownergivepack(
         self,
@@ -715,6 +716,7 @@ class CatcherPackCog(commands.Cog):
         name="packset",
         description="(Bot owner only) Allow or disallow a cricketer in Catcher Packs.",
     )
+    @app_commands.default_permissions(administrator=True)
     @app_commands.describe(
         player="The cricketer to configure",
         packable="True = can appear in packs, False = cannot appear in packs",

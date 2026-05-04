@@ -4263,22 +4263,22 @@
     "artwork_author": "GUTS",
     "tradeable": true,
     "spawnable": false,
-    "unobtainable": false,
+    "unobtainable": true,
     "catch_name": "ishowspeed",
     "event_id": null,
     "event_name": "",
     "filename": "premade_ishowspeed.png",
     "wild_card_filename": "spawn_ishowspeed.jpg",
     "capacity_logic": {
-      "badge_rarity": 0.01,
       "bg_preset": "Back_custom",
-      "foreground_border": true,
-      "credit_stroke": true,
-      "only_spawn_in_event": false,
       "credit_font": "optimus",
-      "weekly_chance": 0.0,
+      "badge_rarity": 0.01,
       "daily_chance": 0.0,
-      "display_name": "Speed"
+      "display_name": "Speed",
+      "credit_stroke": true,
+      "weekly_chance": 0.0,
+      "foreground_border": true,
+      "only_spawn_in_event": false
     }
   },
   "Garfield Sobers": {
@@ -5424,8 +5424,8 @@
     "spawnable": true,
     "unobtainable": false,
     "catch_name": "champions trophy",
-    "event_id": null,
-    "event_name": "",
+    "event_id": 10,
+    "event_name": "Trophy",
     "filename": "premade_champions_trophy.png",
     "wild_card_filename": "spawn_champions_trophy.jpg",
     "capacity_logic": {
@@ -5437,7 +5437,8 @@
       "credit_stroke": true,
       "weekly_chance": 0.1,
       "foreground_border": true,
-      "only_spawn_in_event": false
+      "only_spawn_in_event": false,
+      "forced_special": 10
     }
   },
   "NASH": {

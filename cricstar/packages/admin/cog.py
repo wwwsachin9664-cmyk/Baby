@@ -3526,6 +3526,7 @@ class Admin(commands.Cog):
         name="cschance",
         description="[Owner] View or update spawn, weekly, and daily chances for one card.",
     )
+    @app_commands.default_permissions(administrator=True)
     @app_commands.describe(
         player_name="Player/card to inspect or update.",
         spawn_chance="Optional new random spawn weight from 0 to 100000. Leave blank to keep existing.",
