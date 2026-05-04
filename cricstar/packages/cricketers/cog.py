@@ -4,6 +4,7 @@ import logging
 from typing import TYPE_CHECKING, cast
 
 import discord
+from django.db import close_old_connections
 from discord.ext import commands
 
 from bd_models.models import GuildConfig
@@ -46,6 +47,7 @@ class CountryBallsSpawner(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
+        close_old_connections()
         if not self.bot.is_ready():
             return
         if message.author.bot or message.webhook_id is not None:
