@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/discord-bot/"
+title = "Discord Bot"
+version = "1.0.0"
+id = "artifacts/discord-bot"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "Discord Bot"
+paths = ["/discord-bot/"]
+localPort = 20320
+
+[services.development]
+run = "python run.py"
+
+[services.production]
+
+[services.production.run]
+args = ["python", "run.py"]
+
+[services.env]
+PORT = "20320"
+BASE_PATH = "/discord-bot/"
