@@ -8,6 +8,7 @@ id = "artifacts/mockup-sandbox"
 
 [deployment]
 deploymentTarget = "vm"
+ignorePorts = true
 
 [deployment.run]
 args = ["python", "run.py"]

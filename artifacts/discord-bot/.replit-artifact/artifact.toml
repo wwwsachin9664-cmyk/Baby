@@ -15,9 +15,12 @@ paths = ["/discord-bot/"]
 localPort = 20320
 
 [services.development]
-run = "python run.py"
+run = "cd /home/runner/workspace && python run.py"
 
 [services.production]
+
+[services.production.build]
+args = ["sh", "-c", "rm -rf /home/runner/workspace/node_modules /home/runner/workspace/artifacts/discord-bot/node_modules /home/runner/workspace/artifacts/mockup-sandbox/node_modules /home/runner/workspace/lib/*/node_modules 2>/dev/null; true"]
 
 [services.production.run]
 args = ["python", "run.py"]
