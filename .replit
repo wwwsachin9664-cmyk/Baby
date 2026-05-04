@@ -6,6 +6,9 @@ id = "artifacts/api-server"
 [[artifacts]]
 id = "artifacts/mockup-sandbox"
 
+[[artifacts]]
+id = "artifacts/discord-bot"
+
 [deployment]
 deploymentTarget = "vm"
 ignorePorts = true
@@ -46,4 +49,4 @@ timeoutMs = 20000
 
 [nix]
 channel = "stable-25_05"
-packages = ["cargo", "freetype", "lcms2", "libiconv", "libimagequant", "libjpeg", "libtiff", "libuv", "libwebp", "libxcrypt", "libyaml", "openjpeg", "postgresql", "rustc", "tcl", "tk", "zlib", "pm2", "mailutils"]
+packages = ["freetype", "lcms2", "libiconv", "libimagequant", "libjpeg", "libtiff", "libuv", "libwebp", "libxcrypt", "libyaml", "openjpeg", "postgresql", "zlib"]
