@@ -299,7 +299,36 @@ result = subprocess.run([sys.executable, "-c", guild_config_export_script], env=
 if result.returncode != 0:
     print("Guild config export step failed (non-critical, continuing).")
 
-# Step 8: Start the bot
+# Step 8: Open health-check port if running inside Replit deployment.
+# The deployment system requires the artifact's declared port to be open
+# before it considers the process healthy.  The Discord bot itself is not
+# a web server, so we spin up a minimal HTTP responder in a background
+# subprocess.  os.execv (below) replaces this process, but the subprocess
+# keeps running independently.
+_deploy_port = int(os.environ.get("PORT", 0))
+if _deploy_port:
+    _health_code = (
+        "import socket\n"
+        "s = socket.socket()\n"
+        "s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)\n"
+        f"s.bind(('0.0.0.0', {_deploy_port}))\n"
+        "s.listen(10)\n"
+        "while True:\n"
+        "    try:\n"
+        "        c, _ = s.accept()\n"
+        "        c.send(b'HTTP/1.1 200 OK\\r\\nContent-Length: 2\\r\\n\\r\\nOK')\n"
+        "        c.close()\n"
+        "    except Exception:\n"
+        "        pass\n"
+    )
+    subprocess.Popen(
+        [sys.executable, "-c", _health_code],
+        env=env,
+        cwd=BASE_DIR,
+    )
+    print(f"Health check server started on port {_deploy_port}.")
+
+# Step 9: Start the bot
 # NOTE: os.execv replaces this process image with manage.py startbot,
 # keeping the SAME PID — so the PID lock file written above remains valid
 # and correctly tracks the live bot process.
