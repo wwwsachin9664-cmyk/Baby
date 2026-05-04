@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-05-04T09:13:00.462030+00:00",
-  "count": 11980,
+  "exported_at": "2026-05-04T09:23:00.611782+00:00",
+  "count": 11987,
   "holdings": [
     {
       "player_discord_id": 1194208866540453899,
@@ -156243,6 +156243,19 @@
       "extra_data": {}
     },
     {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Ramandeep Singh",
+      "special_name": null,
+      "health_bonus": -11,
+      "attack_bonus": 7,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1151142425830633535,
+      "catch_date": "2026-05-04T09:13:24.101352+00:00",
+      "spawned_time": "2026-05-04T09:13:13.986000+00:00",
+      "extra_data": {}
+    },
+    {
       "player_discord_id": 418257082295517184,
       "ball_player_name": "Odi World Cup",
       "special_name": "Shiny",
@@ -156552,6 +156565,84 @@
       "server_id": 1476180448030756928,
       "catch_date": "2026-05-04T09:00:56.813874+00:00",
       "spawned_time": "2026-05-04T09:00:51.810000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1118787461561196566,
+      "ball_player_name": "Rachin Ravindra",
+      "special_name": null,
+      "health_bonus": -12,
+      "attack_bonus": -13,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1373977553634721833,
+      "catch_date": "2026-05-04T09:13:27.007253+00:00",
+      "spawned_time": "2026-05-04T09:13:12.158000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1095270653483032636,
+      "ball_player_name": "Muhammad Rizwan",
+      "special_name": null,
+      "health_bonus": 15,
+      "attack_bonus": -10,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1405929097925758976,
+      "catch_date": "2026-05-04T09:13:42.217311+00:00",
+      "spawned_time": "2026-05-04T09:13:29.834000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Rajasthan Royals",
+      "special_name": null,
+      "health_bonus": -19,
+      "attack_bonus": 16,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1474674109324726355,
+      "catch_date": "2026-05-04T09:14:39.849216+00:00",
+      "spawned_time": "2026-05-04T09:14:26.822000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Tilak Varma",
+      "special_name": null,
+      "health_bonus": 6,
+      "attack_bonus": 16,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1197183728733147167,
+      "catch_date": "2026-05-04T09:16:00.774103+00:00",
+      "spawned_time": "2026-05-04T09:15:50.663000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Shivam Dube",
+      "special_name": null,
+      "health_bonus": 17,
+      "attack_bonus": -10,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-05-04T09:17:38.666001+00:00",
+      "spawned_time": "2026-05-04T09:17:28.378000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 963892298469503027,
+      "ball_player_name": "Laura Wolvaardt (TL)",
+      "special_name": "Timeliners",
+      "health_bonus": 17,
+      "attack_bonus": 11,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-04T09:22:37.271358+00:00",
+      "spawned_time": "2026-05-04T09:21:51.318000+00:00",
       "extra_data": {}
     }
   ]
