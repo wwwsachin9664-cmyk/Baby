@@ -112,34 +112,6 @@
     "name": "tilak_varma"
   },
   {
-    "id": "1493561783779197068",
-    "list": true,
-    "bet": true,
-    "player": "Ms Dhoni",
-    "name": "Ms_Dhoni"
-  },
-  {
-    "id": "1493561787726041099",
-    "list": true,
-    "bet": true,
-    "player": "Brendon Mccullum",
-    "name": "Brendom_mccullum"
-  },
-  {
-    "id": "1493561793682079885",
-    "list": true,
-    "bet": true,
-    "player": "Brian Lara",
-    "name": "Brian_Lara"
-  },
-  {
-    "id": "1493561796458450954",
-    "list": true,
-    "bet": true,
-    "player": "AB de Villiers",
-    "name": "Abd_Icons"
-  },
-  {
     "id": "1493820180722352199",
     "list": true,
     "bet": true,
@@ -509,5 +481,131 @@
     "bet": true,
     "player": "Champions Trophy",
     "name": "ChampionTrophy"
+  },
+  {
+    "id": "1500379195908296744",
+    "list": true,
+    "bet": true,
+    "player": "Sachin Tendulkar (P)",
+    "name": "SachintendulkarP"
+  },
+  {
+    "id": "1500379216133357670",
+    "list": true,
+    "bet": true,
+    "player": "Rohit Sharma (P)",
+    "name": "RohitSharmaP"
+  },
+  {
+    "id": "1500391781681074288",
+    "list": true,
+    "bet": true,
+    "player": "AB de Villiers",
+    "name": "AbDivilliers"
+  },
+  {
+    "id": "1500391785606938644",
+    "list": true,
+    "bet": true,
+    "player": "Brian Lara",
+    "name": "BrianLara"
+  },
+  {
+    "id": "1500426113690636341",
+    "list": true,
+    "bet": true,
+    "player": "Steve Smith (P)",
+    "name": "smithP"
+  },
+  {
+    "id": "1500426117499060275",
+    "list": true,
+    "bet": true,
+    "player": "Mitchell Starc (P)",
+    "name": "starcP"
+  },
+  {
+    "id": "1500426121106165921",
+    "list": true,
+    "bet": true,
+    "player": "Virat Kohli (P)",
+    "name": "viratP"
+  },
+  {
+    "id": "1500426123811750010",
+    "list": true,
+    "bet": true,
+    "player": "Joe Root (P)",
+    "name": "jrootP"
+  },
+  {
+    "id": "1500426126575665192",
+    "list": true,
+    "bet": true,
+    "player": "Jofra Archer (P)",
+    "name": "jofraP"
+  },
+  {
+    "id": "1500426129347973130",
+    "list": true,
+    "bet": true,
+    "player": "Rachin Ravindra (P)",
+    "name": "RachinP"
+  },
+  {
+    "id": "1500391792812752947",
+    "list": true,
+    "bet": true,
+    "player": "Brendon Mccullum",
+    "name": "brendonMccullum"
+  },
+  {
+    "id": "1500436817088876746",
+    "list": true,
+    "bet": true,
+    "player": "Bhuvneshwar Kumar",
+    "name": "bhuvneshwarkumar"
+  },
+  {
+    "id": "1500436805412061226",
+    "list": true,
+    "bet": true,
+    "player": "Delhi Capitals",
+    "name": "dehlicapitals"
+  },
+  {
+    "id": "1500436802887094332",
+    "list": true,
+    "bet": true,
+    "player": "Daryl Mitchell",
+    "name": "darylmitchell"
+  },
+  {
+    "id": "1500436308579848235",
+    "list": true,
+    "bet": true,
+    "player": "Deccan Chargers",
+    "name": "deccanchargers"
+  },
+  {
+    "id": "1500436306151604295",
+    "list": true,
+    "bet": true,
+    "player": "Babar Azam",
+    "name": "babarazam"
+  },
+  {
+    "id": "1500436300832964608",
+    "list": true,
+    "bet": true,
+    "player": "Azmatullah Omarzai",
+    "name": "Azmatullahomarzai"
+  },
+  {
+    "id": "1500436298068922388",
+    "list": true,
+    "bet": true,
+    "player": "Amelia Kerr",
+    "name": "AmeliaKerr"
   }
 ]
