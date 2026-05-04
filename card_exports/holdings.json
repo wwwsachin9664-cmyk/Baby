@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-05-04T08:23:10.780800+00:00",
-  "count": 11948,
+  "exported_at": "2026-05-04T08:32:54.750675+00:00",
+  "count": 11956,
   "holdings": [
     {
       "player_discord_id": 1194208866540453899,
@@ -156136,6 +156136,110 @@
       "server_id": 1313882298890063903,
       "catch_date": "2026-05-04T08:22:30.767940+00:00",
       "spawned_time": "2026-05-04T08:22:20.653000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1388836228996137020,
+      "ball_player_name": "Jonny Bairstow",
+      "special_name": null,
+      "health_bonus": -16,
+      "attack_bonus": 4,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1421832633926553753,
+      "catch_date": "2026-05-04T08:24:37.631470+00:00",
+      "spawned_time": "2026-05-04T08:24:10.793000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 917048116115542016,
+      "ball_player_name": "Washington Sundar",
+      "special_name": null,
+      "health_bonus": -6,
+      "attack_bonus": 7,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1374025336907370506,
+      "catch_date": "2026-05-04T08:25:41.407655+00:00",
+      "spawned_time": "2026-05-04T08:25:31.333000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1277524604973219917,
+      "ball_player_name": "Sanju Samson",
+      "special_name": null,
+      "health_bonus": -6,
+      "attack_bonus": 15,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1069542099604746310,
+      "catch_date": "2026-05-04T08:26:42.642792+00:00",
+      "spawned_time": "2026-05-04T08:26:23.269000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Muhammad Rizwan",
+      "special_name": null,
+      "health_bonus": 5,
+      "attack_bonus": -7,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-05-04T08:29:25.487704+00:00",
+      "spawned_time": "2026-05-04T08:29:17.522000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kagiso Rabada",
+      "special_name": null,
+      "health_bonus": 4,
+      "attack_bonus": -20,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1405929097925758976,
+      "catch_date": "2026-05-04T08:29:32.130368+00:00",
+      "spawned_time": "2026-05-04T08:29:20.350000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Tabraiz Shamsi",
+      "special_name": null,
+      "health_bonus": 1,
+      "attack_bonus": 4,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1197183728733147167,
+      "catch_date": "2026-05-04T08:31:03.441112+00:00",
+      "spawned_time": "2026-05-04T08:30:55.541000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1118787461561196566,
+      "ball_player_name": "Lucknow Supergiants",
+      "special_name": null,
+      "health_bonus": 16,
+      "attack_bonus": -18,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1360927198533517434,
+      "catch_date": "2026-05-04T08:32:13.748779+00:00",
+      "spawned_time": "2026-05-04T08:31:57.174000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1317288099075850243,
+      "ball_player_name": "Odi World Cup",
+      "special_name": "Shiny",
+      "health_bonus": 0,
+      "attack_bonus": 0,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 0,
+      "catch_date": "2026-03-05T08:32:15.104223+00:00",
+      "spawned_time": "2026-03-05T08:32:15.104223+00:00",
       "extra_data": {}
     }
   ]
