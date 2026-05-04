@@ -18,6 +18,7 @@ from cricstar.core.utils.sorting import FilteringChoices, SortingChoices, filter
 from cricstar.core.utils.transformers import (
     BallEnabledTransform,
     BallInstanceTransform,
+    EventEnabledTransform,
     SpecialEnabledTransform,
     TradeCommandType,
 )
@@ -292,6 +293,7 @@ class Bet(commands.GroupCog, name="bet"):
         cricketer: BallEnabledTransform | None = None,
         sort: SortingChoices | None = None,
         special: SpecialEnabledTransform | None = None,
+        event: EventEnabledTransform | None = None,
         filter: FilteringChoices | None = None,
     ):
         """
@@ -304,7 +306,9 @@ class Bet(commands.GroupCog, name="bet"):
         sort: SortingChoices
             Choose how cricketers are sorted (e.g. by rarity).
         special: Special
-            Filter results to a special event.
+            Filter results to a specific special (e.g. Shiny).
+        event: Special
+            Filter results to a specific event (e.g. ICONS, IPL2026).
         filter: FilteringChoices
             Filter results to a specific filter.
         """
@@ -339,6 +343,8 @@ class Bet(commands.GroupCog, name="bet"):
             query = query.filter(ball=cricketer)
         if special:
             query = query.filter(special=special)
+        if event:
+            query = query.filter(special=event)
         if sort:
             query = sort_balls(sort, query)
         if filter:
