@@ -1,6 +1,6 @@
 {
-  "exported_at": "2026-05-04T08:59:45.511991+00:00",
-  "count": 11974,
+  "exported_at": "2026-05-04T09:13:00.462030+00:00",
+  "count": 11980,
   "holdings": [
     {
       "player_discord_id": 1194208866540453899,
@@ -91807,6 +91807,19 @@
       }
     },
     {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Kevin Pietersen",
+      "special_name": "ICONS",
+      "health_bonus": 6,
+      "attack_bonus": -20,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-03T17:30:31.448562+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
       "player_discord_id": 1434609486403997718,
       "ball_player_name": "Ian Bell",
       "special_name": "ICONS",
@@ -91816,19 +91829,6 @@
       "tradeable": true,
       "server_id": 1476180448030756928,
       "catch_date": "2026-05-03T17:30:22.356064+00:00",
-      "spawned_time": null,
-      "extra_data": {}
-    },
-    {
-      "player_discord_id": 1434609486403997718,
-      "ball_player_name": "Kevin Pietersen",
-      "special_name": "ICONS",
-      "health_bonus": 6,
-      "attack_bonus": -20,
-      "favorite": false,
-      "tradeable": true,
-      "server_id": 1476180448030756928,
-      "catch_date": "2026-05-03T17:30:31.448562+00:00",
       "spawned_time": null,
       "extra_data": {}
     },
@@ -156230,6 +156230,19 @@
       "extra_data": {}
     },
     {
+      "player_discord_id": 580642114346549259,
+      "ball_player_name": "Tabraiz Shamsi",
+      "special_name": null,
+      "health_bonus": -10,
+      "attack_bonus": -5,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1421832633926553753,
+      "catch_date": "2026-05-04T09:12:05.137013+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
       "player_discord_id": 418257082295517184,
       "ball_player_name": "Odi World Cup",
       "special_name": "Shiny",
@@ -156474,6 +156487,71 @@
       "server_id": 639864284297429025,
       "catch_date": "2026-05-04T08:58:46.832680+00:00",
       "spawned_time": "2026-05-04T08:58:38.549000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1194208866540453899,
+      "ball_player_name": "Dewald Brevis",
+      "special_name": null,
+      "health_bonus": 8,
+      "attack_bonus": 18,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1405929097925758976,
+      "catch_date": "2026-05-04T08:59:46.544111+00:00",
+      "spawned_time": null,
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1095270653483032636,
+      "ball_player_name": "Ramandeep Singh",
+      "special_name": null,
+      "health_bonus": 14,
+      "attack_bonus": -17,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1366131352172498944,
+      "catch_date": "2026-05-04T08:59:53.031166+00:00",
+      "spawned_time": "2026-05-04T08:59:47.216000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1434609486403997718,
+      "ball_player_name": "Sam Konstas",
+      "special_name": null,
+      "health_bonus": -16,
+      "attack_bonus": -16,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1371364151728799856,
+      "catch_date": "2026-05-04T09:00:12.445009+00:00",
+      "spawned_time": "2026-05-04T09:00:03.935000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1095270653483032636,
+      "ball_player_name": "Tim David",
+      "special_name": null,
+      "health_bonus": 0,
+      "attack_bonus": 18,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1348020840762966056,
+      "catch_date": "2026-05-04T09:00:40.498597+00:00",
+      "spawned_time": "2026-05-04T09:00:16.252000+00:00",
+      "extra_data": {}
+    },
+    {
+      "player_discord_id": 1199014228871360595,
+      "ball_player_name": "Rajasthan Royals",
+      "special_name": null,
+      "health_bonus": 7,
+      "attack_bonus": 9,
+      "favorite": false,
+      "tradeable": true,
+      "server_id": 1476180448030756928,
+      "catch_date": "2026-05-04T09:00:56.813874+00:00",
+      "spawned_time": "2026-05-04T09:00:51.810000+00:00",
       "extra_data": {}
     }
   ]
