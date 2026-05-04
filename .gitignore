@@ -50,3 +50,7 @@ Thumbs.db
 
 # Bot process lock file (auto-generated, must not be committed)
 .bot.pid
+
+# Runtime state files (auto-generated, must not be committed)
+card_exports/holdings.json
+data/catcher_pack.json
