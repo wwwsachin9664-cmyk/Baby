@@ -164,11 +164,10 @@ if "startbot" in sys.argv:
 
 DATABASES = {"default": dj_database_url.config("CRICSTARBOT_DB_URL", default=os.environ.get("DATABASE_URL", ""))}
 
-# Keep connections alive for up to 60 seconds, and automatically verify the
-# connection is still alive before reusing it.  This prevents the bot from
-# crashing with "the connection is closed" when PostgreSQL drops idle connections.
-CONN_MAX_AGE = 60
-CONN_HEALTH_CHECKS = True
+# Always close and recreate DB connections — never reuse stale ones.
+# The bot calls close_old_connections() before every command via a global
+# hook so each operation gets a guaranteed-fresh connection.
+CONN_MAX_AGE = 0
 
 
 # Password validation

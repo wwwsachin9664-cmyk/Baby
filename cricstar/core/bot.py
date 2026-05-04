@@ -19,7 +19,9 @@ from discord.app_commands.translator import TranslationContextLocation, Translat
 from discord.enums import Locale
 from discord.ext import commands
 from discord.utils import MISSING
+from asgiref.sync import sync_to_async
 from django.apps import apps
+from django.db import close_old_connections
 from prometheus_client import Histogram
 from rich import box, print
 from rich.console import Console
@@ -118,6 +120,11 @@ class CommandTree[Bot: CricStarBot](app_commands.CommandTree[Bot]):
     disable_time_check: bool = False
 
     async def interaction_check(self, interaction: discord.Interaction[Bot], /) -> bool:
+        # Reset stale DB connections before every interaction (slash commands,
+        # buttons, selects, modals).  Must run in the ORM thread via sync_to_async
+        # so it closes the connection held by that thread, not the event-loop thread.
+        await sync_to_async(close_old_connections)()
+
         # checking if the moment we receive this interaction isn't too late already
         # there is a 3 seconds limit for initial response, taking a little margin into account
         # https://discord.com/developers/docs/interactions/receiving-and-responding#responding-to-an-interaction
